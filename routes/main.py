@@ -482,3 +482,30 @@ def get_plan_info():
 def payment():
     """Payment page for upgrading to paid plan"""
     return render_template('payment.html')
+
+
+@main_bp.route('/upgrade-plan', methods=['POST'])
+@login_required
+def upgrade_plan():
+    """Simulate plan upgrade for demo purposes"""
+    try:
+        # Get user's subscription
+        subscription = current_user.get_subscription()
+        
+        # Upgrade to paid plan
+        from models.subscription import PlanType
+        subscription.plan_type = PlanType.PAID
+        subscription.is_active = True
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Plan upgraded successfully!',
+            'plan_type': 'paid'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

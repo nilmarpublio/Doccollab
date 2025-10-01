@@ -211,13 +211,45 @@ document.getElementById('payment-form-data').addEventListener('submit', function
     e.preventDefault();
     
     // In a real application, this would integrate with a payment processor
-    alert('{{ _("Payment integration coming soon! This is a demo.") }}');
-    
-    // For demo purposes, simulate successful payment
     if (confirm('{{ _("Simulate successful payment?") }}')) {
-        // Redirect to dashboard with success message
-        window.location.href = '{{ url_for("main.dashboard") }}?payment=success';
+        // Call upgrade API
+        fetch('/upgrade-plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('{{ _("Plan upgraded successfully!") }}');
+                // Redirect to dashboard with success message
+                window.location.href = '{{ url_for("main.dashboard") }}?upgrade=success';
+            } else {
+                alert('{{ _("Error upgrading plan:") }} ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('{{ _("Error upgrading plan. Please try again.") }}');
+        });
     }
 });
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>
 {% endblock %}

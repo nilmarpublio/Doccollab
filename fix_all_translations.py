@@ -196,7 +196,10 @@ def main():
         "Suporte prioritário": "Suporte prioritário",
         "Recursos avançados": "Recursos avançados",
         "Current Plan": "Plano Atual",
-        "Please select a file": "Por favor, selecione um arquivo"
+        "Please select a file": "Por favor, selecione um arquivo",
+        "Plan upgraded successfully!": "Plano atualizado com sucesso!",
+        "Error upgrading plan:": "Erro ao atualizar plano:",
+        "Error upgrading plan. Please try again.": "Erro ao atualizar plano. Tente novamente."
     }
     
     # Traduções em inglês
@@ -331,7 +334,10 @@ def main():
         "Suporte prioritário": "Priority support",
         "Recursos avançados": "Advanced features",
         "Current Plan": "Current Plan",
-        "Please select a file": "Please select a file"
+        "Please select a file": "Please select a file",
+        "Plan upgraded successfully!": "Plan upgraded successfully!",
+        "Error upgrading plan:": "Error upgrading plan:",
+        "Error upgrading plan. Please try again.": "Error upgrading plan. Please try again."
     }
     
     project_dir = os.path.dirname(os.path.abspath(__file__))
