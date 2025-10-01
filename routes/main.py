@@ -14,6 +14,8 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
     return render_template('index.html')
 
 @main_bp.route('/dashboard')
@@ -473,3 +475,10 @@ def get_plan_info():
         'is_paid': subscription.is_paid,
         'limits': limits
     })
+
+
+@main_bp.route('/payment')
+@login_required
+def payment():
+    """Payment page for upgrading to paid plan"""
+    return render_template('payment.html')

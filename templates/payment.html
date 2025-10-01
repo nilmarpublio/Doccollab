@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}{{ _('DocCollab - Upgrade Plan') }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-4">{{ _('Upgrade to Paid Plan') }}</h1>
+                <p class="lead text-muted">{{ _('Unlock unlimited projects, files, and collaboration features') }}</p>
+            </div>
+
+            <div class="row">
+                <!-- Free Plan -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 border-secondary">
+                        <div class="card-header bg-secondary text-white text-center">
+                            <h3 class="mb-0">{{ _('Free Plan') }}</h3>
+                            <div class="display-6">$0<small class="text-muted">/mês</small></div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> 1 projeto</li>
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> 1 arquivo (.tex)</li>
+                                <li class="mb-2"><i class="fas fa-times text-danger"></i> Upload de imagens</li>
+                                <li class="mb-2"><i class="fas fa-times text-danger"></i> Múltiplos arquivos</li>
+                                <li class="mb-2"><i class="fas fa-times text-danger"></i> Colaboração</li>
+                                <li class="mb-2"><i class="fas fa-times text-danger"></i> Suporte prioritário</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-center">
+                            <span class="badge bg-secondary fs-6">{{ _('Current Plan') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paid Plan -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 border-success shadow-lg">
+                        <div class="card-header bg-success text-white text-center">
+                            <h3 class="mb-0">{{ _('Paid Plan') }}</h3>
+                            <div class="display-6">$9.99<small class="text-muted">/mês</small></div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> Projetos ilimitados</li>
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> Arquivos ilimitados</li>
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> Upload de imagens</li>
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> Colaboração em tempo real</li>
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> Suporte prioritário</li>
+                                <li class="mb-2"><i class="fas fa-check text-success"></i> Recursos avançados</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button class="btn btn-success btn-lg" onclick="processPayment()">
+                                <i class="fas fa-credit-card"></i> {{ _('Upgrade Now') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form (Hidden by default) -->
+            <div id="payment-form" class="card mt-4" style="display: none;">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ _('Payment Information') }}</h4>
+                </div>
+                <div class="card-body">
+                    <form id="payment-form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="card-number" class="form-label">{{ _('Card Number') }}</label>
+                                    <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="expiry" class="form-label">{{ _('Expiry') }}</label>
+                                    <input type="text" class="form-control" id="expiry" placeholder="MM/YY" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="cvv" class="form-label">{{ _('CVV') }}</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="123" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardholder-name" class="form-label">{{ _('Cardholder Name') }}</label>
+                            <input type="text" class="form-control" id="cardholder-name" required>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-secondary" onclick="hidePaymentForm()">{{ _('Cancel') }}</button>
+                            <button type="submit" class="btn btn-success">{{ _('Complete Payment') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Features Comparison -->
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ _('Feature Comparison') }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('Feature') }}</th>
+                                    <th class="text-center">{{ _('Free') }}</th>
+                                    <th class="text-center">{{ _('Paid') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ _('Projects') }}</td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center">{{ _('Unlimited') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ _('Files per project') }}</td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center">{{ _('Unlimited') }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ _('Image uploads') }}</td>
+                                    <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ _('Real-time collaboration') }}</td>
+                                    <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ _('Priority support') }}</td>
+                                    <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                                    <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ _('Frequently Asked Questions') }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                    {{ _('Can I cancel anytime?') }}
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    {{ _('Yes! You can cancel your subscription at any time. You will continue to have access to paid features until the end of your billing period.') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                    {{ _('What payment methods do you accept?') }}
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    {{ _('We accept all major credit cards (Visa, MasterCard, American Express) and PayPal.') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                    {{ _('Is my data secure?') }}
+                                </button>
+                            </h2>
+                            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    {{ _('Absolutely! We use industry-standard encryption to protect your data and never share your information with third parties.') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function processPayment() {
+    // Show payment form
+    document.getElementById('payment-form').style.display = 'block';
+    document.getElementById('payment-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+function hidePaymentForm() {
+    document.getElementById('payment-form').style.display = 'none';
+}
+
+// Handle payment form submission
+document.getElementById('payment-form-data').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // In a real application, this would integrate with a payment processor
+    alert('{{ _("Payment integration coming soon! This is a demo.") }}');
+    
+    // For demo purposes, simulate successful payment
+    if (confirm('{{ _("Simulate successful payment?") }}')) {
+        // Redirect to dashboard with success message
+        window.location.href = '{{ url_for("main.dashboard") }}?payment=success';
+    }
+});
+</script>
+{% endblock %}

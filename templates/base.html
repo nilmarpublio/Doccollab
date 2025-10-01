@@ -19,8 +19,23 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto align-items-lg-center">
           <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a></li>
+          {% if current_user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('main.dashboard') }}">{{ _('Dashboard') }}</a></li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ current_user.name }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="{{ url_for('main.dashboard') }}">{{ _('Dashboard') }}</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('main.payment') }}">{{ _('Upgrade Plan') }}</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{ _('Sign out') }}</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a></li>
+          {% endif %}
           <li class="nav-item dropdown ms-lg-3">
             <a class="nav-link dropdown-toggle" href="#" id="langMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               {{ _('Language') }}

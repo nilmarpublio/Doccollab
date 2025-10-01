@@ -46,7 +46,6 @@ def register_post():
     email = request.form.get('email')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm_password')
-    plan = request.form.get('plan', 'free')
 
     if not all([name, email, password, confirm_password]):
         flash('Preencha todos os campos.', 'warning')
@@ -60,9 +59,18 @@ def register_post():
         flash('Email já cadastrado.', 'warning')
         return redirect(url_for('auth.register'))
 
-    user = User(name=name, email=email, plan=plan)
+    user = User(name=name, email=email)
     user.set_password(password)
     db.session.add(user)
+    db.session.flush()  # Get the ID
+    
+    # Create free subscription
+    from models.subscription import Subscription, PlanType
+    subscription = Subscription(
+        user_id=user.id,
+        plan_type=PlanType.FREE
+    )
+    db.session.add(subscription)
     db.session.commit()
 
     flash('Conta criada com sucesso! Faça login.', 'success')
