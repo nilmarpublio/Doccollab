@@ -119,28 +119,61 @@
 <div class="modal" id="createFileModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">{{ _('Create New File') }}</h5>
-            <button class="modal-close" onclick="hideModal('createFileModal')">&times;</button>
+            <h5 class="modal-title">
+                <i class="fas fa-file-plus"></i>
+                {{ _('Create New File') }}
+            </h5>
+            <button class="modal-close" onclick="hideModal('createFileModal')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="modal-body">
             <form id="createFileForm">
                 <div class="form-group">
-                    <label class="form-label">{{ _('File Name') }}:</label>
-                    <input type="text" class="form-control" id="fileName" placeholder="example.tex" required>
+                    <label class="form-label">
+                        <i class="fas fa-tag"></i>
+                        {{ _('File Name') }}
+                    </label>
+                    <div class="input-group">
+                        <div class="input-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <input type="text" class="form-control" id="fileName" placeholder="example.tex" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">{{ _('File Type') }}:</label>
-                    <select class="form-control" id="fileType">
-                        <option value="tex">{{ _('LaTeX Document') }} (.tex)</option>
-                        <option value="bib">{{ _('Bibliography') }} (.bib)</option>
-                        <option value="txt">{{ _('Text File') }} (.txt)</option>
-                    </select>
+                    <label class="form-label">
+                        <i class="fas fa-cog"></i>
+                        {{ _('File Type') }}
+                    </label>
+                    <div class="input-group">
+                        <div class="input-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <select class="form-control" id="fileType">
+                            <option value="tex">
+                                <i class="fas fa-file-code"></i> {{ _('LaTeX Document') }} (.tex)
+                            </option>
+                            <option value="bib">
+                                <i class="fas fa-book"></i> {{ _('Bibliography') }} (.bib)
+                            </option>
+                            <option value="txt">
+                                <i class="fas fa-file-text"></i> {{ _('Text File') }} (.txt)
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="hideModal('createFileModal')">{{ _('Cancel') }}</button>
-            <button class="btn btn-primary" onclick="createFile()">{{ _('Create') }}</button>
+            <button class="btn btn-secondary" onclick="hideModal('createFileModal')">
+                <i class="fas fa-times"></i>
+                {{ _('Cancel') }}
+            </button>
+            <button class="btn btn-primary" onclick="createFile()">
+                <i class="fas fa-plus"></i>
+                {{ _('Create File') }}
+            </button>
         </div>
     </div>
 </div>
@@ -149,20 +182,43 @@
 <div class="modal" id="uploadModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">{{ _('Upload File') }}</h5>
-            <button class="modal-close" onclick="hideModal('uploadModal')">&times;</button>
+            <h5 class="modal-title">
+                <i class="fas fa-cloud-upload-alt"></i>
+                {{ _('Upload File') }}
+            </h5>
+            <button class="modal-close" onclick="hideModal('uploadModal')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="modal-body">
             <form id="uploadForm">
                 <div class="form-group">
-                    <label class="form-label">{{ _('Select File') }}:</label>
-                    <input type="file" class="form-control" id="fileInput" accept=".tex,.bib,.txt,.png,.jpg,.jpeg,.gif,.pdf">
+                    <label class="form-label">
+                        <i class="fas fa-folder-open"></i>
+                        {{ _('Select File to Upload') }}
+                    </label>
+                    <div class="file-upload-area">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <input type="file" class="form-control" id="fileInput" accept=".tex,.bib,.txt,.png,.jpg,.jpeg,.gif,.pdf">
+                        <div class="file-upload-text">
+                            <p>{{ _('Drag and drop files here or click to browse') }}</p>
+                            <small>{{ _('Supported formats: .tex, .bib, .txt, .png, .jpg, .jpeg, .gif, .pdf') }}</small>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="hideModal('uploadModal')">{{ _('Cancel') }}</button>
-            <button class="btn btn-primary" onclick="uploadFile()">{{ _('Upload') }}</button>
+            <button class="btn btn-secondary" onclick="hideModal('uploadModal')">
+                <i class="fas fa-times"></i>
+                {{ _('Cancel') }}
+            </button>
+            <button class="btn btn-primary" onclick="uploadFile()">
+                <i class="fas fa-upload"></i>
+                {{ _('Upload File') }}
+            </button>
         </div>
     </div>
 </div>
@@ -171,34 +227,56 @@
 <div class="modal" id="upgradeModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">{{ _('Upgrade Required') }}</h5>
-            <button class="modal-close" onclick="hideModal('upgradeModal')">&times;</button>
+            <h5 class="modal-title">
+                <i class="fas fa-crown"></i>
+                {{ _('Upgrade Required') }}
+            </h5>
+            <button class="modal-close" onclick="hideModal('upgradeModal')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="modal-body">
-            <p>{{ _('This feature requires a paid plan.') }}</p>
+            <div class="upgrade-info">
+                <div class="upgrade-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <p>{{ _('This feature requires a paid plan.') }}</p>
+            </div>
             <div class="plan-comparison">
-                <div class="plan-item">
-                    <h6>{{ _('Free Plan') }}</h6>
+                <div class="plan-item free-plan">
+                    <div class="plan-header">
+                        <i class="fas fa-gift"></i>
+                        <h6>{{ _('Free Plan') }}</h6>
+                    </div>
                     <ul>
-                        <li>{{ _('1 project') }}</li>
-                        <li>{{ _('1 file (.tex)') }}</li>
-                        <li>{{ _('Basic features') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('1 project') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('1 file (.tex)') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('Basic features') }}</li>
                     </ul>
                 </div>
-                <div class="plan-item">
-                    <h6>{{ _('Paid Plan') }}</h6>
+                <div class="plan-item paid-plan">
+                    <div class="plan-header">
+                        <i class="fas fa-crown"></i>
+                        <h6>{{ _('Paid Plan') }}</h6>
+                    </div>
                     <ul>
-                        <li>{{ _('Unlimited projects') }}</li>
-                        <li>{{ _('Unlimited files') }}</li>
-                        <li>{{ _('Image uploads') }}</li>
-                        <li>{{ _('Real-time collaboration') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('Unlimited projects') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('Unlimited files') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('Image uploads') }}</li>
+                        <li><i class="fas fa-check"></i> {{ _('Real-time collaboration') }}</li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="hideModal('upgradeModal')">{{ _('Cancel') }}</button>
-            <button class="btn btn-success" onclick="upgradeToPaid()">{{ _('Upgrade Now') }}</button>
+            <button class="btn btn-secondary" onclick="hideModal('upgradeModal')">
+                <i class="fas fa-times"></i>
+                {{ _('Cancel') }}
+            </button>
+            <button class="btn btn-success" onclick="upgradeToPaid()">
+                <i class="fas fa-rocket"></i>
+                {{ _('Upgrade Now') }}
+            </button>
         </div>
     </div>
 </div>

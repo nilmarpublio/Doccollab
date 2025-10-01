@@ -13,32 +13,41 @@
     <div class="auth-body">
       <form method="POST" action="{{ url_for('auth.register_post') }}" class="auth-form" id="registerForm">
         <div class="form-group">
-          <label for="name" class="form-label">{{ _('Full name') }}</label>
+          <label for="name" class="form-label">
+            <i class="fas fa-user-circle"></i>
+            {{ _('Full Name') }}
+          </label>
           <div class="input-group">
             <div class="input-icon">
-              <i class="fas fa-user"></i>
+              <i class="fas fa-user-edit"></i>
             </div>
             <input type="text" class="form-control" id="name" name="name" placeholder="{{ _('Enter your full name') }}" required>
           </div>
         </div>
         
         <div class="form-group">
-          <label for="email" class="form-label">{{ _('Email') }}</label>
+          <label for="email" class="form-label">
+            <i class="fas fa-at"></i>
+            {{ _('Email Address') }}
+          </label>
           <div class="input-group">
             <div class="input-icon">
-              <i class="fas fa-envelope"></i>
+              <i class="fas fa-envelope-open-text"></i>
             </div>
-            <input type="email" class="form-control" id="email" name="email" placeholder="{{ _('Enter your email') }}" required>
+            <input type="email" class="form-control" id="email" name="email" placeholder="{{ _('Enter your email address') }}" required>
           </div>
         </div>
         
         <div class="form-group">
-          <label for="password" class="form-label">{{ _('Password') }}</label>
+          <label for="password" class="form-label">
+            <i class="fas fa-key"></i>
+            {{ _('Password') }}
+          </label>
           <div class="input-group">
             <div class="input-icon">
               <i class="fas fa-lock"></i>
             </div>
-            <input type="password" class="form-control" id="password" name="password" placeholder="{{ _('Create a password') }}" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="{{ _('Create a secure password') }}" required>
             <button type="button" class="input-toggle" onclick="togglePassword('password')">
               <i class="fas fa-eye" id="password-eye"></i>
             </button>
@@ -47,12 +56,18 @@
             <div class="strength-bar">
               <div class="strength-fill" id="strengthFill"></div>
             </div>
-            <span class="strength-text" id="strengthText">{{ _('Password strength') }}</span>
+            <span class="strength-text" id="strengthText">
+              <i class="fas fa-shield-alt"></i>
+              {{ _('Password strength') }}
+            </span>
           </div>
         </div>
         
         <div class="form-group">
-          <label for="confirm_password" class="form-label">{{ _('Confirm password') }}</label>
+          <label for="confirm_password" class="form-label">
+            <i class="fas fa-key"></i>
+            {{ _('Confirm Password') }}
+          </label>
           <div class="input-group">
             <div class="input-icon">
               <i class="fas fa-lock"></i>
@@ -78,14 +93,17 @@
         <div class="form-options">
           <label class="checkbox-container">
             <input type="checkbox" name="terms" required>
-            <span class="checkmark"></span>
+            <span class="checkmark">
+              <i class="fas fa-check"></i>
+            </span>
+            <i class="fas fa-file-contract"></i>
             {{ _('I agree to the') }} <a href="#" class="terms-link">{{ _('Terms of Service') }}</a> {{ _('and') }} <a href="#" class="terms-link">{{ _('Privacy Policy') }}</a>
           </label>
         </div>
         
         <button type="submit" class="btn btn-success btn-auth">
           <i class="fas fa-user-plus"></i>
-          {{ _('Create account') }}
+          <span>{{ _('Create my account') }}</span>
         </button>
       </form>
       
