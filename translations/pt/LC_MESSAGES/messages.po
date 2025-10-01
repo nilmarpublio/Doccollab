@@ -20,7 +20,7 @@ msgstr ""
 
 #: DocCollab/app.py:61 DocCollab/templates/base.html:19
 msgid "Home"
-msgstr ""
+msgstr "Início"
 
 #: DocCollab/templates/base.html:6
 msgid "DocCollab"
@@ -40,7 +40,7 @@ msgstr "Cadastrar"
 
 #: DocCollab/templates/base.html:24
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: DocCollab/templates/dashboard.html:2
 #, fuzzy
@@ -49,7 +49,7 @@ msgstr "DocCollab - Início"
 
 #: DocCollab/templates/dashboard.html:5
 msgid "My Projects"
-msgstr ""
+msgstr "Meus Projetos"
 
 #: DocCollab/templates/dashboard.html:6 DocCollab/templates/dashboard.html:66
 #, fuzzy
@@ -75,7 +75,7 @@ msgstr "Nome completo"
 
 #: DocCollab/templates/dashboard.html:23
 msgid "Delete"
-msgstr ""
+msgstr "Excluir"
 
 #: DocCollab/templates/dashboard.html:37
 #, fuzzy
@@ -102,12 +102,12 @@ msgstr "Nome completo"
 
 #: DocCollab/templates/dashboard.html:75
 msgid "Description"
-msgstr ""
+msgstr "Descrição"
 
 #: DocCollab/templates/dashboard.html:81
 #, fuzzy
 msgid "Create"
-msgstr "Criar conta"
+msgstr "Criar"
 
 #: DocCollab/templates/editor.html:2
 msgid "Editor"
@@ -168,7 +168,7 @@ msgstr "DocCollab - Entrar"
 #: DocCollab/templates/auth/login.html:11
 #: DocCollab/templates/auth/register.html:15
 msgid "Email"
-msgstr "Email"
+msgstr "E-mail"
 
 #: DocCollab/templates/auth/login.html:15
 #: DocCollab/templates/auth/register.html:19
@@ -177,7 +177,7 @@ msgstr "Senha"
 
 #: DocCollab/templates/auth/login.html:23
 msgid "No account?"
-msgstr "Não tem uma conta?"
+msgstr "Não tem conta?"
 
 #: DocCollab/templates/auth/register.html:2
 msgid "DocCollab - Sign up"

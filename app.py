@@ -40,9 +40,15 @@ def create_app():
     babel = Babel()
 
     def get_locale():
-        lang = session.get('lang')
-        if lang in app.config['BABEL_SUPPORTED_LOCALES']:
-            return lang
+        # Primeiro verifica se há idioma na URL (para forçar mudança)
+        if request.args.get('lang') and request.args.get('lang') in app.config['BABEL_SUPPORTED_LOCALES']:
+            return request.args.get('lang')
+        
+        # Depois verifica se há idioma na sessão
+        if 'lang' in session and session['lang'] in app.config['BABEL_SUPPORTED_LOCALES']:
+            return session['lang']
+        
+        # Por último, usa o idioma padrão do navegador
         return request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']) or app.config['BABEL_DEFAULT_LOCALE']
 
     babel.init_app(app, locale_selector=get_locale)
@@ -55,6 +61,16 @@ def create_app():
     def set_language(lang_code):
         if lang_code in app.config['BABEL_SUPPORTED_LOCALES']:
             session['lang'] = lang_code
+            # Force refresh of translations
+            from flask_babel import refresh
+            refresh()
+            # Redirect to current page with lang parameter to force refresh
+            referrer = request.referrer or url_for('main.index')
+            if '?' in referrer:
+                separator = '&'
+            else:
+                separator = '?'
+            return redirect(f"{referrer}{separator}lang={lang_code}")
         return redirect(request.referrer or url_for('main.index'))
 
     @app.route('/favicon.ico')

@@ -20,27 +20,27 @@ msgstr ""
 
 #: DocCollab/app.py:61 DocCollab/templates/base.html:19
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: DocCollab/templates/base.html:6
 msgid "DocCollab"
-msgstr ""
+msgstr "DocCollab"
 
 #: DocCollab/templates/auth/login.html:8 DocCollab/templates/auth/login.html:19
 #: DocCollab/templates/auth/register.html:42 DocCollab/templates/base.html:20
 #: DocCollab/templates/index.html:8
 msgid "Sign in"
-msgstr ""
+msgstr "Sign in"
 
 #: DocCollab/templates/auth/login.html:23
 #: DocCollab/templates/auth/register.html:8 DocCollab/templates/base.html:21
 #: DocCollab/templates/index.html:9
 msgid "Sign up"
-msgstr ""
+msgstr "Sign up"
 
 #: DocCollab/templates/base.html:24
 msgid "Language"
-msgstr ""
+msgstr "Language"
 
 #: DocCollab/templates/dashboard.html:2
 msgid "DocCollab - Dashboard"
