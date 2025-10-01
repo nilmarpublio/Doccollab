@@ -120,6 +120,30 @@ def editor(project_id):
             content = f.read()
     return render_template('editor.html', project=project, content=content)
 
+@main_bp.route('/pdf/<int:project_id>')
+@login_required
+def pdf_viewer(project_id):
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        flash('Projeto não encontrado.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    return render_template('pdf_viewer.html', project=project)
+
+@main_bp.route('/project/<int:project_id>/pdf-file')
+@login_required
+def serve_pdf(project_id):
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        abort(404)
+    
+    project_path = ensure_project_dir(current_app.config['PROJECTS_ROOT'], current_user.id, project.name)
+    pdf_path = os.path.join(project_path, 'main.pdf')
+    
+    if not os.path.exists(pdf_path):
+        abort(404)
+    
+    return send_file(pdf_path, as_attachment=False, mimetype='application/pdf')
+
 
 @main_bp.route('/project/<int:project_id>/save', methods=['POST'])
 @login_required

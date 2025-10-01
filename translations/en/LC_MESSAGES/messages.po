@@ -858,6 +858,78 @@ msgstr "Create your first project to get started!"
 msgid "Are you sure you want to delete this project?"
 msgstr "Are you sure you want to delete this project?"
 
+msgid "Welcome back!"
+msgstr "Welcome back!"
+
+msgid "Create your account"
+msgstr "Create your account"
+
+msgid "Enter your email"
+msgstr "Enter your email"
+
+msgid "Enter your password"
+msgstr "Enter your password"
+
+msgid "Enter your full name"
+msgstr "Enter your full name"
+
+msgid "Create a password"
+msgstr "Create a password"
+
+msgid "Confirm your password"
+msgstr "Confirm your password"
+
+msgid "Remember me"
+msgstr "Remember me"
+
+msgid "Password strength"
+msgstr "Password strength"
+
+msgid "Weak"
+msgstr "Weak"
+
+msgid "Fair"
+msgstr "Fair"
+
+msgid "Good"
+msgstr "Good"
+
+msgid "Strong"
+msgstr "Strong"
+
+msgid "Passwords match"
+msgstr "Passwords match"
+
+msgid "Passwords do not match"
+msgstr "Passwords do not match"
+
+msgid "Free Plan Included!"
+msgstr "Free Plan Included!"
+
+msgid "I agree to the"
+msgstr "I agree to the"
+
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
+msgid "and"
+msgstr "and"
+
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+msgid "Please accept the terms and conditions"
+msgstr "Please accept the terms and conditions"
+
+msgid "Toggle PDF View"
+msgstr "Toggle PDF View"
+
+msgid "Show PDF"
+msgstr "Show PDF"
+
+msgid "Hide PDF"
+msgstr "Hide PDF"
+
 #~ msgid "DocCollab"
 #~ msgstr ""
 

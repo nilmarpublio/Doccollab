@@ -92,8 +92,8 @@
                 </button>
             </div>
             <div class="toolbar-right">
-                <button class="toolbar-btn" id="compileBtn" onclick="toggleCompileView()" title="{{ _('Compile PDF') }}">
-                    <i class="fas fa-file-pdf"></i> {{ _('Compile') }}
+                <button class="toolbar-btn" id="compileBtn" onclick="compileAndViewPDF()" title="{{ _('Compile PDF') }}">
+                    <i class="fas fa-file-pdf"></i> {{ _('Compile & View PDF') }}
                 </button>
             </div>
         </div>
@@ -113,38 +113,6 @@
         </div>
     </div>
 
-    <!-- PDF Panel -->
-    <div class="pdf-panel" id="pdfPanel">
-        <div class="pdf-header">
-            <div class="pdf-title-section">
-                <h5 class="mb-3">{{ _('PDF Preview') }}</h5>
-                <button class="btn btn-outline-secondary btn-sm" onclick="toggleCompileView()" title="{{ _('Back to Editor') }}">
-                    <i class="fas fa-arrow-left"></i> {{ _('Back to Editor') }}
-                </button>
-            </div>
-            <div class="pdf-controls">
-                <button class="btn btn-primary btn-sm" onclick="refreshPDF()">
-                    <i class="fas fa-sync-alt"></i> {{ _('Refresh') }}
-                </button>
-                <button class="btn btn-success btn-sm" onclick="downloadPDF()">
-                    <i class="fas fa-download"></i> {{ _('Download') }}
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="zoomIn()">
-                    <i class="fas fa-search-plus"></i>
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="zoomOut()">
-                    <i class="fas fa-search-minus"></i>
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="fitToWidth()">
-                    <i class="fas fa-expand-arrows-alt"></i>
-                </button>
-            </div>
-        </div>
-        
-        <div class="pdf-viewer-container">
-            <iframe id="pdfViewer" class="pdf-viewer" src="about:blank"></iframe>
-        </div>
-    </div>
 </div>
 
 <!-- Create File Modal -->
@@ -656,24 +624,24 @@ function setMainFile() {
 function compileProject() {
     updateStatus('{{ _("Compiling") }}...', 'saving');
     
-    fetch(`/project/${currentProject}/compile`, {
+    return fetch(`/project/${currentProject}/compile`, {
         method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             updateStatus('{{ _("Compiled successfully") }}', 'saved');
-            refreshPDF();
             showAlert('{{ _("PDF compiled successfully") }}', 'success');
+            return data;
         } else {
             updateStatus('{{ _("Compilation error") }}', 'error');
-            showAlert('{{ _("Compilation error:") }} ' + data.error, 'danger');
+            throw new Error(data.error || '{{ _("Compilation failed") }}');
         }
     })
     .catch(error => {
         console.error('Error compiling project:', error);
         updateStatus('{{ _("Compilation error") }}', 'error');
-        showAlert('{{ _("Error compiling project") }}', 'danger');
+        throw error;
     });
 }
 
@@ -801,45 +769,25 @@ function upgradeToPaid() {
     window.location.href = '{{ url_for("main.payment") }}';
 }
 
-// Toggle between editor and PDF view
-let isCompiling = false;
-
-function toggleCompileView() {
-    const container = document.querySelector('.editor-container');
+// Compile and navigate to PDF viewer
+function compileAndViewPDF() {
     const compileBtn = document.getElementById('compileBtn');
-    const pdfPanel = document.getElementById('pdfPanel');
-    const editorPanel = document.querySelector('.editor-panel');
+    const originalText = compileBtn.innerHTML;
     
-    isCompiling = !isCompiling;
+    // Show loading state
+    compileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ _("Compiling...") }}';
+    compileBtn.disabled = true;
     
-    if (isCompiling) {
-        // Show PDF panel, hide editor
-        container.classList.add('compiling');
-        compileBtn.innerHTML = '<i class="fas fa-edit"></i> {{ _("Back to Editor") }}';
-        
-        // Force show PDF panel
-        if (pdfPanel) {
-            pdfPanel.style.display = 'block';
-        }
-        if (editorPanel) {
-            editorPanel.style.display = 'none';
-        }
-        
-        // Compile the project
-        compileProject();
-    } else {
-        // Show editor, hide PDF
-        container.classList.remove('compiling');
-        compileBtn.innerHTML = '<i class="fas fa-file-pdf"></i> {{ _("Compile") }}';
-        
-        // Force show editor panel
-        if (pdfPanel) {
-            pdfPanel.style.display = 'none';
-        }
-        if (editorPanel) {
-            editorPanel.style.display = 'flex';
-        }
-    }
+    // Compile the project
+    compileProject().then(() => {
+        // Navigate to PDF viewer
+        window.location.href = `/pdf/${currentProject}`;
+    }).catch((error) => {
+        // Reset button on error
+        compileBtn.innerHTML = originalText;
+        compileBtn.disabled = false;
+        showAlert('{{ _("Error compiling PDF:") }} ' + error, 'danger');
+    });
 }
 
 // Cleanup on page unload
