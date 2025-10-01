@@ -207,7 +207,28 @@ def main():
         "Works perfectly on desktop, tablet, and mobile devices": "Funciona perfeitamente em desktop, tablet e dispositivos móveis",
         "No projects yet": "Nenhum projeto ainda",
         "Create your first project to get started!": "Crie seu primeiro projeto para começar!",
-        "Are you sure you want to delete this project?": "Tem certeza de que deseja excluir este projeto?"
+        "Are you sure you want to delete this project?": "Tem certeza de que deseja excluir este projeto?",
+        "Welcome back!": "Bem-vindo de volta!",
+        "Create your account": "Crie sua conta",
+        "Enter your email": "Digite seu email",
+        "Enter your password": "Digite sua senha",
+        "Enter your full name": "Digite seu nome completo",
+        "Create a password": "Crie uma senha",
+        "Confirm your password": "Confirme sua senha",
+        "Remember me": "Lembrar de mim",
+        "Password strength": "Força da senha",
+        "Weak": "Fraca",
+        "Fair": "Razoável",
+        "Good": "Boa",
+        "Strong": "Forte",
+        "Passwords match": "Senhas coincidem",
+        "Passwords do not match": "Senhas não coincidem",
+        "Free Plan Included!": "Plano Gratuito Incluído!",
+        "I agree to the": "Eu concordo com os",
+        "Terms of Service": "Termos de Serviço",
+        "and": "e",
+        "Privacy Policy": "Política de Privacidade",
+        "Please accept the terms and conditions": "Por favor, aceite os termos e condições"
     }
     
     # Traduções em inglês
@@ -353,7 +374,28 @@ def main():
         "Works perfectly on desktop, tablet, and mobile devices": "Works perfectly on desktop, tablet, and mobile devices",
         "No projects yet": "No projects yet",
         "Create your first project to get started!": "Create your first project to get started!",
-        "Are you sure you want to delete this project?": "Are you sure you want to delete this project?"
+        "Are you sure you want to delete this project?": "Are you sure you want to delete this project?",
+        "Welcome back!": "Welcome back!",
+        "Create your account": "Create your account",
+        "Enter your email": "Enter your email",
+        "Enter your password": "Enter your password",
+        "Enter your full name": "Enter your full name",
+        "Create a password": "Create a password",
+        "Confirm your password": "Confirm your password",
+        "Remember me": "Remember me",
+        "Password strength": "Password strength",
+        "Weak": "Weak",
+        "Fair": "Fair",
+        "Good": "Good",
+        "Strong": "Strong",
+        "Passwords match": "Passwords match",
+        "Passwords do not match": "Passwords do not match",
+        "Free Plan Included!": "Free Plan Included!",
+        "I agree to the": "I agree to the",
+        "Terms of Service": "Terms of Service",
+        "and": "and",
+        "Privacy Policy": "Privacy Policy",
+        "Please accept the terms and conditions": "Please accept the terms and conditions"
     }
     
     # Traduções em espanhol
@@ -403,7 +445,28 @@ def main():
         "Works perfectly on desktop, tablet, and mobile devices": "Funciona perfectamente en escritorio, tablet y dispositivos móviles",
         "No projects yet": "Aún no hay proyectos",
         "Create your first project to get started!": "¡Crea tu primer proyecto para comenzar!",
-        "Are you sure you want to delete this project?": "¿Estás seguro de que quieres eliminar este proyecto?"
+        "Are you sure you want to delete this project?": "¿Estás seguro de que quieres eliminar este proyecto?",
+        "Welcome back!": "¡Bienvenido de vuelta!",
+        "Create your account": "Crea tu cuenta",
+        "Enter your email": "Ingresa tu email",
+        "Enter your password": "Ingresa tu contraseña",
+        "Enter your full name": "Ingresa tu nombre completo",
+        "Create a password": "Crea una contraseña",
+        "Confirm your password": "Confirma tu contraseña",
+        "Remember me": "Recordarme",
+        "Password strength": "Fuerza de la contraseña",
+        "Weak": "Débil",
+        "Fair": "Regular",
+        "Good": "Buena",
+        "Strong": "Fuerte",
+        "Passwords match": "Las contraseñas coinciden",
+        "Passwords do not match": "Las contraseñas no coinciden",
+        "Free Plan Included!": "¡Plan Gratuito Incluido!",
+        "I agree to the": "Acepto los",
+        "Terms of Service": "Términos de Servicio",
+        "and": "y",
+        "Privacy Policy": "Política de Privacidad",
+        "Please accept the terms and conditions": "Por favor, acepta los términos y condiciones"
     }
     
     project_dir = os.path.dirname(os.path.abspath(__file__))
