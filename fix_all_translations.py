@@ -342,6 +342,49 @@ def main():
         "Sessão encerrada.": "Session ended."
     }
     
+    # Traduções em espanhol
+    es_translations = {
+        "Home": "Inicio",
+        "Sign in": "Iniciar sesión",
+        "Sign up": "Registrarse",
+        "Language": "Idioma",
+        "DocCollab - Home": "DocCollab - Inicio",
+        "Welcome to DocCollab": "Bienvenido a DocCollab",
+        "Create and collaborate on documents easily.": "Crea y colabora en documentos fácilmente.",
+        "Dashboard": "Panel",
+        "My Projects": "Mis Proyectos",
+        "New Project": "Nuevo Proyecto",
+        "No description": "Sin descripción",
+        "Updated:": "Actualizado:",
+        "Open Editor": "Abrir Editor",
+        "Delete": "Eliminar",
+        "Create Project": "Crear Proyecto",
+        "Project Name": "Nombre del Proyecto",
+        "Description": "Descripción",
+        "Create": "Crear",
+        "Cancel": "Cancelar",
+        "Sign out": "Cerrar sesión",
+        "Upgrade Plan": "Actualizar Plan",
+        "Free Plan": "Plan Gratuito",
+        "Paid Plan": "Plan de Pago",
+        "1 project": "1 proyecto",
+        "1 file (.tex)": "1 archivo (.tex)",
+        "Image uploads": "Subida de imágenes",
+        "Multiple files": "Múltiples archivos",
+        "Collaboration": "Colaboración",
+        "Unlimited projects": "Proyectos ilimitados",
+        "Unlimited files": "Archivos ilimitados",
+        "Real-time collaboration": "Colaboración en tiempo real",
+        "Priority support": "Soporte prioritario",
+        "Advanced features": "Características avanzadas",
+        "Current Plan": "Plan Actual",
+        "Please select a file": "Por favor, selecciona un archivo",
+        "Plan upgraded successfully!": "¡Plan actualizado con éxito!",
+        "Error upgrading plan:": "Error al actualizar plan:",
+        "Error upgrading plan. Please try again.": "Error al actualizar plan. Inténtalo de nuevo.",
+        "Sessão encerrada.": "Sesión cerrada."
+    }
+    
     project_dir = os.path.dirname(os.path.abspath(__file__))
     translations_dir = os.path.join(project_dir, 'translations')
     
@@ -355,9 +398,14 @@ def main():
     en_po_file = os.path.join(translations_dir, 'en', 'LC_MESSAGES', 'messages.po')
     update_translation_file(en_po_file, en_translations)
     
+    # Atualizar espanhol
+    print("Atualizando traduções em espanhol...")
+    es_po_file = os.path.join(translations_dir, 'es', 'LC_MESSAGES', 'messages.po')
+    update_translation_file(es_po_file, es_translations)
+    
     # Compilar traduções
     print("Compilando traduções...")
-    for lang in ['pt', 'en']:
+    for lang in ['pt', 'en', 'es']:
         po_file = os.path.join(translations_dir, lang, 'LC_MESSAGES', 'messages.po')
         mo_file = os.path.join(translations_dir, lang, 'LC_MESSAGES', 'messages.mo')
         

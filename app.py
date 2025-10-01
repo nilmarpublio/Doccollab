@@ -42,6 +42,11 @@ def create_app():
     def get_locale():
         # Primeiro verifica se há idioma na URL (para forçar mudança)
         if request.args.get('lang') and request.args.get('lang') in app.config['BABEL_SUPPORTED_LOCALES']:
+            # Atualiza a sessão com o idioma da URL
+            session['lang'] = request.args.get('lang')
+            # Force refresh of translations
+            from flask_babel import refresh
+            refresh()
             return request.args.get('lang')
         
         # Depois verifica se há idioma na sessão
@@ -63,10 +68,19 @@ def create_app():
     @app.route('/set-language/<lang_code>')
     def set_language(lang_code):
         if lang_code in app.config['BABEL_SUPPORTED_LOCALES']:
+            # Atualiza a sessão
             session['lang'] = lang_code
+            
             # Force refresh of translations
             from flask_babel import refresh
             refresh()
+            
+            # Força o reload do contexto de tradução
+            with app.app_context():
+                from flask_babel import get_locale as babel_get_locale
+                # Força a atualização do locale
+                app.config['BABEL_DEFAULT_LOCALE'] = lang_code
+            
             # Redirect to current page with lang parameter to force refresh
             referrer = request.referrer or url_for('main.index')
             if '?' in referrer:
