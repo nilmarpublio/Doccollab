@@ -7,10 +7,10 @@
 .editor-container {
   display: grid;
   grid-template-columns: 300px 1fr; /* Sidebar com largura fixa */
-  grid-template-rows: 1fr;
+  grid-template-rows: auto; /* Altura automática baseada no conteúdo */
   gap: 1rem; /* Gap para separação */
-  height: calc(100vh - 100px); /* Altura otimizada */
-  min-height: 600px;
+  height: auto; /* Altura automática */
+  min-height: 600px; /* Altura mínima */
   width: fit-content; /* Ajustar ao conteúdo */
   max-width: calc(300px + 1rem + 800px); /* Largura máxima: sidebar + gap + editor */
   margin: 0 auto; /* Centralizar o container */
@@ -54,10 +54,11 @@ body.editor-page .main-content {
   width: 100%;
   min-width: 0; /* Allow shrinking */
   flex: 1; /* Take all available space */
-  height: 600px; /* Altura fixa para editor */
-  min-height: 600px;
+  height: 600px !important; /* Forçar altura fixa */
+  min-height: 600px !important;
   display: flex;
   flex-direction: column;
+  grid-row: 1; /* Ocupar toda a linha do grid */
 }
 
 /* Editor wrapper and textarea styles */
@@ -139,13 +140,14 @@ body.editor-page .main-content {
   width: 800px; /* Mesma largura do editor */
   min-width: 600px;
   max-width: 800px;
-  height: 600px; /* Mesma altura do editor */
-  min-height: 600px;
-  max-height: 600px; /* Limitar altura máxima */
+  height: 600px !important; /* Forçar altura fixa */
+  min-height: 600px !important;
+  max-height: 600px !important; /* Limitar altura máxima */
   position: relative;
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column; /* Layout flexível */
+  grid-row: 1; /* Ocupar toda a linha do grid */
 }
 
 .pdf-header {
