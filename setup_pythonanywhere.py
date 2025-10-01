@@ -28,18 +28,37 @@ def setup_database():
         
         # Cria usuário admin se não existir
         from models.user import User
+        from models.subscription import Subscription, PlanType
         admin_email = os.getenv('SEED_EMAIL', 'admin@test.com')
         admin_password = os.getenv('SEED_PASSWORD', 'admin123')
         
         existing_admin = User.query.filter_by(email=admin_email).first()
         if not existing_admin:
-            admin = User(name='Admin', email=admin_email, plan='paid')
+            admin = User(name='Admin', email=admin_email)
             admin.set_password(admin_password)
             db.session.add(admin)
+            db.session.flush()  # Get the ID
+            
+            # Create paid subscription for admin
+            admin_subscription = Subscription(
+                user_id=admin.id,
+                plan_type=PlanType.PAID
+            )
+            db.session.add(admin_subscription)
             db.session.commit()
-            print(f"✅ Usuário admin criado: {admin_email}")
+            print(f"✅ Usuário admin criado: {admin_email} (Paid Plan)")
         else:
             print(f"ℹ️  Usuário admin já existe: {admin_email}")
+            
+            # Ensure admin has a subscription
+            if not hasattr(existing_admin, 'subscription') or not existing_admin.subscription:
+                admin_subscription = Subscription(
+                    user_id=existing_admin.id,
+                    plan_type=PlanType.PAID
+                )
+                db.session.add(admin_subscription)
+                db.session.commit()
+                print(f"✅ Subscription criada para admin: {admin_email}")
 
 if __name__ == "__main__":
     setup_database()

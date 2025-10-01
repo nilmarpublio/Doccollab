@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from models import db
 from models.project import Project
 from utils.file_ops import ensure_project_dir, create_main_tex, rename_project_dir, trash_project_dir
+from utils.permissions import require_paid_plan, require_project_limit, require_file_limit, check_plan_limits
 from services.latex import compile_latex_to_pdf
 from services.latex_compiler import compile_with_pdflatex
 import os
@@ -23,16 +24,13 @@ def dashboard():
 
 @main_bp.route('/create-project', methods=['POST'])
 @login_required
+@require_project_limit
 def create_project():
     name = request.form.get('name')
     description = request.form.get('description', '')
 
     if not name:
         flash('Nome do projeto é obrigatório.', 'warning')
-        return redirect(url_for('main.dashboard'))
-
-    if not current_user.can_create_project():
-        flash('Limite de projetos atingido no plano gratuito. Faça upgrade.', 'warning')
         return redirect(url_for('main.dashboard'))
 
     if Project.query.filter_by(user_id=current_user.id, name=name, is_active=True).first():
@@ -233,6 +231,7 @@ def get_project_files(project_id):
 
 @main_bp.route('/project/<int:project_id>/files/create', methods=['POST'])
 @login_required
+@require_file_limit('project_id')
 def create_file(project_id):
     """Create a new file in project"""
     project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
@@ -282,6 +281,7 @@ def create_file(project_id):
 
 @main_bp.route('/project/<int:project_id>/files/rename', methods=['POST'])
 @login_required
+@require_paid_plan
 def rename_file(project_id):
     """Rename a file in project"""
     project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
@@ -320,6 +320,7 @@ def rename_file(project_id):
 
 @main_bp.route('/project/<int:project_id>/files/delete', methods=['POST'])
 @login_required
+@require_paid_plan
 def delete_file(project_id):
     """Delete a file from project"""
     project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
@@ -351,6 +352,7 @@ def delete_file(project_id):
 
 @main_bp.route('/project/<int:project_id>/files/upload', methods=['POST'])
 @login_required
+@require_paid_plan
 def upload_file(project_id):
     """Upload a file to project"""
     project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
@@ -456,3 +458,18 @@ def set_main_file(project_id):
         return jsonify({'success': True, 'main_file': main_file})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@main_bp.route('/plan-info')
+@login_required
+def get_plan_info():
+    """Get current user's plan information and limits"""
+    limits = check_plan_limits()
+    subscription = current_user.get_subscription()
+    
+    return jsonify({
+        'success': True,
+        'plan_type': subscription.plan_type.value,
+        'is_paid': subscription.is_paid,
+        'limits': limits
+    })

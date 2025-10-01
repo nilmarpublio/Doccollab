@@ -26,10 +26,14 @@
                                 <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
                             </button>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center mb-3">
                             <small class="text-white-50">
                                 <i class="fas fa-clock"></i> {{ _('Auto-save:') }} <span id="auto-save-status" class="badge bg-success">{{ _('Enabled') }}</span>
                             </small>
+                        </div>
+                        <div class="plan-indicator text-center">
+                            <span id="plan-badge" class="badge bg-secondary">{{ _('Free Plan') }}</span>
+                            <small class="text-white-50 d-block mt-1" id="plan-limits">{{ _('1 project, 1 file') }}</small>
                         </div>
                     </div>
                     
@@ -37,10 +41,10 @@
                         <div class="file-tree-header">
                             <h6 class="text-white mb-3">{{ _('Files') }}</h6>
                             <div class="btn-group btn-group-sm w-100">
-                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}">
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}" id="create-file-btn">
                                     <i class="fas fa-plus"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}">
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}" id="upload-file-btn">
                                     <i class="fas fa-upload"></i>
                                 </button>
                                 <button type="button" class="btn btn-outline-light btn-sm" onclick="refreshFileList()" title="{{ _('Refresh') }}">
@@ -171,6 +175,62 @@
     </div>
 </div>
 
+<!-- Upgrade Modal -->
+<div class="modal fade" id="upgradeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('Upgrade to Paid Plan') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card border-danger">
+                            <div class="card-header bg-danger text-white">
+                                <h6 class="mb-0">{{ _('Free Plan') }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> 1 projeto</li>
+                                    <li><i class="fas fa-check text-success"></i> 1 arquivo (.tex)</li>
+                                    <li><i class="fas fa-times text-danger"></i> Upload de imagens</li>
+                                    <li><i class="fas fa-times text-danger"></i> Múltiplos arquivos</li>
+                                    <li><i class="fas fa-times text-danger"></i> Colaboração</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0">{{ _('Paid Plan') }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Projetos ilimitados</li>
+                                    <li><i class="fas fa-check text-success"></i> Arquivos ilimitados</li>
+                                    <li><i class="fas fa-check text-success"></i> Upload de imagens</li>
+                                    <li><i class="fas fa-check text-success"></i> Colaboração em tempo real</li>
+                                    <li><i class="fas fa-check text-success"></i> Suporte prioritário</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <h4 class="text-success">$9.99/mês</h4>
+                    <p class="text-muted">{{ _('Cancel anytime. No hidden fees.') }}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Maybe Later') }}</button>
+                <button type="button" class="btn btn-success" onclick="upgradeToPaid()">{{ _('Upgrade Now') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Preview Modal -->
 <div class="modal fade" id="previewModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
@@ -285,6 +345,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load file list
     loadFileList();
+    
+    // Load plan info
+    loadPlanInfo();
 });
 
 function loadProjectContent() {
@@ -596,6 +659,7 @@ function updateFileListUI() {
 }
 
 function showCreateFileModal() {
+    if (!checkPlanRestriction('create_file')) return;
     new bootstrap.Modal(document.getElementById('createFileModal')).show();
 }
 
@@ -634,6 +698,7 @@ function createFile() {
 }
 
 function showUploadModal() {
+    if (!checkPlanRestriction('upload_file')) return;
     new bootstrap.Modal(document.getElementById('uploadModal')).show();
 }
 
@@ -674,6 +739,7 @@ function uploadFile() {
 }
 
 function renameFile(filename) {
+    if (!checkPlanRestriction('rename_file')) return;
     const newName = prompt('{{ _("Enter new filename:") }}', filename);
     if (!newName || newName === filename) return;
     
@@ -704,6 +770,7 @@ function renameFile(filename) {
 }
 
 function deleteFile(filename) {
+    if (!checkPlanRestriction('delete_file')) return;
     if (!confirm('{{ _("Are you sure you want to delete this file?") }}')) return;
     
     fetch(`/project/${currentProject}/files/delete`, {
@@ -773,6 +840,99 @@ function setMainFile() {
         console.error('Error updating main file:', error);
         showNotification('{{ _("Error updating main file") }}', 'error');
     });
+}
+
+// Plan Management Functions
+let currentPlan = null;
+
+function loadPlanInfo() {
+    fetch('/plan-info')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentPlan = data;
+                updatePlanUI();
+            }
+        })
+        .catch(error => {
+            console.error('Error loading plan info:', error);
+        });
+}
+
+function updatePlanUI() {
+    if (!currentPlan) return;
+    
+    const planBadge = document.getElementById('plan-badge');
+    const planLimits = document.getElementById('plan-limits');
+    const createFileBtn = document.getElementById('create-file-btn');
+    const uploadFileBtn = document.getElementById('upload-file-btn');
+    
+    if (currentPlan.is_paid) {
+        planBadge.textContent = '{{ _("Paid Plan") }}';
+        planBadge.className = 'badge bg-success';
+        planLimits.textContent = '{{ _("Unlimited projects & files") }}';
+        
+        // Enable all features
+        createFileBtn.disabled = false;
+        uploadFileBtn.disabled = false;
+    } else {
+        planBadge.textContent = '{{ _("Free Plan") }}';
+        planBadge.className = 'badge bg-secondary';
+        planLimits.textContent = `{{ _("1 project, 1 file") }}`;
+        
+        // Disable restricted features
+        if (currentPlan.limits.max_files === 1) {
+            createFileBtn.disabled = true;
+            createFileBtn.title = '{{ _("Upgrade to create more files") }}';
+        }
+        
+        if (!currentPlan.limits.can_upload) {
+            uploadFileBtn.disabled = true;
+            uploadFileBtn.title = '{{ _("Upgrade to upload files") }}';
+        }
+    }
+}
+
+function showUpgradeModal() {
+    new bootstrap.Modal(document.getElementById('upgradeModal')).show();
+}
+
+function upgradeToPaid() {
+    // In a real application, this would redirect to payment processing
+    showNotification('{{ _("Payment integration coming soon!") }}', 'info');
+    bootstrap.Modal.getInstance(document.getElementById('upgradeModal')).hide();
+}
+
+function checkPlanRestriction(action) {
+    if (!currentPlan) return true;
+    
+    switch(action) {
+        case 'create_file':
+            if (currentPlan.limits.max_files === 1) {
+                showUpgradeModal();
+                return false;
+            }
+            break;
+        case 'upload_file':
+            if (!currentPlan.limits.can_upload) {
+                showUpgradeModal();
+                return false;
+            }
+            break;
+        case 'rename_file':
+            if (!currentPlan.limits.can_rename_files) {
+                showUpgradeModal();
+                return false;
+            }
+            break;
+        case 'delete_file':
+            if (!currentPlan.limits.can_delete_files) {
+                showUpgradeModal();
+                return false;
+            }
+            break;
+    }
+    return true;
 }
 
 function getCookie(name) {
