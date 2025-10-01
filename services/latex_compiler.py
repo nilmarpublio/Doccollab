@@ -1,6 +1,7 @@
 import os
 import subprocess
 from typing import Tuple, Optional
+from datetime import datetime
 
 from flask import current_app
 
@@ -66,5 +67,44 @@ def get_main_file(project_path: str) -> str:
     
     # Fallback to main.tex
     return 'main.tex'
+
+
+def save_version_snapshot(project_id: int, main_file_path: str, description: str = None) -> bool:
+    """
+    Save a snapshot of the main file content as a new version.
+    
+    Returns: True if successful, False otherwise
+    """
+    try:
+        from models import Version, db
+        
+        # Read the current content
+        if not os.path.exists(main_file_path):
+            return False
+            
+        with open(main_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Get the next version number
+        last_version = Version.query.filter_by(project_id=project_id).order_by(Version.version_number.desc()).first()
+        next_version = (last_version.version_number + 1) if last_version else 1
+        
+        # Create new version
+        version = Version(
+            project_id=project_id,
+            version_number=next_version,
+            content=content,
+            file_name=os.path.basename(main_file_path),
+            description=description or f"Compilation snapshot - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        )
+        
+        db.session.add(version)
+        db.session.commit()
+        
+        return True
+        
+    except Exception as e:
+        print(f"Error saving version snapshot: {e}")
+        return False
 
 

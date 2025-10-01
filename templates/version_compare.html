@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Compare Versions') }} - {{ project.name }}{% endblock %}
+
+{% block head %}
+<style>
+  .compare-page {
+    padding: 2rem 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .compare-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .compare-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .compare-title h1 {
+    margin: 0;
+    color: #333;
+  }
+
+  .compare-title i {
+    color: #667eea;
+    font-size: 1.5rem;
+  }
+
+  .version-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .version-card {
+    flex: 1;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .version-card.version1 {
+    border-left: 4px solid #28a745;
+  }
+
+  .version-card.version2 {
+    border-left: 4px solid #dc3545;
+  }
+
+  .version-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .version-number {
+    font-weight: 600;
+    color: #495057;
+  }
+
+  .version-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  .version-description {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .compare-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    height: 70vh;
+  }
+
+  .version-panel {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .version-panel.version1 {
+    border-left: 4px solid #28a745;
+  }
+
+  .version-panel.version2 {
+    border-left: 4px solid #dc3545;
+  }
+
+  .panel-header {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: #495057;
+  }
+
+  .panel-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .code-content {
+    flex: 1;
+    padding: 1.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #495057;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y: auto;
+    background: #fafafa;
+  }
+
+  .diff-highlight {
+    background: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+
+  .diff-added {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .diff-removed {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+  }
+
+  .back-button:hover {
+    color: #5a6fd8;
+    text-decoration: none;
+  }
+
+  .stats-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .compare-container {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    .version-info {
+      flex-direction: column;
+    }
+
+    .compare-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .panel-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="compare-page">
+  <a href="{{ url_for('main.project_versions', project_id=project.id) }}" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    {{ _('Back to Version History') }}
+  </a>
+
+  <div class="compare-header">
+    <div class="compare-title">
+      <i class="fas fa-balance-scale"></i>
+      <div>
+        <h1>{{ _('Compare Versions') }}</h1>
+        <p class="text-muted mb-0">{{ _('Project') }}: {{ project.name }}</p>
+      </div>
+    </div>
+    <div class="version-actions">
+      <a href="{{ url_for('main.editor', project_id=project.id) }}" class="btn btn-outline-primary">
+        <i class="fas fa-edit"></i>
+        {{ _('Back to Editor') }}
+      </a>
+    </div>
+  </div>
+
+  <div class="version-info">
+    <div class="version-card version1">
+      <div class="version-card-header">
+        <span class="version-number">{{ _('Version') }} {{ version1.version_number }}</span>
+        <span class="version-date">{{ version1.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+      </div>
+      {% if version1.description %}
+        <div class="version-description">{{ version1.description }}</div>
+      {% endif %}
+    </div>
+    <div class="version-card version2">
+      <div class="version-card-header">
+        <span class="version-number">{{ _('Version') }} {{ version2.version_number }}</span>
+        <span class="version-date">{{ version2.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+      </div>
+      {% if version2.description %}
+        <div class="version-description">{{ version2.description }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="stats-section">
+    <h5 class="mb-3">
+      <i class="fas fa-chart-bar"></i>
+      {{ _('Comparison Statistics') }}
+    </h5>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value" id="charCount1">{{ version1.content|length }}</div>
+        <div class="stat-label">{{ _('Characters (v1)') }}</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="charCount2">{{ version2.content|length }}</div>
+        <div class="stat-label">{{ _('Characters (v2)') }}</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="lineCount1">{{ version1.content.split('\n')|length }}</div>
+        <div class="stat-label">{{ _('Lines (v1)') }}</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="lineCount2">{{ version2.content.split('\n')|length }}</div>
+        <div class="stat-label">{{ _('Lines (v2)') }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-container">
+    <div class="version-panel version1">
+      <div class="panel-header">
+        <h5 class="panel-title">
+          <i class="fas fa-file-code"></i>
+          {{ _('Version') }} {{ version1.version_number }}
+        </h5>
+        <div class="panel-actions">
+          <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('content1')">
+            <i class="fas fa-copy"></i>
+            {{ _('Copy') }}
+          </button>
+          <button class="btn btn-sm btn-outline-success" onclick="restoreVersion({{ version1.id }})">
+            <i class="fas fa-undo"></i>
+            {{ _('Restore') }}
+          </button>
+        </div>
+      </div>
+      <div class="code-content" id="content1">{{ version1.content }}</div>
+    </div>
+
+    <div class="version-panel version2">
+      <div class="panel-header">
+        <h5 class="panel-title">
+          <i class="fas fa-file-code"></i>
+          {{ _('Version') }} {{ version2.version_number }}
+        </h5>
+        <div class="panel-actions">
+          <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('content2')">
+            <i class="fas fa-copy"></i>
+            {{ _('Copy') }}
+          </button>
+          <button class="btn btn-sm btn-outline-success" onclick="restoreVersion({{ version2.id }})">
+            <i class="fas fa-undo"></i>
+            {{ _('Restore') }}
+          </button>
+        </div>
+      </div>
+      <div class="code-content" id="content2">{{ version2.content }}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function restoreVersion(versionId) {
+  if (confirm('{{ _("Are you sure you want to restore this version? This will replace your current file.") }}')) {
+    fetch(`{{ url_for('main.restore_version', project_id=project.id, version_id=0) }}`.replace('0', versionId), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        window.location.href = '{{ url_for("main.editor", project_id=project.id) }}';
+      } else {
+        alert('Error: ' + data.error);
+      }
+    })
+    .catch(error => {
+      alert('Error: ' + error);
+    });
+  }
+}
+
+function copyToClipboard(contentId) {
+  const content = document.getElementById(contentId).textContent;
+  navigator.clipboard.writeText(content).then(() => {
+    alert('{{ _("Code copied to clipboard!") }}');
+  }).catch(err => {
+    console.error('Failed to copy: ', err);
+    alert('{{ _("Failed to copy to clipboard") }}');
+  });
+}
+
+// Simple diff highlighting (basic implementation)
+function highlightDifferences() {
+  const content1 = document.getElementById('content1').textContent;
+  const content2 = document.getElementById('content2').textContent;
+  
+  // This is a basic implementation - in a real app you'd use a proper diff library
+  const lines1 = content1.split('\n');
+  const lines2 = content2.split('\n');
+  
+  // For now, just highlight lines that are different lengths
+  // A proper diff would require a more sophisticated algorithm
+  console.log('Diff analysis:', {
+    lines1: lines1.length,
+    lines2: lines2.length,
+    chars1: content1.length,
+    chars2: content2.length
+  });
+}
+
+// Initialize diff highlighting
+document.addEventListener('DOMContentLoaded', function() {
+  highlightDifferences();
+});
+</script>
+{% endblock %}

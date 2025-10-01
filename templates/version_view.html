@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Version') }} {{ version.version_number }} - {{ project.name }}{% endblock %}
+
+{% block head %}
+<style>
+  .version-view-page {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .version-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .version-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .version-title h1 {
+    margin: 0;
+    color: #333;
+  }
+
+  .version-title i {
+    color: #667eea;
+    font-size: 1.5rem;
+  }
+
+  .version-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .version-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .version-info-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .version-info-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 120px;
+  }
+
+  .version-content {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .version-content-header {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .version-content-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: #495057;
+  }
+
+  .version-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .code-content {
+    padding: 1.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #495057;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: #fafafa;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+  }
+
+  .back-button:hover {
+    color: #5a6fd8;
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .version-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .version-actions {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .version-content-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="version-view-page">
+  <a href="{{ url_for('main.project_versions', project_id=project.id) }}" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    {{ _('Back to Version History') }}
+  </a>
+
+  <div class="version-header">
+    <div class="version-title">
+      <i class="fas fa-file-code"></i>
+      <div>
+        <h1>{{ _('Version') }} {{ version.version_number }}</h1>
+        <p class="text-muted mb-0">{{ _('Project') }}: {{ project.name }}</p>
+      </div>
+    </div>
+    <div class="version-actions">
+      <a href="{{ url_for('main.editor', project_id=project.id) }}" class="btn btn-outline-primary">
+        <i class="fas fa-edit"></i>
+        {{ _('Back to Editor') }}
+      </a>
+      <button class="btn btn-success" onclick="restoreVersion({{ version.id }})">
+        <i class="fas fa-undo"></i>
+        {{ _('Restore This Version') }}
+      </button>
+    </div>
+  </div>
+
+  <div class="version-info">
+    <div class="version-info-item">
+      <i class="fas fa-tag"></i>
+      <span class="version-info-label">{{ _('Version Number') }}:</span>
+      <span>{{ version.version_number }}</span>
+    </div>
+    <div class="version-info-item">
+      <i class="fas fa-file"></i>
+      <span class="version-info-label">{{ _('File Name') }}:</span>
+      <span>{{ version.file_name }}</span>
+    </div>
+    <div class="version-info-item">
+      <i class="fas fa-clock"></i>
+      <span class="version-info-label">{{ _('Created') }}:</span>
+      <span>{{ version.created_at.strftime('%d/%m/%Y %H:%M:%S') }}</span>
+    </div>
+    {% if version.description %}
+    <div class="version-info-item">
+      <i class="fas fa-comment"></i>
+      <span class="version-info-label">{{ _('Description') }}:</span>
+      <span>{{ version.description }}</span>
+    </div>
+    {% endif %}
+    <div class="version-info-item">
+      <i class="fas fa-ruler"></i>
+      <span class="version-info-label">{{ _('Size') }}:</span>
+      <span>{{ version.content|length }} {{ _('characters') }}</span>
+    </div>
+  </div>
+
+  <div class="version-content">
+    <div class="version-content-header">
+      <h5 class="version-content-title">
+        <i class="fas fa-code"></i>
+        {{ _('Source Code') }}
+      </h5>
+      <div class="version-actions">
+        <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard()">
+          <i class="fas fa-copy"></i>
+          {{ _('Copy') }}
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="downloadVersion()">
+          <i class="fas fa-download"></i>
+          {{ _('Download') }}
+        </button>
+      </div>
+    </div>
+    <div class="code-content" id="codeContent">{{ version.content }}</div>
+  </div>
+</div>
+
+<script>
+function restoreVersion(versionId) {
+  if (confirm('{{ _("Are you sure you want to restore this version? This will replace your current file.") }}')) {
+    fetch(`{{ url_for('main.restore_version', project_id=project.id, version_id=0) }}`.replace('0', versionId), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        window.location.href = '{{ url_for("main.editor", project_id=project.id) }}';
+      } else {
+        alert('Error: ' + data.error);
+      }
+    })
+    .catch(error => {
+      alert('Error: ' + error);
+    });
+  }
+}
+
+function copyToClipboard() {
+  const codeContent = document.getElementById('codeContent').textContent;
+  navigator.clipboard.writeText(codeContent).then(() => {
+    alert('{{ _("Code copied to clipboard!") }}');
+  }).catch(err => {
+    console.error('Failed to copy: ', err);
+    alert('{{ _("Failed to copy to clipboard") }}');
+  });
+}
+
+function downloadVersion() {
+  const codeContent = document.getElementById('codeContent').textContent;
+  const blob = new Blob([codeContent], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '{{ version.file_name }}';
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+</script>
+{% endblock %}

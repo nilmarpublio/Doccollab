@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from models import db
 from models.project import Project
+from models.version import Version
 from utils.file_ops import ensure_project_dir, create_main_tex, rename_project_dir, trash_project_dir
 from utils.permissions import require_paid_plan, require_project_limit, require_file_limit, check_plan_limits
 from services.latex import compile_latex_to_pdf
@@ -170,9 +171,15 @@ def api_compile(project_id):
     project_path = ensure_project_dir(current_app.config['PROJECTS_ROOT'], current_user.id, project.name)
     
     # Get the main file for compilation
-    from services.latex_compiler import get_main_file
+    from services.latex_compiler import get_main_file, save_version_snapshot
     main_file = get_main_file(project_path)
     main_tex_path = os.path.join(project_path, main_file)
+    
+    # Save version snapshot before compilation
+    try:
+        save_version_snapshot(project_id, main_tex_path, "Compilation snapshot")
+    except Exception as e:
+        print(f"Warning: Failed to save version snapshot: {e}")
     
     # Prefer local pdflatex binary if available; fallback to existing service
     ok, pdf_path, err = compile_with_pdflatex(main_tex_path)
@@ -536,3 +543,109 @@ def upgrade_plan():
             'success': False,
             'error': str(e)
         }), 500
+
+
+# ===== VERSION HISTORY ROUTES =====
+
+@main_bp.route('/project/<int:project_id>/versions')
+@login_required
+def project_versions(project_id):
+    """List all versions of a project"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        flash('Projeto não encontrado.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    versions = Version.query.filter_by(project_id=project_id).order_by(Version.created_at.desc()).all()
+    return render_template('version_history.html', project=project, versions=versions)
+
+
+@main_bp.route('/project/<int:project_id>/version/<int:version_id>')
+@login_required
+def view_version(project_id, version_id):
+    """View a specific version of a project"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        flash('Projeto não encontrado.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    version = Version.query.filter_by(id=version_id, project_id=project_id).first()
+    if not version:
+        flash('Versão não encontrada.', 'danger')
+        return redirect(url_for('main.project_versions', project_id=project_id))
+    
+    return render_template('version_view.html', project=project, version=version)
+
+
+@main_bp.route('/project/<int:project_id>/compare')
+@login_required
+def compare_versions(project_id):
+    """Compare two versions of a project"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        flash('Projeto não encontrado.', 'danger')
+        return redirect(url_for('main.dashboard'))
+    
+    version1_id = request.args.get('v1', type=int)
+    version2_id = request.args.get('v2', type=int)
+    
+    if not version1_id or not version2_id:
+        flash('Selecione duas versões para comparar.', 'warning')
+        return redirect(url_for('main.project_versions', project_id=project_id))
+    
+    version1 = Version.query.filter_by(id=version1_id, project_id=project_id).first()
+    version2 = Version.query.filter_by(id=version2_id, project_id=project_id).first()
+    
+    if not version1 or not version2:
+        flash('Uma ou ambas as versões não foram encontradas.', 'danger')
+        return redirect(url_for('main.project_versions', project_id=project_id))
+    
+    return render_template('version_compare.html', project=project, version1=version1, version2=version2)
+
+
+@main_bp.route('/project/<int:project_id>/version/<int:version_id>/restore', methods=['POST'])
+@login_required
+def restore_version(project_id, version_id):
+    """Restore a specific version as the current main file"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        return jsonify({'success': False, 'error': 'Projeto não encontrado.'}), 404
+    
+    version = Version.query.filter_by(id=version_id, project_id=project_id).first()
+    if not version:
+        return jsonify({'success': False, 'error': 'Versão não encontrada.'}), 404
+    
+    try:
+        # Get project directory
+        project_path = ensure_project_dir(current_app.config['PROJECTS_ROOT'], current_user.id, project.name)
+        main_file_path = os.path.join(project_path, version.file_name)
+        
+        # Write the version content to the main file
+        with open(main_file_path, 'w', encoding='utf-8') as f:
+            f.write(version.content)
+        
+        return jsonify({'success': True, 'message': 'Versão restaurada com sucesso!'})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@main_bp.route('/project/<int:project_id>/version/<int:version_id>/delete', methods=['POST'])
+@login_required
+def delete_version(project_id, version_id):
+    """Delete a specific version"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        return jsonify({'success': False, 'error': 'Projeto não encontrado.'}), 404
+    
+    version = Version.query.filter_by(id=version_id, project_id=project_id).first()
+    if not version:
+        return jsonify({'success': False, 'error': 'Versão não encontrada.'}), 404
+    
+    try:
+        db.session.delete(version)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Versão excluída com sucesso!'})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500

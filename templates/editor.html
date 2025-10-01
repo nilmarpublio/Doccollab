@@ -92,6 +92,9 @@
                 </button>
             </div>
             <div class="toolbar-right">
+                <button class="toolbar-btn" onclick="openVersionHistory()" title="{{ _('Version History') }}">
+                    <i class="fas fa-history"></i> {{ _('History') }}
+                </button>
                 <button class="toolbar-btn" id="compileBtn" onclick="compileAndViewPDF()" title="{{ _('Compile PDF') }}">
                     <i class="fas fa-file-pdf"></i> {{ _('Compile & View PDF') }}
                 </button>
@@ -882,5 +885,10 @@ window.addEventListener('unload', function() {
         clearInterval(autoSaveInterval);
     }
 });
+
+// Version history functions
+function openVersionHistory() {
+    window.open(`/project/${currentProject}/versions`, '_blank');
+}
 </script>
 {% endblock %}
