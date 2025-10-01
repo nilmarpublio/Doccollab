@@ -36,17 +36,17 @@ body.editor-page .main-content {
 }
 
 /* Hide PDF panel by default, show when compiling */
-.editor-container .pdf-panel {
+.pdf-panel {
   display: none;
 }
 
 /* Show PDF panel when compiling */
 .editor-container.compiling .pdf-panel {
-  display: block;
+  display: block !important;
 }
 
 .editor-container.compiling .editor-panel {
-  display: none;
+  display: none !important;
 }
 
 /* Ensure editor panel takes full available width */

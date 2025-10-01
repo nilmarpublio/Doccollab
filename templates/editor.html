@@ -776,24 +776,42 @@ let isCompiling = false;
 function toggleCompileView() {
     const container = document.querySelector('.editor-container');
     const compileBtn = document.getElementById('compileBtn');
-    const compileIcon = compileBtn.querySelector('i');
-    const compileText = compileBtn.childNodes[2];
+    const pdfPanel = document.getElementById('pdfPanel');
+    const editorPanel = document.querySelector('.editor-panel');
+    
+    console.log('Container:', container);
+    console.log('PDF Panel:', pdfPanel);
+    console.log('Editor Panel:', editorPanel);
     
     isCompiling = !isCompiling;
     
     if (isCompiling) {
         // Show PDF panel, hide editor
         container.classList.add('compiling');
-        compileIcon.className = 'fas fa-edit';
-        compileText.textContent = ' {{ _("Back to Editor") }}';
+        compileBtn.innerHTML = '<i class="fas fa-edit"></i> {{ _("Back to Editor") }}';
+        
+        // Force show PDF panel
+        if (pdfPanel) {
+            pdfPanel.style.display = 'block';
+        }
+        if (editorPanel) {
+            editorPanel.style.display = 'none';
+        }
         
         // Compile the project
         compileProject();
     } else {
         // Show editor, hide PDF
         container.classList.remove('compiling');
-        compileIcon.className = 'fas fa-file-pdf';
-        compileText.textContent = ' {{ _("Compile") }}';
+        compileBtn.innerHTML = '<i class="fas fa-file-pdf"></i> {{ _("Compile") }}';
+        
+        // Force show editor panel
+        if (pdfPanel) {
+            pdfPanel.style.display = 'none';
+        }
+        if (editorPanel) {
+            editorPanel.style.display = 'flex';
+        }
     }
 }
 
