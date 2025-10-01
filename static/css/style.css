@@ -54,6 +54,10 @@ body.editor-page .main-content {
   width: 100%;
   min-width: 0; /* Allow shrinking */
   flex: 1; /* Take all available space */
+  height: 600px; /* Altura fixa para editor */
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Editor wrapper and textarea styles */
@@ -62,6 +66,7 @@ body.editor-page .main-content {
   display: flex;
   flex-direction: column;
   width: 100%;
+  overflow: hidden;
 }
 
 #editor {
@@ -128,23 +133,29 @@ body.editor-page .main-content {
   background: white;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  padding: 1.5rem;
-  overflow-y: auto;
+  padding: 0; /* Remover padding para ocupar toda altura */
+  overflow: hidden; /* Evitar scroll duplo */
   border: 1px solid rgba(0,0,0,0.08);
   width: 800px; /* Mesma largura do editor */
   min-width: 600px;
   max-width: 800px;
+  height: 600px; /* Mesma altura do editor */
+  min-height: 600px;
   position: relative;
   backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column; /* Layout flexível */
 }
 
 .pdf-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  padding: 1.5rem 1.5rem 1rem 1.5rem; /* Padding no cabeçalho */
   flex-wrap: wrap;
   gap: 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06); /* Linha separadora */
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); /* Mesmo fundo da toolbar */
 }
 
 .pdf-title-section {
@@ -163,6 +174,20 @@ body.editor-page .main-content {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.pdf-viewer-container {
+  flex: 1; /* Ocupar resto da altura */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #f8f9fa;
 }
 
 /* ===== FILE SIDEBAR ===== */
@@ -437,6 +462,8 @@ body.editor-page .main-content {
     width: 700px; /* Mesma largura do editor no tablet */
     min-width: 500px;
     max-width: 700px;
+    height: 500px; /* Altura menor para tablet */
+    min-height: 500px;
   }
   
   body.editor-page .main-content {
@@ -464,7 +491,8 @@ body.editor-page .main-content {
   
   .editor-panel {
     order: 2;
-    min-height: 500px;
+    height: 400px; /* Altura menor para mobile */
+    min-height: 400px;
     width: 100%;
     min-width: auto;
     max-width: 100%;
@@ -472,7 +500,8 @@ body.editor-page .main-content {
   
   .pdf-panel {
     order: 2;
-    min-height: 500px;
+    height: 400px; /* Altura menor para mobile */
+    min-height: 400px;
     width: 100%;
     min-width: auto;
     max-width: 100%;
