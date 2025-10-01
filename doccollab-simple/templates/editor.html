@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Editor') }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">{{ project.name }}</h1>
+  <div class="d-flex gap-2">
+    <button id="btn-compile" class="btn btn-primary">{{ _('Compilar PDF') }}</button>
+    <a class="btn btn-outline-secondary" target="_blank" href="{{ url_for('main.get_pdf', project_id=project.id) }}">{{ _('Abrir PDF') }}</a>
+  </div>
+  </div>
+
+<div class="mb-2 text-muted" id="save-status">{{ _('Pronto') }}</div>
+<textarea id="editor" style="display:none">{{ content }}</textarea>
+<div id="cm" style="height: 70vh; border: 1px solid #ddd"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/stex/stex.min.js"></script>
+<script>
+  const projectId = {{ project.id }};
+  const initial = document.getElementById('editor').textContent;
+  const cm = CodeMirror(document.getElementById('cm'), {
+    value: initial,
+    mode: 'stex',
+    lineNumbers: true,
+    tabSize: 2,
+    indentUnit: 2,
+  });
+
+  const statusEl = document.getElementById('save-status');
+  let dirty = false;
+  let saving = false;
+
+  cm.on('change', () => {
+    dirty = true;
+  });
+
+  async function saveNow() {
+    if (!dirty || saving) return;
+    saving = true;
+    statusEl.textContent = '{{ _('Salvando...') }}';
+    try {
+      const res = await fetch(`{{ url_for('main.api_save', project_id=project.id) }}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: cm.getValue() })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        dirty = false;
+        statusEl.textContent = '{{ _('Salvo') }}';
+      } else {
+        statusEl.textContent = '{{ _('Erro ao salvar') }}';
+      }
+    } catch (e) {
+      statusEl.textContent = '{{ _('Erro ao salvar') }}';
+    } finally {
+      saving = false;
+    }
+  }
+
+  setInterval(saveNow, 3000);
+
+  document.getElementById('btn-compile').addEventListener('click', async () => {
+    statusEl.textContent = '{{ _('Compilando...') }}';
+    await saveNow();
+    try {
+      const res = await fetch(`{{ url_for('main.api_compile', project_id=project.id) }}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        statusEl.textContent = '{{ _('Compilado') }}';
+      } else {
+        statusEl.textContent = '{{ _('Falha na compilação') }}';
+        console.error(data.error);
+      }
+    } catch (e) {
+      statusEl.textContent = '{{ _('Falha na compilação') }}';
+    }
+  });
+</script>
+{% endblock %}
+

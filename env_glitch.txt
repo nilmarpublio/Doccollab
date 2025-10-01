@@ -1,0 +1,8 @@
+# Configurações para Glitch
+SECRET_KEY=CHANGE_THIS_TO_A_VERY_SECURE_RANDOM_KEY_123456789_GLITCH
+DATABASE_URL=sqlite:///doccollab.db
+PDFLATEX=/usr/bin/pdflatex
+SEED_EMAIL=admin@glitch.com
+SEED_PASSWORD=admin123456
+
+

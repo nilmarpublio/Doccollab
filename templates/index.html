@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ _('DocCollab - Home') }}{% endblock %}
+{% block content %}
+  <div class="text-center py-5">
+    <h1 class="display-5 fw-bold mb-3">{{ _('Welcome to DocCollab') }}</h1>
+    <p class="lead mb-4">{{ _('Create and collaborate on documents easily.') }}</p>
+    <div class="d-flex gap-3 justify-content-center">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a>
+      <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a>
+    </div>
+  </div>
+{% endblock %}

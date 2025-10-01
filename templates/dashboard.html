@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}{{ _('DocCollab - Dashboard') }}{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">{{ _('My Projects') }}</h1>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProjectModal">{{ _('New Project') }}</button>
+  </div>
+
+  {% if projects %}
+    <div class="row g-3">
+      {% for project in projects %}
+        <div class="col-md-4">
+          <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ project.name }}</h5>
+              <p class="card-text text-muted">{{ project.description or _('No description') }}</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+                <small class="text-muted">{{ _('Updated:') }} {{ project.updated_at.strftime('%d/%m/%Y') }}</small>
+                <div class="d-flex gap-2">
+                  <a href="{{ url_for('main.editor', project_id=project.id) }}" class="btn btn-sm btn-outline-primary">{{ _('Open Editor') }}</a>
+                  <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#renameModal{{ project.id }}">{{ _('Rename') }}</button>
+                  <form method="POST" action="{{ url_for('main.delete_project', project_id=project.id) }}">
+                    <button class="btn btn-sm btn-outline-danger">{{ _('Delete') }}</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rename Modal -->
+        <div class="modal fade" id="renameModal{{ project.id }}" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{{ url_for('main.rename_project', project_id=project.id) }}">
+                <div class="modal-header">
+                  <h5 class="modal-title">{{ _('Rename Project') }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">{{ _('New Name') }}</label>
+                    <input class="form-control" name="new_name" required>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                  <button type="submit" class="btn btn-primary">{{ _('Rename') }}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5 text-muted">{{ _('No projects yet. Create the first one!') }}</div>
+  {% endif %}
+
+  <!-- Modal: New Project -->
+  <div class="modal fade" id="createProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{{ url_for('main.create_project') }}">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ _('New Project') }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">{{ _('Name') }}</label>
+              <input class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">{{ _('Description') }}</label>
+              <textarea class="form-control" name="description" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+            <button type="submit" class="btn btn-primary">{{ _('Create') }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

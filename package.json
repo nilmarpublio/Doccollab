@@ -1,0 +1,17 @@
+{
+  "name": "doccollab",
+  "version": "1.0.0",
+  "description": "DocCollab - Collaborative LaTeX Editor",
+  "main": "app.py",
+  "scripts": {
+    "start": "python app.py"
+  },
+  "engines": {
+    "python": "3.10"
+  },
+  "keywords": ["latex", "collaborative", "editor", "flask"],
+  "author": "DocCollab Team",
+  "license": "MIT"
+}
+
+

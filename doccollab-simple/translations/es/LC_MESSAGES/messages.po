@@ -1,0 +1,791 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-09-30 11:04-0300\n"
+"PO-Revision-Date: 2025-09-30 09:19-0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: DocCollab/app.py:61 DocCollab/templates/base.html:19
+msgid "Home"
+msgstr "Inicio"
+
+#: DocCollab/templates/base.html:6
+msgid "DocCollab"
+msgstr "DocCollab"
+
+#: DocCollab/templates/auth/login.html:8 DocCollab/templates/auth/login.html:19
+#: DocCollab/templates/auth/register.html:42 DocCollab/templates/base.html:20
+#: DocCollab/templates/index.html:8
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+#: DocCollab/templates/auth/login.html:23
+#: DocCollab/templates/auth/register.html:8 DocCollab/templates/base.html:21
+#: DocCollab/templates/index.html:9
+msgid "Sign up"
+msgstr "Registrarse"
+
+#: DocCollab/templates/base.html:24
+msgid "Language"
+msgstr "Idioma"
+
+#: DocCollab/templates/dashboard.html:2
+msgid "DocCollab - Dashboard"
+msgstr "DocCollab - Panel"
+
+#: DocCollab/templates/dashboard.html:5
+msgid "My Projects"
+msgstr "Mis Proyectos"
+
+#: DocCollab/templates/dashboard.html:6 DocCollab/templates/dashboard.html:66
+msgid "New Project"
+msgstr "Nuevo Proyecto"
+
+#: DocCollab/templates/dashboard.html:16
+msgid "No description"
+msgstr "Sin descripción"
+
+#: DocCollab/templates/dashboard.html:18
+msgid "Updated:"
+msgstr "Actualizado:"
+
+#: DocCollab/templates/dashboard.html:20
+msgid "Open Editor"
+msgstr ""
+
+#: DocCollab/templates/dashboard.html:21 DocCollab/templates/dashboard.html:48
+#, fuzzy
+msgid "Rename"
+msgstr "Nombre"
+
+#: DocCollab/templates/dashboard.html:23
+msgid "Delete"
+msgstr "Eliminar"
+
+#: DocCollab/templates/dashboard.html:37
+#, fuzzy
+msgid "Rename Project"
+msgstr "Nuevo Proyecto"
+
+#: DocCollab/templates/dashboard.html:42
+#, fuzzy
+msgid "New Name"
+msgstr "Nombre"
+
+#: DocCollab/templates/dashboard.html:47 DocCollab/templates/dashboard.html:80
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: DocCollab/templates/dashboard.html:57
+msgid "No projects yet. Create the first one!"
+msgstr "Aún no hay proyectos. ¡Crea el primero!"
+
+#: DocCollab/templates/dashboard.html:71
+msgid "Name"
+msgstr "Nombre"
+
+#: DocCollab/templates/dashboard.html:75
+msgid "Description"
+msgstr "Descripción"
+
+#: DocCollab/templates/dashboard.html:81
+msgid "Create"
+msgstr "Crear"
+
+#: DocCollab/templates/editor.html:2
+msgid "Editor"
+msgstr ""
+
+#: DocCollab/templates/editor.html:7
+msgid "Compilar PDF"
+msgstr ""
+
+#: DocCollab/templates/editor.html:8
+msgid "Abrir PDF"
+msgstr ""
+
+#: DocCollab/templates/editor.html:12
+msgid "Pronto"
+msgstr ""
+
+#: DocCollab/templates/editor.html:41
+msgid "Salvando..."
+msgstr ""
+
+#: DocCollab/templates/editor.html:51
+msgid "Salvo"
+msgstr ""
+
+#: DocCollab/templates/editor.html:53 DocCollab/templates/editor.html:56
+msgid "Erro ao salvar"
+msgstr ""
+
+#: DocCollab/templates/editor.html:65
+msgid "Compilando..."
+msgstr ""
+
+#: DocCollab/templates/editor.html:71
+msgid "Compilado"
+msgstr ""
+
+#: DocCollab/templates/editor.html:73 DocCollab/templates/editor.html:77
+msgid "Falha na compilação"
+msgstr ""
+
+#: DocCollab/templates/index.html:2
+msgid "DocCollab - Home"
+msgstr "DocCollab - Inicio"
+
+#: DocCollab/templates/index.html:5
+msgid "Welcome to DocCollab"
+msgstr "Bienvenido a DocCollab"
+
+#: DocCollab/templates/index.html:6
+msgid "Create and collaborate on documents easily."
+msgstr "Crea y colabora en documentos fácilmente."
+
+#: DocCollab/templates/auth/login.html:2
+msgid "DocCollab - Sign in"
+msgstr "DocCollab - Iniciar sesión"
+
+#: DocCollab/templates/auth/login.html:11
+#: DocCollab/templates/auth/register.html:15
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: DocCollab/templates/auth/login.html:15
+#: DocCollab/templates/auth/register.html:19
+msgid "Password"
+msgstr "Contraseña"
+
+#: DocCollab/templates/auth/login.html:23
+msgid "No account?"
+msgstr "¿No tienes una cuenta?"
+
+#: DocCollab/templates/auth/register.html:2
+msgid "DocCollab - Sign up"
+msgstr "DocCollab - Registrarse"
+
+#: DocCollab/templates/auth/register.html:11
+msgid "Full name"
+msgstr "Nombre completo"
+
+#: DocCollab/templates/auth/register.html:23
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
+#: DocCollab/templates/auth/register.html:27
+msgid "Plan"
+msgstr "Plan"
+
+#: DocCollab/templates/auth/register.html:30
+msgid "Free (1 project)"
+msgstr "Gratis (1 proyecto)"
+
+#: DocCollab/templates/auth/register.html:34
+msgid "Paid (unlimited)"
+msgstr "De pago (ilimitado)"
+
+#: DocCollab/templates/auth/register.html:38
+msgid "Create account"
+msgstr "Crear cuenta"
+
+#: DocCollab/templates/auth/register.html:42
+msgid "Already have an account?"
+msgstr "¿Ya tienes una cuenta?"
+
+#: DocCollab/venv/Lib/site-packages/click/_termui_impl.py:608
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/_termui_impl.py:612
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1104
+#: DocCollab/venv/Lib/site-packages/click/core.py:1141
+#, python-brace-format
+msgid "{text} {deprecated_message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1160
+msgid "Options"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1222
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1241
+#, python-brace-format
+msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1425
+msgid "Aborted!"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1799
+msgid "Commands"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1830
+msgid "Missing command."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:1908
+#, python-brace-format
+msgid "No such command {name!r}."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:2332
+msgid "Value must be an iterable."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:2355
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:2505
+#, python-brace-format
+msgid ""
+"DeprecationWarning: The {param_type} {name!r} is "
+"deprecated.{extra_message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:2956
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:2959
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:2963
+msgid "required"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/core.py:3023
+msgid "(dynamic)"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/decorators.py:522
+msgid "Show the version and exit."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/decorators.py:548
+msgid "Show this message and exit."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:50
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:89
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:81
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:130
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:132
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:190
+msgid "Missing argument"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:192
+msgid "Missing option"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:194
+msgid "Missing parameter"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:196
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:203
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:223
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:235
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:282
+msgid "unknown error"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/exceptions.py:289
+#, python-brace-format
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/formatting.py:156
+msgid "Usage:"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/parser.py:199
+#, python-brace-format
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/parser.py:381
+#, python-brace-format
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/parser.py:444
+#, python-brace-format
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: DocCollab/venv/Lib/site-packages/click/shell_completion.py:332
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/shell_completion.py:339
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/termui.py:162
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/termui.py:178
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/termui.py:180
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/termui.py:191
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/termui.py:247
+msgid "Error: invalid input"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/termui.py:866
+msgid "Press any key to continue..."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:332
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:369
+#, python-brace-format
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:460
+#, python-brace-format
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:482
+#, python-brace-format
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:538
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:719
+#, python-brace-format
+msgid "{value!r} is not a valid boolean. Recognized values: {states}"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:747
+#, python-brace-format
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:937
+msgid "file"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:939
+msgid "directory"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:941
+msgid "path"
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:988
+#, python-brace-format
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:997
+#, python-brace-format
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:1005
+#, python-brace-format
+msgid "{name} {filename!r} is a directory."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:1014
+#, python-brace-format
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:1023
+#, python-brace-format
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:1032
+#, python-brace-format
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: DocCollab/venv/Lib/site-packages/click/types.py:1099
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#~ msgid "DocCollab"
+#~ msgstr ""
+
+#~ msgid "Home"
+#~ msgstr ""
+
+#~ msgid "Sign in"
+#~ msgstr ""
+
+#~ msgid "Sign up"
+#~ msgstr ""
+
+#~ msgid "Language"
+#~ msgstr ""
+
+#~ msgid "DocCollab - Home"
+#~ msgstr ""
+
+#~ msgid "Welcome to DocCollab"
+#~ msgstr ""
+
+#~ msgid "Create and collaborate on documents easily."
+#~ msgstr ""
+
+#~ msgid "DocCollab - Sign in"
+#~ msgstr ""
+
+#~ msgid "Email"
+#~ msgstr ""
+
+#~ msgid "Password"
+#~ msgstr ""
+
+#~ msgid "No account?"
+#~ msgstr ""
+
+#~ msgid "DocCollab - Sign up"
+#~ msgstr ""
+
+#~ msgid "Full name"
+#~ msgstr ""
+
+#~ msgid "Confirm password"
+#~ msgstr ""
+
+#~ msgid "Plan"
+#~ msgstr ""
+
+#~ msgid "Free (1 project)"
+#~ msgstr ""
+
+#~ msgid "Paid (unlimited)"
+#~ msgstr ""
+
+#~ msgid "Create account"
+#~ msgstr ""
+
+#~ msgid "Already have an account?"
+#~ msgstr ""
+
+#~ msgid "{editor}: Editing failed"
+#~ msgstr ""
+
+#~ msgid "{editor}: Editing failed: {e}"
+#~ msgstr ""
+
+#~ msgid "{text} {deprecated_message}"
+#~ msgstr ""
+
+#~ msgid "Options"
+#~ msgstr ""
+
+#~ msgid "Got unexpected extra argument ({args})"
+#~ msgid_plural "Got unexpected extra arguments ({args})"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+#~ msgstr ""
+
+#~ msgid "Aborted!"
+#~ msgstr ""
+
+#~ msgid "Commands"
+#~ msgstr ""
+
+#~ msgid "Missing command."
+#~ msgstr ""
+
+#~ msgid "No such command {name!r}."
+#~ msgstr ""
+
+#~ msgid "Value must be an iterable."
+#~ msgstr ""
+
+#~ msgid "Takes {nargs} values but 1 was given."
+#~ msgid_plural "Takes {nargs} values but {len} were given."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid ""
+#~ "DeprecationWarning: The {param_type} {name!r} "
+#~ "is deprecated.{extra_message}"
+#~ msgstr ""
+
+#~ msgid "env var: {var}"
+#~ msgstr ""
+
+#~ msgid "default: {default}"
+#~ msgstr ""
+
+#~ msgid "required"
+#~ msgstr ""
+
+#~ msgid "(dynamic)"
+#~ msgstr ""
+
+#~ msgid "%(prog)s, version %(version)s"
+#~ msgstr ""
+
+#~ msgid "Show the version and exit."
+#~ msgstr ""
+
+#~ msgid "Show this message and exit."
+#~ msgstr ""
+
+#~ msgid "Error: {message}"
+#~ msgstr ""
+
+#~ msgid "Try '{command} {option}' for help."
+#~ msgstr ""
+
+#~ msgid "Invalid value: {message}"
+#~ msgstr ""
+
+#~ msgid "Invalid value for {param_hint}: {message}"
+#~ msgstr ""
+
+#~ msgid "Missing argument"
+#~ msgstr ""
+
+#~ msgid "Missing option"
+#~ msgstr ""
+
+#~ msgid "Missing parameter"
+#~ msgstr ""
+
+#~ msgid "Missing {param_type}"
+#~ msgstr ""
+
+#~ msgid "Missing parameter: {param_name}"
+#~ msgstr ""
+
+#~ msgid "No such option: {name}"
+#~ msgstr ""
+
+#~ msgid "Did you mean {possibility}?"
+#~ msgid_plural "(Possible options: {possibilities})"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid "unknown error"
+#~ msgstr ""
+
+#~ msgid "Could not open file {filename!r}: {message}"
+#~ msgstr ""
+
+#~ msgid "Usage:"
+#~ msgstr ""
+
+#~ msgid "Argument {name!r} takes {nargs} values."
+#~ msgstr ""
+
+#~ msgid "Option {name!r} does not take a value."
+#~ msgstr ""
+
+#~ msgid "Option {name!r} requires an argument."
+#~ msgid_plural "Option {name!r} requires {nargs} arguments."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid "Shell completion is not supported for Bash versions older than 4.4."
+#~ msgstr ""
+
+#~ msgid "Couldn't detect Bash version, shell completion is not supported."
+#~ msgstr ""
+
+#~ msgid "Repeat for confirmation"
+#~ msgstr ""
+
+#~ msgid "Error: The value you entered was invalid."
+#~ msgstr ""
+
+#~ msgid "Error: {e.message}"
+#~ msgstr ""
+
+#~ msgid "Error: The two entered values do not match."
+#~ msgstr ""
+
+#~ msgid "Error: invalid input"
+#~ msgstr ""
+
+#~ msgid "Press any key to continue..."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Choose from:\n"
+#~ "\t{choices}"
+#~ msgstr ""
+
+#~ msgid "{value!r} is not {choice}."
+#~ msgid_plural "{value!r} is not one of {choices}."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid "{value!r} does not match the format {format}."
+#~ msgid_plural "{value!r} does not match the formats {formats}."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid "{value!r} is not a valid {number_type}."
+#~ msgstr ""
+
+#~ msgid "{value} is not in the range {range}."
+#~ msgstr ""
+
+#~ msgid "{value!r} is not a valid boolean. Recognized values: {states}"
+#~ msgstr ""
+
+#~ msgid "{value!r} is not a valid UUID."
+#~ msgstr ""
+
+#~ msgid "file"
+#~ msgstr ""
+
+#~ msgid "directory"
+#~ msgstr ""
+
+#~ msgid "path"
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} does not exist."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is a file."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is a directory."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is not readable."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is not writable."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is not executable."
+#~ msgstr ""
+
+#~ msgid "{len_type} values are required, but {len_value} was given."
+#~ msgid_plural "{len_type} values are required, but {len_value} were given."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#~ msgid "Início"
+#~ msgstr "Inicio"
+
+#~ msgid "Entrar"
+#~ msgstr "Entrar"
+
+#~ msgid "Cadastrar"
+#~ msgstr "Registrar"
+
+#~ msgid "Idioma"
+#~ msgstr "Idioma"
+
