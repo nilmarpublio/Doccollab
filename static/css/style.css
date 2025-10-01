@@ -8,11 +8,11 @@
   display: grid;
   grid-template-columns: 300px 1fr; /* Sidebar com largura fixa */
   grid-template-rows: 1fr;
-  gap: 1rem; /* Gap maior para melhor separação */
+  gap: 1rem; /* Gap para separação */
   height: calc(100vh - 100px); /* Altura otimizada */
   min-height: 600px;
-  width: 100%;
-  max-width: 1400px; /* Largura máxima para centralização */
+  width: fit-content; /* Ajustar ao conteúdo */
+  max-width: calc(300px + 1rem + 800px); /* Largura máxima: sidebar + gap + editor */
   margin: 0 auto; /* Centralizar o container */
   padding: 1rem; /* Padding para espaçamento das bordas */
   box-sizing: border-box;
@@ -108,9 +108,9 @@ body.editor-page .main-content {
   flex-direction: column;
   border: 1px solid rgba(0,0,0,0.08);
   overflow: hidden;
-  width: 100%;
-  min-width: 0;
-  flex: 1; /* Ocupa todo espaço disponível */
+  width: 800px; /* Largura fixa para o editor */
+  min-width: 600px; /* Largura mínima */
+  max-width: 800px; /* Largura máxima */
   position: relative;
   backdrop-filter: blur(10px); /* Efeito glassmorphism sutil */
 }
@@ -373,12 +373,12 @@ body.editor-page .main-content {
 }
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .editor-container {
-    grid-template-columns: 280px 1fr; /* Sidebar um pouco menor */
+    grid-template-columns: 280px 1fr;
     gap: 0.75rem;
     padding: 0.75rem;
-    max-width: 1200px;
+    max-width: calc(280px + 0.75rem + 700px); /* Ajustar largura máxima */
   }
   
   .sidebar {
@@ -387,7 +387,9 @@ body.editor-page .main-content {
   }
   
   .editor-panel {
-    padding: 0;
+    width: 700px; /* Largura menor para tablet */
+    min-width: 500px;
+    max-width: 700px;
   }
   
   body.editor-page .main-content {
@@ -402,6 +404,7 @@ body.editor-page .main-content {
     height: auto;
     gap: 0.75rem;
     padding: 0.5rem;
+    width: 100%;
     max-width: 100%;
   }
   
@@ -415,6 +418,9 @@ body.editor-page .main-content {
   .editor-panel {
     order: 2;
     min-height: 500px;
+    width: 100%;
+    min-width: auto;
+    max-width: 100%;
   }
   
   .editor-toolbar {
