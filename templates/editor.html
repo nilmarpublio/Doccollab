@@ -248,6 +248,37 @@ let currentFile = 'main.tex';
 let autoSaveInterval;
 let isDirty = false;
 
+// Show alert function
+function showAlert(message, type) {
+    const alertContainer = document.querySelector('.main-content');
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        max-width: 500px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 8px;
+        animation: slideInRight 0.3s ease;
+    `;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="alert-close" onclick="this.parentElement.remove()" style="
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            float: right;
+            margin-left: 10px;
+        ">&times;</button>
+    `;
+    alertContainer.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 5000);
+}
+
 // Initialize editor when page loads
 document.addEventListener('DOMContentLoaded', function() {
     initializeEditor();
