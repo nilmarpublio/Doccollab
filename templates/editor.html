@@ -194,9 +194,9 @@
                                 <ul class="list-unstyled">
                                     <li><i class="fas fa-check text-success"></i> 1 projeto</li>
                                     <li><i class="fas fa-check text-success"></i> 1 arquivo (.tex)</li>
-                                    <li><i class="fas fa-times text-danger"></i> Upload de imagens</li>
-                                    <li><i class="fas fa-times text-danger"></i> Múltiplos arquivos</li>
-                                    <li><i class="fas fa-times text-danger"></i> Colaboração</li>
+                                    <li><i class="fas fa-times text-danger"></i> {{ _('Upload de imagens') }}</li>
+                                    <li><i class="fas fa-times text-danger"></i> {{ _('Múltiplos arquivos') }}</li>
+                                    <li><i class="fas fa-times text-danger"></i> {{ _('Colaboração') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -208,11 +208,11 @@
                             </div>
                             <div class="card-body">
                                 <ul class="list-unstyled">
-                                    <li><i class="fas fa-check text-success"></i> Projetos ilimitados</li>
-                                    <li><i class="fas fa-check text-success"></i> Arquivos ilimitados</li>
-                                    <li><i class="fas fa-check text-success"></i> Upload de imagens</li>
-                                    <li><i class="fas fa-check text-success"></i> Colaboração em tempo real</li>
-                                    <li><i class="fas fa-check text-success"></i> Suporte prioritário</li>
+                                    <li><i class="fas fa-check text-success"></i> {{ _('Projetos ilimitados') }}</li>
+                                    <li><i class="fas fa-check text-success"></i> {{ _('Arquivos ilimitados') }}</li>
+                                    <li><i class="fas fa-check text-success"></i> {{ _('Upload de imagens') }}</li>
+                                    <li><i class="fas fa-check text-success"></i> {{ _('Colaboração em tempo real') }}</li>
+                                    <li><i class="fas fa-check text-success"></i> {{ _('Suporte prioritário') }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -898,9 +898,8 @@ function showUpgradeModal() {
 }
 
 function upgradeToPaid() {
-    // In a real application, this would redirect to payment processing
-    showNotification('{{ _("Payment integration coming soon!") }}', 'info');
-    bootstrap.Modal.getInstance(document.getElementById('upgradeModal')).hide();
+    // Redirect to payment page
+    window.location.href = '{{ url_for("main.payment") }}';
 }
 
 function checkPlanRestriction(action) {

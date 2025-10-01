@@ -50,6 +50,9 @@ def create_app():
         
         # Por último, usa o idioma padrão do navegador
         return request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']) or app.config['BABEL_DEFAULT_LOCALE']
+    
+    # Exportar função para uso externo
+    app.get_locale = get_locale
 
     babel.init_app(app, locale_selector=get_locale)
 
