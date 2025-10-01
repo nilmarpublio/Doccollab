@@ -7,3 +7,4 @@ from .user import User
 from .project import Project
 from .subscription import Subscription, PlanType
 from .version import Version
+from .chat_message import ChatMessage

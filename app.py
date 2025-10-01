@@ -1,6 +1,7 @@
 from flask import Flask, request, session, redirect, url_for, send_from_directory
 from flask_login import LoginManager
 from flask_babel import Babel, gettext as _
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from dotenv import load_dotenv
 import os
 
@@ -28,6 +29,9 @@ def create_app():
     app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.path.join(app.root_path, 'translations')
 
     db.init_app(app)
+
+    # Initialize SocketIO
+    socketio = SocketIO(app, cors_allowed_origins="*")
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -101,8 +105,13 @@ def create_app():
 
     from routes.main import main_bp
     from routes.auth import auth_bp
+    from routes.chat import chat_bp, socketio_events
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(chat_bp, url_prefix='/chat')
+    
+    # Register SocketIO events
+    socketio_events(socketio)
 
     with app.app_context():
         # Ensure project directories exist
@@ -118,8 +127,8 @@ def create_app():
             db.session.add(u)
             db.session.commit()
 
-    return app
+    return app, socketio
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    app, socketio = create_app()
+    socketio.run(app, debug=True, host='127.0.0.1', port=5000)
