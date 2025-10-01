@@ -199,7 +199,8 @@ def main():
         "Please select a file": "Por favor, selecione um arquivo",
         "Plan upgraded successfully!": "Plano atualizado com sucesso!",
         "Error upgrading plan:": "Erro ao atualizar plano:",
-        "Error upgrading plan. Please try again.": "Erro ao atualizar plano. Tente novamente."
+        "Error upgrading plan. Please try again.": "Erro ao atualizar plano. Tente novamente.",
+        "Sessão encerrada.": "Sessão encerrada."
     }
     
     # Traduções em inglês
@@ -337,7 +338,8 @@ def main():
         "Please select a file": "Please select a file",
         "Plan upgraded successfully!": "Plan upgraded successfully!",
         "Error upgrading plan:": "Error upgrading plan:",
-        "Error upgrading plan. Please try again.": "Error upgrading plan. Please try again."
+        "Error upgrading plan. Please try again.": "Error upgrading plan. Please try again.",
+        "Sessão encerrada.": "Session ended."
     }
     
     project_dir = os.path.dirname(os.path.abspath(__file__))
