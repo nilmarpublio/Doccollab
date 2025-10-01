@@ -1,59 +1,58 @@
 #!/usr/bin/env python3
 """
-Script to update the database with the new ChatMessage table.
-Run this script to add the chat functionality to existing databases.
+Script para atualizar o banco de dados com suporte a chat
+DocCollab - Deploy Final
 """
 
-import os
 import sys
-from datetime import datetime
+import os
 
-# Add the project root to the Python path
+# Adicionar o diretório do projeto ao path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app import create_app
-from models import db, ChatMessage
+from models import db
+from models.chat_message import ChatMessage
 
 def update_database():
-    """Update the database with the new ChatMessage table"""
+    """Atualizar o banco de dados com a tabela de chat"""
     app, socketio = create_app()
     
     with app.app_context():
         try:
-            # Create the chat_messages table
+            # Criar todas as tabelas
             db.create_all()
-            print("Database updated successfully!")
-            print("ChatMessage table created")
+            print("✅ Banco de dados atualizado com sucesso!")
+            print("✅ Tabela de chat criada")
             
-            # Check if there are any existing projects
+            # Verificar se há projetos existentes
             from models.project import Project
             projects = Project.query.all()
             
             if projects:
-                print(f"Found {len(projects)} existing projects")
-                print("Chat functionality is now available for all projects")
+                print(f"📊 Encontrados {len(projects)} projetos existentes")
+                print("ℹ️  Projetos existentes terão chat habilitado")
             else:
-                print("No existing projects found")
+                print("📝 Nenhum projeto existente encontrado")
                 
         except Exception as e:
-            print(f"Error updating database: {e}")
+            print(f"❌ Erro ao atualizar banco de dados: {e}")
             return False
             
     return True
 
 if __name__ == "__main__":
-    print("Updating database with chat functionality...")
+    print("🔄 Atualizando banco de dados com suporte a chat...")
     success = update_database()
     
     if success:
-        print("\nChat functionality is now available!")
-        print("Features added:")
-        print("   - Real-time chat in editor")
-        print("   - Project-based chat rooms")
-        print("   - Online user indicators")
-        print("   - Typing indicators")
-        print("   - Message history")
-        print("   - SocketIO integration")
+        print("\n🎉 Funcionalidade de chat colaborativo disponível!")
+        print("📋 Funcionalidades adicionadas:")
+        print("   - Chat em tempo real via WebSocket")
+        print("   - Salas por projeto")
+        print("   - Indicadores de usuários online")
+        print("   - Histórico persistente de mensagens")
+        print("   - Indicador de digitação")
     else:
-        print("\nDatabase update failed!")
+        print("\n❌ Falha na atualização do banco de dados")
         sys.exit(1)
