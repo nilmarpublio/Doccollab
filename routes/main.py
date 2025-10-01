@@ -115,7 +115,7 @@ def editor(project_id):
     return render_template('editor.html', project=project, content=content)
 
 
-@main_bp.route('/api/project/<int:project_id>/save', methods=['POST'])
+@main_bp.route('/project/<int:project_id>/save', methods=['POST'])
 @login_required
 def api_save(project_id):
     project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
@@ -127,10 +127,10 @@ def api_save(project_id):
     main_tex_path = os.path.join(project_path, 'main.tex')
     with open(main_tex_path, 'w', encoding='utf-8') as f:
         f.write(text)
-    return {'ok': True}
+    return {'success': True}
 
 
-@main_bp.route('/api/project/<int:project_id>/compile', methods=['POST'])
+@main_bp.route('/project/<int:project_id>/compile', methods=['POST'])
 @login_required
 def api_compile(project_id):
     project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
@@ -144,8 +144,8 @@ def api_compile(project_id):
             print(f"[pdflatex] compile error: {err}")
         except Exception:
             pass
-        return {'ok': False, 'error': err}, 400
-    return {'ok': True}
+        return {'success': False, 'error': err}, 400
+    return {'success': True}
 
 
 @main_bp.route('/project/<int:project_id>/pdf')

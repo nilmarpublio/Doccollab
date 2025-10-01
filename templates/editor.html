@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Editor') }} - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 sidebar">
+            <div class="sidebar-header">
+                <h4>{{ _('Project') }}: {{ project.name }}</h4>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="saveProject()">
+                        <i class="fas fa-save"></i> {{ _('Save') }}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
+                        <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
+                    </button>
+                </div>
+            </div>
+            
+            <div class="file-tree">
+                <h6>{{ _('Files') }}</h6>
+                <ul id="file-list">
+                    <li class="file-item active" data-file="main.tex">
+                        <i class="fas fa-file-alt"></i> main.tex
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Editor -->
+        <div class="col-md-9">
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\textbf{', '}')">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\textit{', '}')">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\section{', '}')">
+                            {{ _('Section') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\subsection{', '}')">
+                            {{ _('Subsection') }}
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-info" onclick="insertText('\\begin{itemize}\n\\item ', '\n\\end{itemize}')">
+                            {{ _('List') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-info" onclick="insertText('\\begin{enumerate}\n\\item ', '\n\\end{enumerate}')">
+                            {{ _('Numbered List') }}
+                        </button>
+                    </div>
+                </div>
+                
+                <textarea id="editor" class="form-control" rows="20" placeholder="{{ _('Start writing your LaTeX document...') }}">{{ content or '' }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('PDF Preview') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdf-preview" src="" width="100%" height="600px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentProject = {{ project.id if project else 'null' }};
+let isDirty = false;
+
+// Auto-save functionality
+setInterval(function() {
+    if (isDirty) {
+        saveProject();
+    }
+}, 30000); // Auto-save every 30 seconds
+
+// Mark as dirty when content changes
+document.getElementById('editor').addEventListener('input', function() {
+    isDirty = true;
+});
+
+function insertText(prefix, suffix) {
+    const editor = document.getElementById('editor');
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const selectedText = editor.value.substring(start, end);
+    const newText = prefix + selectedText + suffix;
+    
+    editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
+    editor.focus();
+    editor.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length);
+    isDirty = true;
+}
+
+function saveProject() {
+    if (!currentProject) return;
+    
+    const content = document.getElementById('editor').value;
+    
+    fetch(`/project/${currentProject}/save`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({text: content})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            isDirty = false;
+            showNotification('{{ _("Project saved successfully!") }}', 'success');
+        } else {
+            showNotification(data.error || '{{ _("Error saving project") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('{{ _("Error saving project") }}', 'error');
+    });
+}
+
+function compileProject() {
+    if (!currentProject) return;
+    
+    showNotification('{{ _("Compiling PDF...") }}', 'info');
+    
+    fetch(`/project/${currentProject}/compile`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('{{ _("PDF compiled successfully!") }}', 'success');
+            // Show PDF preview
+            document.getElementById('pdf-preview').src = `/project/${currentProject}/pdf`;
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+        } else {
+            showNotification(data.error || '{{ _("Error compiling PDF") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('{{ _("Error compiling PDF") }}', 'error');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function showNotification(message, type) {
+    // Simple notification - you can enhance this with a proper notification system
+    const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+    const notification = document.createElement('div');
+    notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+
+// Warn before leaving if there are unsaved changes
+window.addEventListener('beforeunload', function(e) {
+    if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+</script>
+
+<style>
+.sidebar {
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    min-height: calc(100vh - 56px);
+    padding: 20px;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.file-tree ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.file-item {
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 2px;
+}
+
+.file-item:hover {
+    background-color: #e9ecef;
+}
+
+.file-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.editor-container {
+    height: calc(100vh - 56px);
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-toolbar {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+#editor {
+    flex: 1;
+    border: none;
+    resize: none;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 20px;
+}
+
+#editor:focus {
+    outline: none;
+    box-shadow: none;
+}
+</style>
+{% endblock %}

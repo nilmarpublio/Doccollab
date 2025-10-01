@@ -4,7 +4,7 @@ from flask_babel import Babel, gettext as _
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 from models import db
 from models.user import User
