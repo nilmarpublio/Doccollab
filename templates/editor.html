@@ -231,6 +231,11 @@
 </div>
 
 <script>
+// Add editor-page class to body for full-width layout
+document.addEventListener('DOMContentLoaded', function() {
+  document.body.classList.add('editor-page');
+});
+
 // ===== EDITOR JAVASCRIPT =====
 let editor;
 let currentProject = {{ project.id }};

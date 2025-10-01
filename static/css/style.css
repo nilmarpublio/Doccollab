@@ -12,6 +12,15 @@
   height: calc(100vh - 120px);
   min-height: 600px;
   width: 100%;
+  max-width: none; /* Remove max-width limitation */
+}
+
+/* Override main-content max-width for editor page */
+body.editor-page .main-content {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 /* Hide PDF panel completely for now */
