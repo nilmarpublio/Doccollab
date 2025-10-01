@@ -13,47 +13,51 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-3 sidebar">
-            <div class="sidebar-header">
-                <h4>{{ _('Project') }}: {{ project.name }}</h4>
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="saveProject()">
-                        <i class="fas fa-save"></i> {{ _('Save') }}
-                    </button>
-                    <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
-                        <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
-                    </button>
-                </div>
-                <div class="mt-2">
-                    <small class="text-muted">
-                        <i class="fas fa-clock"></i> {{ _('Auto-save:') }} <span id="auto-save-status">{{ _('Enabled') }}</span>
-                    </small>
-                </div>
-            </div>
-            
-            <div class="file-tree">
-                <div class="file-tree-header">
-                    <h6>{{ _('Files') }}</h6>
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}">
-                            <i class="fas fa-upload"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-info btn-sm" onclick="refreshFileList()" title="{{ _('Refresh') }}">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
+        <div class="col-md-3">
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-header">
+                        <h4 class="text-white mb-3">{{ _('Project') }}: {{ project.name }}</h4>
+                        <div class="btn-group w-100 mb-3" role="group">
+                            <button type="button" class="btn btn-sm btn-light" onclick="saveProject()">
+                                <i class="fas fa-save"></i> {{ _('Save') }}
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
+                                <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <small class="text-white-50">
+                                <i class="fas fa-clock"></i> {{ _('Auto-save:') }} <span id="auto-save-status" class="badge bg-success">{{ _('Enabled') }}</span>
+                            </small>
+                        </div>
                     </div>
-                </div>
-                <ul id="file-list" class="file-list">
-                    <!-- Files will be loaded here -->
-                </ul>
-                <div class="main-file-selector mt-3">
-                    <label class="form-label small">{{ _('Main File:') }}</label>
-                    <select id="main-file-select" class="form-select form-select-sm" onchange="setMainFile()">
-                        <option value="main.tex">main.tex</option>
-                    </select>
+                    
+                    <div class="file-tree">
+                        <div class="file-tree-header">
+                            <h6 class="text-white mb-3">{{ _('Files') }}</h6>
+                            <div class="btn-group btn-group-sm w-100">
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="refreshFileList()" title="{{ _('Refresh') }}">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <ul id="file-list" class="file-list">
+                            <!-- Files will be loaded here -->
+                        </ul>
+                        <div class="main-file-selector mt-3">
+                            <label class="form-label small text-white">{{ _('Main File:') }}</label>
+                            <select id="main-file-select" class="form-select form-select-sm" onchange="setMainFile()">
+                                <option value="main.tex">main.tex</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -816,16 +820,25 @@ window.addEventListener('beforeunload', function(e) {
 
 <style>
 .sidebar {
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-right: 1px solid #dee2e6;
     min-height: calc(100vh - 56px);
+    padding: 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar-content {
     padding: 20px;
+    color: white;
 }
 
 .sidebar-header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .file-tree-header {
@@ -851,21 +864,26 @@ window.addEventListener('beforeunload', function(e) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px;
-    border-radius: 4px;
-    margin-bottom: 2px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 4px;
     border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .file-item:hover {
-    background-color: #e9ecef;
-    border-color: #dee2e6;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(4px);
 }
 
 .file-item.active {
-    background-color: #007bff;
+    background: rgba(255, 255, 255, 0.25);
     color: white;
-    border-color: #0056b3;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .file-item-content {
@@ -877,9 +895,15 @@ window.addEventListener('beforeunload', function(e) {
 }
 
 .file-item-content i {
-    margin-right: 8px;
-    width: 16px;
+    margin-right: 12px;
+    width: 18px;
     text-align: center;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.file-item.active .file-item-content i {
+    color: white;
 }
 
 .file-name {
@@ -888,15 +912,18 @@ window.addEventListener('beforeunload', function(e) {
     overflow: hidden;
     text-overflow: ellipsis;
     margin-right: 8px;
+    color: white;
+    font-weight: 500;
 }
 
 .file-size {
-    color: #6c757d;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.75em;
+    font-weight: 400;
 }
 
 .file-item.active .file-size {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .file-actions {
@@ -915,39 +942,107 @@ window.addEventListener('beforeunload', function(e) {
 }
 
 .file-actions .btn {
-    padding: 2px 6px;
+    padding: 4px 8px;
     font-size: 0.75em;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.file-actions .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+}
+
+.file-actions .btn.btn-outline-danger:hover {
+    background: rgba(220, 53, 69, 0.8);
+    border-color: #dc3545;
 }
 
 .main-file-selector {
-    border-top: 1px solid #dee2e6;
-    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.main-file-selector .form-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 8px;
+}
+
+.main-file-selector .form-select:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.main-file-selector .form-select option {
+    background: #667eea;
+    color: white;
 }
 
 .editor-container {
     height: calc(100vh - 56px);
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 10px;
 }
 
 .editor-toolbar {
-    padding: 10px;
+    padding: 15px 20px;
     border-bottom: 1px solid #dee2e6;
-    background-color: #f8f9fa;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px 12px 0 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 8px;
+}
+
+.editor-toolbar .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editor-toolbar .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.editor-toolbar .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.editor-toolbar .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
 }
 
 #editor-container {
     flex: 1;
     position: relative;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
 }
 
 .CodeMirror {
     height: 100%;
-    font-family: 'Courier New', monospace;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
     font-size: 14px;
+    line-height: 1.6;
+    border-radius: 0 0 12px 12px;
     border: none;
 }
 
@@ -1027,6 +1122,50 @@ window.addEventListener('beforeunload', function(e) {
     border-top: none;
 }
 
+/* Custom scrollbar for file list */
+.file-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.file-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.file-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.file-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Notification improvements */
+.notification {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+/* Modal improvements */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .editor-toolbar {
@@ -1045,6 +1184,15 @@ window.addEventListener('beforeunload', function(e) {
     .pdf-toolbar {
         flex-direction: column;
         gap: 8px;
+    }
+    
+    .sidebar {
+        min-height: auto;
+    }
+    
+    .editor-container {
+        margin: 5px;
+        border-radius: 8px;
     }
 }
 </style>
