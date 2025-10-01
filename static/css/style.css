@@ -11,19 +11,19 @@
   gap: 1rem;
   height: calc(100vh - 120px);
   min-height: 600px;
+  width: 100%;
 }
 
-/* Layout when PDF panel is shown */
-.editor-container.pdf-visible {
-  grid-template-columns: 300px 1fr 400px;
-}
-
+/* Hide PDF panel completely for now */
 .editor-container .pdf-panel {
-  display: none;
+  display: none !important;
 }
 
-.editor-container.pdf-visible .pdf-panel {
-  display: block;
+/* Ensure editor panel takes full available width */
+.editor-panel {
+  width: 100%;
+  min-width: 0; /* Allow shrinking */
+  flex: 1; /* Take all available space */
 }
 
 .sidebar {

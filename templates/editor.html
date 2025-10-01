@@ -95,9 +95,6 @@
                 <button class="toolbar-btn" onclick="compileProject()" title="{{ _('Compile PDF') }}">
                     <i class="fas fa-file-pdf"></i> {{ _('Compile') }}
                 </button>
-                <button class="toolbar-btn" id="viewToggle" onclick="toggleView()" title="{{ _('Toggle PDF View') }}">
-                    <i class="fas fa-eye"></i> {{ _('Show PDF') }}
-                </button>
             </div>
         </div>
         
@@ -763,37 +760,7 @@ function upgradeToPaid() {
     window.location.href = '{{ url_for("main.payment") }}';
 }
 
-// Toggle PDF view
-let pdfVisible = false;
-
-function toggleView() {
-    const container = document.querySelector('.editor-container');
-    const toggleBtn = document.getElementById('viewToggle');
-    const toggleIcon = toggleBtn.querySelector('i');
-    const toggleText = toggleBtn.querySelector('span') || toggleBtn.childNodes[2];
-    
-    pdfVisible = !pdfVisible;
-    
-    if (pdfVisible) {
-        // Show PDF panel
-        container.classList.add('pdf-visible');
-        toggleIcon.className = 'fas fa-eye-slash';
-        if (toggleText && toggleText.textContent) {
-            toggleText.textContent = ' {{ _("Hide PDF") }}';
-        } else {
-            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> {{ _("Hide PDF") }}';
-        }
-    } else {
-        // Hide PDF panel
-        container.classList.remove('pdf-visible');
-        toggleIcon.className = 'fas fa-eye';
-        if (toggleText && toggleText.textContent) {
-            toggleText.textContent = ' {{ _("Show PDF") }}';
-        } else {
-            toggleBtn.innerHTML = '<i class="fas fa-eye"></i> {{ _("Show PDF") }}';
-        }
-    }
-}
+// PDF functionality removed - editor now takes full width
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', function(e) {
