@@ -35,9 +35,18 @@ body.editor-page .main-content {
   min-height: calc(100vh - 60px); /* Altura total menos navbar */
 }
 
-/* Hide PDF panel completely for now */
+/* Hide PDF panel by default, show when compiling */
 .editor-container .pdf-panel {
-  display: none !important;
+  display: none;
+}
+
+/* Show PDF panel when compiling */
+.editor-container.compiling .pdf-panel {
+  display: block;
+}
+
+.editor-container.compiling .editor-panel {
+  display: none;
 }
 
 /* Ensure editor panel takes full available width */
@@ -118,10 +127,42 @@ body.editor-page .main-content {
 .pdf-panel {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   padding: 1.5rem;
   overflow-y: auto;
-  border: 1px solid #e9ecef;
+  border: 1px solid rgba(0,0,0,0.08);
+  width: 800px; /* Mesma largura do editor */
+  min-width: 600px;
+  max-width: 800px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.pdf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pdf-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pdf-title-section h5 {
+  margin: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.pdf-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 /* ===== FILE SIDEBAR ===== */
@@ -392,6 +433,12 @@ body.editor-page .main-content {
     max-width: 700px;
   }
   
+  .pdf-panel {
+    width: 700px; /* Mesma largura do editor no tablet */
+    min-width: 500px;
+    max-width: 700px;
+  }
+  
   body.editor-page .main-content {
     padding: 1.5rem 0.75rem;
   }
@@ -416,6 +463,14 @@ body.editor-page .main-content {
   }
   
   .editor-panel {
+    order: 2;
+    min-height: 500px;
+    width: 100%;
+    min-width: auto;
+    max-width: 100%;
+  }
+  
+  .pdf-panel {
     order: 2;
     min-height: 500px;
     width: 100%;

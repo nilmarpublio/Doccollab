@@ -92,7 +92,7 @@
                 </button>
             </div>
             <div class="toolbar-right">
-                <button class="toolbar-btn" onclick="compileProject()" title="{{ _('Compile PDF') }}">
+                <button class="toolbar-btn" id="compileBtn" onclick="toggleCompileView()" title="{{ _('Compile PDF') }}">
                     <i class="fas fa-file-pdf"></i> {{ _('Compile') }}
                 </button>
             </div>
@@ -116,7 +116,12 @@
     <!-- PDF Panel -->
     <div class="pdf-panel" id="pdfPanel">
         <div class="pdf-header">
-            <h5 class="mb-3">{{ _('PDF Preview') }}</h5>
+            <div class="pdf-title-section">
+                <h5 class="mb-3">{{ _('PDF Preview') }}</h5>
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleCompileView()" title="{{ _('Back to Editor') }}">
+                    <i class="fas fa-arrow-left"></i> {{ _('Back to Editor') }}
+                </button>
+            </div>
             <div class="pdf-controls">
                 <button class="btn btn-primary btn-sm" onclick="refreshPDF()">
                     <i class="fas fa-sync-alt"></i> {{ _('Refresh') }}
@@ -765,7 +770,32 @@ function upgradeToPaid() {
     window.location.href = '{{ url_for("main.payment") }}';
 }
 
-// PDF functionality removed - editor now takes full width
+// Toggle between editor and PDF view
+let isCompiling = false;
+
+function toggleCompileView() {
+    const container = document.querySelector('.editor-container');
+    const compileBtn = document.getElementById('compileBtn');
+    const compileIcon = compileBtn.querySelector('i');
+    const compileText = compileBtn.childNodes[2];
+    
+    isCompiling = !isCompiling;
+    
+    if (isCompiling) {
+        // Show PDF panel, hide editor
+        container.classList.add('compiling');
+        compileIcon.className = 'fas fa-edit';
+        compileText.textContent = ' {{ _("Back to Editor") }}';
+        
+        // Compile the project
+        compileProject();
+    } else {
+        // Show editor, hide PDF
+        container.classList.remove('compiling');
+        compileIcon.className = 'fas fa-file-pdf';
+        compileText.textContent = ' {{ _("Compile") }}';
+    }
+}
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', function(e) {

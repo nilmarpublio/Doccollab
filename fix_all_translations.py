@@ -231,7 +231,8 @@ def main():
         "Please accept the terms and conditions": "Por favor, aceite os termos e condições",
         "Toggle PDF View": "Alternar Visualização PDF",
         "Show PDF": "Mostrar PDF",
-        "Hide PDF": "Ocultar PDF"
+        "Hide PDF": "Ocultar PDF",
+        "Back to Editor": "Voltar ao Editor"
     }
     
     # Traduções em inglês
@@ -401,7 +402,8 @@ def main():
         "Please accept the terms and conditions": "Please accept the terms and conditions",
         "Toggle PDF View": "Toggle PDF View",
         "Show PDF": "Show PDF",
-        "Hide PDF": "Hide PDF"
+        "Hide PDF": "Hide PDF",
+        "Back to Editor": "Back to Editor"
     }
     
     # Traduções em espanhol
@@ -475,7 +477,8 @@ def main():
         "Please accept the terms and conditions": "Por favor, acepta los términos y condiciones",
         "Toggle PDF View": "Alternar Vista PDF",
         "Show PDF": "Mostrar PDF",
-        "Hide PDF": "Ocultar PDF"
+        "Hide PDF": "Ocultar PDF",
+        "Back to Editor": "Volver al Editor"
     }
     
     project_dir = os.path.dirname(os.path.abspath(__file__))
