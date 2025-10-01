@@ -228,7 +228,10 @@ def main():
         "Terms of Service": "Termos de Serviço",
         "and": "e",
         "Privacy Policy": "Política de Privacidade",
-        "Please accept the terms and conditions": "Por favor, aceite os termos e condições"
+        "Please accept the terms and conditions": "Por favor, aceite os termos e condições",
+        "Toggle PDF View": "Alternar Visualização PDF",
+        "Show PDF": "Mostrar PDF",
+        "Hide PDF": "Ocultar PDF"
     }
     
     # Traduções em inglês
@@ -395,7 +398,10 @@ def main():
         "Terms of Service": "Terms of Service",
         "and": "and",
         "Privacy Policy": "Privacy Policy",
-        "Please accept the terms and conditions": "Please accept the terms and conditions"
+        "Please accept the terms and conditions": "Please accept the terms and conditions",
+        "Toggle PDF View": "Toggle PDF View",
+        "Show PDF": "Show PDF",
+        "Hide PDF": "Hide PDF"
     }
     
     # Traduções em espanhol
@@ -466,7 +472,10 @@ def main():
         "Terms of Service": "Términos de Servicio",
         "and": "y",
         "Privacy Policy": "Política de Privacidad",
-        "Please accept the terms and conditions": "Por favor, acepta los términos y condiciones"
+        "Please accept the terms and conditions": "Por favor, acepta los términos y condiciones",
+        "Toggle PDF View": "Alternar Vista PDF",
+        "Show PDF": "Mostrar PDF",
+        "Hide PDF": "Ocultar PDF"
     }
     
     project_dir = os.path.dirname(os.path.abspath(__file__))

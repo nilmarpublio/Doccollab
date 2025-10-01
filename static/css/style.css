@@ -13,6 +13,15 @@
   min-height: 600px;
 }
 
+/* Layout when PDF panel is hidden */
+.editor-container.pdf-hidden {
+  grid-template-columns: 300px 1fr;
+}
+
+.editor-container.pdf-hidden .pdf-panel {
+  display: none !important;
+}
+
 .sidebar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 12px;
