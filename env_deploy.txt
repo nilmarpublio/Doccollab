@@ -1,0 +1,6 @@
+# Configurações para PythonAnywhere - RENOMEIE PARA .env APÓS O UPLOAD
+SECRET_KEY=CHANGE_THIS_TO_A_VERY_SECURE_RANDOM_KEY_123456789_PYTHONANYWHERE
+DATABASE_URL=sqlite:///doccollab.db
+PDFLATEX=/usr/bin/pdflatex
+SEED_EMAIL=admin@pythonanywhere.com
+SEED_PASSWORD=admin123456

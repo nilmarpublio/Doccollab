@@ -14,8 +14,11 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
+    # Se usuário estiver logado, fazer logout e mostrar página inicial
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        from flask_login import logout_user
+        logout_user()
+        flash('Sessão encerrada.', 'info')
     return render_template('index.html')
 
 @main_bp.route('/dashboard')

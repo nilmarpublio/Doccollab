@@ -1,0 +1,6 @@
+# Configurações para desenvolvimento local
+SECRET_KEY=CHANGE_THIS_TO_A_VERY_SECURE_RANDOM_KEY_123456789_LOCAL
+DATABASE_URL=sqlite:///doccollab.db
+PDFLATEX=C:\Users\Nilmar\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe
+SEED_EMAIL=admin@test.com
+SEED_PASSWORD=admin123

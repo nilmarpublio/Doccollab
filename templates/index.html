@@ -1,12 +1,33 @@
 {% extends "base.html" %}
 {% block title %}{{ _('DocCollab - Home') }}{% endblock %}
 {% block content %}
-  <div class="text-center py-5">
-    <h1 class="display-5 fw-bold mb-3">{{ _('Welcome to DocCollab') }}</h1>
-    <p class="lead mb-4">{{ _('Create and collaborate on documents easily.') }}</p>
-    <div class="d-flex gap-3 justify-content-center">
-      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a>
-      <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a>
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">{{ _('Welcome to DocCollab') }}</h1>
+      <p class="hero-subtitle">{{ _('Create and collaborate on documents easily.') }}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a>
+        <a class="btn btn-outline btn-lg" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a>
+      </div>
+    </div>
+    <div class="hero-features">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>{{ _('LaTeX Editor') }}</h3>
+          <p>{{ _('Powerful LaTeX editor with syntax highlighting and auto-completion') }}</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>{{ _('Collaboration') }}</h3>
+          <p>{{ _('Real-time collaboration on documents with your team') }}</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>{{ _('Responsive') }}</h3>
+          <p>{{ _('Works perfectly on desktop, tablet, and mobile devices') }}</p>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}

@@ -10,574 +10,338 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3">
-            <div class="sidebar">
-                <div class="sidebar-content">
-                    <div class="sidebar-header">
-                        <h4 class="text-white mb-3">{{ _('Project') }}: {{ project.name }}</h4>
-                        <div class="btn-group w-100 mb-3" role="group">
-                            <button type="button" class="btn btn-sm btn-light" onclick="saveProject()">
-                                <i class="fas fa-save"></i> {{ _('Save') }}
-                            </button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
-                                <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
-                            </button>
-                        </div>
-                        <div class="text-center mb-3">
-                            <small class="text-white-50">
-                                <i class="fas fa-clock"></i> {{ _('Auto-save:') }} <span id="auto-save-status" class="badge bg-success">{{ _('Enabled') }}</span>
-                            </small>
-                        </div>
-                        <div class="plan-indicator text-center">
-                            <span id="plan-badge" class="badge bg-secondary">{{ _('Free Plan') }}</span>
-                            <small class="text-white-50 d-block mt-1" id="plan-limits">{{ _('1 project, 1 file') }}</small>
-                        </div>
-                    </div>
-                    
-                    <div class="file-tree">
-                        <div class="file-tree-header">
-                            <h6 class="text-white mb-3">{{ _('Files') }}</h6>
-                            <div class="btn-group btn-group-sm w-100">
-                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}" id="create-file-btn">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-light btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}" id="upload-file-btn">
-                                    <i class="fas fa-upload"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-light btn-sm" onclick="refreshFileList()" title="{{ _('Refresh') }}">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <ul id="file-list" class="file-list">
-                            <!-- Files will be loaded here -->
-                        </ul>
-                        <div class="main-file-selector mt-3">
-                            <label class="form-label small text-white">{{ _('Main File:') }}</label>
-                            <select id="main-file-select" class="form-select form-select-sm" onchange="setMainFile()">
-                                <option value="main.tex">main.tex</option>
-                            </select>
-                        </div>
-                    </div>
+<div class="editor-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <h4 class="text-white mb-3">{{ _('Project') }}: {{ project.name }}</h4>
+                <div class="btn-group w-100 mb-3" role="group">
+                    <button type="button" class="btn btn-sm btn-light" onclick="saveProject()">
+                        <i class="fas fa-save"></i> {{ _('Save') }}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
+                        <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
+                    </button>
+                </div>
+                <div class="text-center mb-3">
+                    <small class="text-white-50">
+                        <i class="fas fa-clock"></i> {{ _('Auto-save:') }} <span id="auto-save-status" class="badge bg-success">{{ _('Enabled') }}</span>
+                    </small>
+                </div>
+                <div class="plan-indicator text-center">
+                    <span id="plan-badge" class="plan-badge">{{ _('Free Plan') }}</span>
+                    <small class="text-white-50 d-block mt-1" id="plan-limits">{{ _('1 project, 1 file') }}</small>
                 </div>
             </div>
-        </div>
-
-        <!-- Main Editor -->
-        <div class="col-md-9">
-            <div class="editor-container">
-                <div class="editor-toolbar">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\textbf{', '}')">
-                            <i class="fas fa-bold"></i>
+            
+            <div class="file-tree">
+                <div class="file-tree-header">
+                    <h6 class="text-white mb-3">{{ _('Files') }}</h6>
+                    <div class="btn-group btn-group-sm w-100">
+                        <button type="button" class="btn btn-outline-light btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}" id="create-file-btn">
+                            <i class="fas fa-plus"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\textit{', '}')">
-                            <i class="fas fa-italic"></i>
+                        <button type="button" class="btn btn-outline-light btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}" id="upload-file-btn">
+                            <i class="fas fa-upload"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\underline{', '}')">
-                            <i class="fas fa-underline"></i>
-                        </button>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\section{', '}')">
-                            {{ _('Section') }}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\subsection{', '}')">
-                            {{ _('Subsection') }}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\subsubsection{', '}')">
-                            {{ _('Subsubsection') }}
-                        </button>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-info" onclick="insertText('\\begin{itemize}\n\\item ', '\n\\end{itemize}')">
-                            {{ _('List') }}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-info" onclick="insertText('\\begin{enumerate}\n\\item ', '\n\\end{enumerate}')">
-                            {{ _('Numbered List') }}
-                        </button>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="insertText('\\begin{quote}\n', '\n\\end{quote}')">
-                            {{ _('Quote') }}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="insertText('\\begin{verbatim}\n', '\n\\end{verbatim}')">
-                            {{ _('Code') }}
+                        <button type="button" class="btn btn-outline-light btn-sm" onclick="refreshFileList()" title="{{ _('Refresh') }}">
+                            <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
                 </div>
                 
-                <!-- CodeMirror Editor -->
-                <div id="editor-container">
-                    <textarea id="editor">{{ content or '' }}</textarea>
+                <div class="file-list" id="fileList">
+                    <!-- Files will be loaded here -->
                 </div>
             </div>
+            
+            <div class="main-file-selector mt-3">
+                <label class="form-label text-white">{{ _('Main File') }}:</label>
+                <select class="form-select form-select-sm" id="mainFileSelect" onchange="setMainFile()">
+                    <option value="">{{ _('Select main file') }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editor Panel -->
+    <div class="editor-panel">
+        <div class="editor-toolbar">
+            <div class="toolbar-left">
+                <button class="toolbar-btn" onclick="formatText('\\textbf{', '}')" title="{{ _('Bold') }}">
+                    <i class="fas fa-bold"></i>
+                </button>
+                <button class="toolbar-btn" onclick="formatText('\\textit{', '}')" title="{{ _('Italic') }}">
+                    <i class="fas fa-italic"></i>
+                </button>
+                <button class="toolbar-btn" onclick="formatText('\\underline{', '}')" title="{{ _('Underline') }}">
+                    <i class="fas fa-underline"></i>
+                </button>
+                <button class="toolbar-btn" onclick="insertText('\\section{', '}')" title="{{ _('Section') }}">
+                    <i class="fas fa-heading"></i>
+                </button>
+                <button class="toolbar-btn" onclick="insertText('\\subsection{', '}')" title="{{ _('Subsection') }}">
+                    <i class="fas fa-heading"></i>
+                </button>
+                <button class="toolbar-btn" onclick="insertText('\\begin{itemize}\n\\item \n\\end{itemize}')" title="{{ _('List') }}">
+                    <i class="fas fa-list"></i>
+                </button>
+                <button class="toolbar-btn" onclick="insertText('\\begin{quote}\n', '\n\\end{quote}')" title="{{ _('Quote') }}">
+                    <i class="fas fa-quote-left"></i>
+                </button>
+                <button class="toolbar-btn" onclick="insertText('\\begin{verbatim}\n', '\n\\end{verbatim}')" title="{{ _('Code') }}">
+                    <i class="fas fa-code"></i>
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <button class="toolbar-btn" onclick="compileProject()" title="{{ _('Compile PDF') }}">
+                    <i class="fas fa-file-pdf"></i> {{ _('Compile') }}
+                </button>
+            </div>
+        </div>
+        
+        <div class="editor-wrapper">
+            <textarea id="editor">{{ content }}</textarea>
+        </div>
+        
+        <div class="editor-status">
+            <div class="status-info">
+                <span class="status-indicator saved"></span>
+                <span id="status-text">{{ _('Ready') }}</span>
+            </div>
+            <div class="status-actions">
+                <small class="text-muted">{{ _('Ctrl+S to save') }}</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Panel -->
+    <div class="pdf-panel">
+        <div class="pdf-header">
+            <h5 class="mb-3">{{ _('PDF Preview') }}</h5>
+            <div class="pdf-controls">
+                <button class="btn btn-primary btn-sm" onclick="refreshPDF()">
+                    <i class="fas fa-sync-alt"></i> {{ _('Refresh') }}
+                </button>
+                <button class="btn btn-success btn-sm" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> {{ _('Download') }}
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="zoomIn()">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="zoomOut()">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="fitToWidth()">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="pdf-viewer-container">
+            <iframe id="pdfViewer" class="pdf-viewer" src="about:blank"></iframe>
         </div>
     </div>
 </div>
 
 <!-- Create File Modal -->
-<div class="modal fade" id="createFileModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{ _('Create New File') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="create-file-form">
-                    <div class="mb-3">
-                        <label for="filename" class="form-label">{{ _('Filename') }}</label>
-                        <input type="text" class="form-control" id="filename" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="file-type" class="form-label">{{ _('File Type') }}</label>
-                        <select class="form-select" id="file-type">
-                            <option value="tex">{{ _('LaTeX Document (.tex)') }}</option>
-                            <option value="bib">{{ _('Bibliography (.bib)') }}</option>
-                            <option value="other">{{ _('Other') }}</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
-                <button type="button" class="btn btn-primary" onclick="createFile()">{{ _('Create') }}</button>
-            </div>
+<div class="modal" id="createFileModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ _('Create New File') }}</h5>
+            <button class="modal-close" onclick="hideModal('createFileModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="createFileForm">
+                <div class="form-group">
+                    <label class="form-label">{{ _('File Name') }}:</label>
+                    <input type="text" class="form-control" id="fileName" placeholder="example.tex" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">{{ _('File Type') }}:</label>
+                    <select class="form-control" id="fileType">
+                        <option value="tex">{{ _('LaTeX Document') }} (.tex)</option>
+                        <option value="bib">{{ _('Bibliography') }} (.bib)</option>
+                        <option value="txt">{{ _('Text File') }} (.txt)</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="hideModal('createFileModal')">{{ _('Cancel') }}</button>
+            <button class="btn btn-primary" onclick="createFile()">{{ _('Create') }}</button>
         </div>
     </div>
 </div>
 
 <!-- Upload File Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{ _('Upload File') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="upload-form" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="file-input" class="form-label">{{ _('Select File') }}</label>
-                        <input type="file" class="form-control" id="file-input" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
-                <button type="button" class="btn btn-primary" onclick="uploadFile()">{{ _('Upload') }}</button>
-            </div>
+<div class="modal" id="uploadModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ _('Upload File') }}</h5>
+            <button class="modal-close" onclick="hideModal('uploadModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label class="form-label">{{ _('Select File') }}:</label>
+                    <input type="file" class="form-control" id="fileInput" accept=".tex,.bib,.txt,.png,.jpg,.jpeg,.gif,.pdf">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="hideModal('uploadModal')">{{ _('Cancel') }}</button>
+            <button class="btn btn-primary" onclick="uploadFile()">{{ _('Upload') }}</button>
         </div>
     </div>
 </div>
 
 <!-- Upgrade Modal -->
-<div class="modal fade" id="upgradeModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{ _('Upgrade to Paid Plan') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card border-danger">
-                            <div class="card-header bg-danger text-white">
-                                <h6 class="mb-0">{{ _('Free Plan') }}</h6>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-unstyled">
-                                    <li><i class="fas fa-check text-success"></i> 1 projeto</li>
-                                    <li><i class="fas fa-check text-success"></i> 1 arquivo (.tex)</li>
-                                    <li><i class="fas fa-times text-danger"></i> {{ _('Upload de imagens') }}</li>
-                                    <li><i class="fas fa-times text-danger"></i> {{ _('Múltiplos arquivos') }}</li>
-                                    <li><i class="fas fa-times text-danger"></i> {{ _('Colaboração') }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border-success">
-                            <div class="card-header bg-success text-white">
-                                <h6 class="mb-0">{{ _('Paid Plan') }}</h6>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-unstyled">
-                                    <li><i class="fas fa-check text-success"></i> {{ _('Projetos ilimitados') }}</li>
-                                    <li><i class="fas fa-check text-success"></i> {{ _('Arquivos ilimitados') }}</li>
-                                    <li><i class="fas fa-check text-success"></i> {{ _('Upload de imagens') }}</li>
-                                    <li><i class="fas fa-check text-success"></i> {{ _('Colaboração em tempo real') }}</li>
-                                    <li><i class="fas fa-check text-success"></i> {{ _('Suporte prioritário') }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+<div class="modal" id="upgradeModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{ _('Upgrade Required') }}</h5>
+            <button class="modal-close" onclick="hideModal('upgradeModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>{{ _('This feature requires a paid plan.') }}</p>
+            <div class="plan-comparison">
+                <div class="plan-item">
+                    <h6>{{ _('Free Plan') }}</h6>
+                    <ul>
+                        <li>{{ _('1 project') }}</li>
+                        <li>{{ _('1 file (.tex)') }}</li>
+                        <li>{{ _('Basic features') }}</li>
+                    </ul>
                 </div>
-                <div class="mt-4 text-center">
-                    <h4 class="text-success">$9.99/mês</h4>
-                    <p class="text-muted">{{ _('Cancel anytime. No hidden fees.') }}</p>
+                <div class="plan-item">
+                    <h6>{{ _('Paid Plan') }}</h6>
+                    <ul>
+                        <li>{{ _('Unlimited projects') }}</li>
+                        <li>{{ _('Unlimited files') }}</li>
+                        <li>{{ _('Image uploads') }}</li>
+                        <li>{{ _('Real-time collaboration') }}</li>
+                    </ul>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Maybe Later') }}</button>
-                <button type="button" class="btn btn-success" onclick="upgradeToPaid()">{{ _('Upgrade Now') }}</button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="hideModal('upgradeModal')">{{ _('Cancel') }}</button>
+            <button class="btn btn-success" onclick="upgradeToPaid()">{{ _('Upgrade Now') }}</button>
         </div>
     </div>
 </div>
-
-<!-- Preview Modal -->
-<div class="modal fade" id="previewModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{ _('PDF Preview') }}</h5>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="refreshPDF()">
-                        <i class="fas fa-sync-alt"></i> {{ _('Refresh') }}
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="downloadPDF()">
-                        <i class="fas fa-download"></i> {{ _('Download') }}
-                    </button>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="pdf-toolbar mb-2">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="zoomPDF(-0.1)">
-                            <i class="fas fa-search-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="zoomPDF(0.1)">
-                            <i class="fas fa-search-plus"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="resetZoom()">
-                            <i class="fas fa-expand-arrows-alt"></i> {{ _('Fit') }}
-                        </button>
-                    </div>
-                    <span class="badge bg-secondary ms-2" id="zoom-level">100%</span>
-                </div>
-                <iframe id="pdf-preview" src="" width="100%" height="600px" style="border: 1px solid #dee2e6; border-radius: 4px;"></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="closePDFModal()">
-                    <i class="fas fa-edit"></i> {{ _('Back to Editor') }}
-                </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {{ _('Close') }}
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- CodeMirror JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/stex/stex.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/anyword-hint.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
 
 <script>
-let currentProject = {{ project.id if project else 'null' }};
-let isDirty = false;
+// ===== EDITOR JAVASCRIPT =====
 let editor;
+let currentProject = {{ project.id }};
+let currentFile = 'main.tex';
 let autoSaveInterval;
-let lastSaveTime = new Date();
+let isDirty = false;
 
-// Initialize CodeMirror
+// Initialize editor when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    initializeEditor();
+    loadFileList();
+    loadPlanInfo();
+    startAutoSave();
+});
+
+function initializeEditor() {
+    // Initialize CodeMirror
     editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
         mode: 'stex',
         theme: 'monokai',
         lineNumbers: true,
-        lineWrapping: true,
         autoCloseBrackets: true,
         matchBrackets: true,
-        indentUnit: 2,
-        tabSize: 2,
+        indentUnit: 4,
+        tabSize: 4,
+        lineWrapping: true,
         extraKeys: {
-            "Ctrl-S": function(cm) {
-                saveProject();
+            "Ctrl-S": function() {
+                saveCurrentFile();
+                return false;
             },
-            "Ctrl-Space": "autocomplete"
-        },
-        hintOptions: {
-            words: [
-                'documentclass', 'usepackage', 'begin', 'end', 'section', 'subsection', 'subsubsection',
-                'textbf', 'textit', 'underline', 'emph', 'textsc', 'textsf', 'texttt',
-                'itemize', 'enumerate', 'item', 'label', 'ref', 'cite',
-                'title', 'author', 'date', 'maketitle', 'tableofcontents',
-                'chapter', 'part', 'paragraph', 'subparagraph',
-                'center', 'flushleft', 'flushright',
-                'footnote', 'marginpar', 'marginparwidth',
-                'figure', 'table', 'caption', 'label', 'ref',
-                'equation', 'align', 'gather', 'multline',
-                'frac', 'sqrt', 'sum', 'int', 'lim', 'infty',
-                'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta',
-                'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi',
-                'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega'
-            ]
+            "F11": function(cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function(cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
         }
     });
-
-    // Auto-save functionality
-    autoSaveInterval = setInterval(function() {
-        if (isDirty) {
-            saveProject(true); // true = auto-save
-        }
-    }, 10000); // Auto-save every 10 seconds
-
-    // Mark as dirty when content changes
+    
+    // Track changes
     editor.on('change', function() {
         isDirty = true;
-        updateAutoSaveStatus();
+        updateStatus('{{ _("Modified") }}', 'saving');
     });
-
+    
     // Load initial content
-    loadProjectContent();
-    
-    // Load file list
-    loadFileList();
-    
-    // Load plan info
-    loadPlanInfo();
-});
-
-function loadProjectContent() {
-    if (!currentProject) return;
-    
-    fetch(`/project/${currentProject}/content`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success && data.content) {
-                editor.setValue(data.content);
-                isDirty = false;
-                updateAutoSaveStatus();
-            }
-        })
-        .catch(error => {
-            console.error('Error loading content:', error);
-        });
+    loadFileContent('main.tex');
 }
-
-function updateAutoSaveStatus() {
-    const status = document.getElementById('auto-save-status');
-    if (isDirty) {
-        status.textContent = '{{ _("Pending") }}';
-        status.className = 'text-warning';
-    } else {
-        status.textContent = '{{ _("Saved") }}';
-        status.className = 'text-success';
-    }
-}
-
-function insertText(prefix, suffix) {
-    const selection = editor.getSelection();
-    const newText = prefix + selection + suffix;
-    
-    editor.replaceSelection(newText);
-    editor.focus();
-    
-    // Position cursor after the prefix
-    const cursor = editor.getCursor();
-    editor.setCursor(cursor.line, cursor.ch - suffix.length);
-    
-    isDirty = true;
-    updateAutoSaveStatus();
-}
-
-function saveProject(isAutoSave = false) {
-    if (!currentProject) return;
-    
-    // Save current file if it's a .tex file
-    if (currentFile.endsWith('.tex')) {
-        saveCurrentFile();
-    }
-    
-    // Also save to main.tex for backward compatibility
-    const content = editor.getValue();
-    
-    fetch(`/project/${currentProject}/save`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({text: content})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            isDirty = false;
-            lastSaveTime = new Date();
-            updateAutoSaveStatus();
-            
-            if (!isAutoSave) {
-                showNotification('{{ _("Project saved successfully!") }}', 'success');
-            }
-        } else {
-            showNotification(data.error || '{{ _("Error saving project") }}', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('{{ _("Error saving project") }}', 'error');
-    });
-}
-
-function compileProject() {
-    if (!currentProject) return;
-    
-    showNotification('{{ _("Compiling PDF...") }}', 'info');
-    
-    fetch(`/project/${currentProject}/compile`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showNotification('{{ _("PDF compiled successfully!") }}', 'success');
-            // Show PDF preview
-            showPDFPreview();
-        } else {
-            showNotification(data.error || '{{ _("Error compiling PDF") }}', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('{{ _("Error compiling PDF") }}', 'error');
-    });
-}
-
-function showPDFPreview() {
-    const iframe = document.getElementById('pdf-preview');
-    iframe.src = `/project/${currentProject}/pdf?t=${Date.now()}`; // Cache bust
-    new bootstrap.Modal(document.getElementById('previewModal')).show();
-}
-
-function closePDFModal() {
-    const modal = bootstrap.Modal.getInstance(document.getElementById('previewModal'));
-    if (modal) {
-        modal.hide();
-    }
-    // Focus back on editor
-    if (editor) {
-        editor.focus();
-    }
-}
-
-function refreshPDF() {
-    const iframe = document.getElementById('pdf-preview');
-    iframe.src = `/project/${currentProject}/pdf?t=${Date.now()}`;
-    showNotification('{{ _("PDF refreshed") }}', 'info');
-}
-
-function downloadPDF() {
-    const link = document.createElement('a');
-    link.href = `/project/${currentProject}/pdf`;
-    link.download = `project_${currentProject}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showNotification('{{ _("PDF download started") }}', 'success');
-}
-
-// PDF Zoom functionality
-let currentZoom = 1.0;
-
-function zoomPDF(factor) {
-    currentZoom = Math.max(0.5, Math.min(2.0, currentZoom + factor));
-    const iframe = document.getElementById('pdf-preview');
-    iframe.style.transform = `scale(${currentZoom})`;
-    iframe.style.transformOrigin = 'top left';
-    document.getElementById('zoom-level').textContent = Math.round(currentZoom * 100) + '%';
-}
-
-function resetZoom() {
-    currentZoom = 1.0;
-    const iframe = document.getElementById('pdf-preview');
-    iframe.style.transform = 'scale(1)';
-    iframe.style.transformOrigin = 'top left';
-    document.getElementById('zoom-level').textContent = '100%';
-}
-
-// File Management Functions
-let currentFile = 'main.tex';
-let fileList = [];
 
 function loadFileList() {
-    if (!currentProject) return;
-    
     fetch(`/project/${currentProject}/files`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                fileList = data.files;
-                renderFileList();
-                updateMainFileSelector();
-            } else {
-                showNotification(data.error || '{{ _("Error loading files") }}', 'error');
+                renderFileList(data.files);
+                updateMainFileSelector(data.files);
             }
         })
         .catch(error => {
-            console.error('Error loading files:', error);
-            showNotification('{{ _("Error loading files") }}', 'error');
+            console.error('Error loading file list:', error);
         });
 }
 
-function renderFileList() {
-    const fileListElement = document.getElementById('file-list');
-    fileListElement.innerHTML = '';
+function renderFileList(files) {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = '';
     
-    fileList.forEach(file => {
-        const li = document.createElement('li');
-        li.className = `file-item ${file.name === currentFile ? 'active' : ''}`;
-        li.setAttribute('data-file', file.name);
+    files.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.onclick = () => openFile(file.name);
         
-        const icon = getFileIcon(file.extension);
-        const size = formatFileSize(file.size);
-        
-        li.innerHTML = `
-            <div class="file-item-content" onclick="openFile('${file.name}')">
-                <i class="${icon}"></i>
-                <span class="file-name">${file.name}</span>
-                <small class="file-size">${size}</small>
+        fileItem.innerHTML = `
+            <div class="file-icon">${getFileIcon(file.name)}</div>
+            <div class="file-info">
+                <div class="file-name">${file.name}</div>
+                <div class="file-size">${formatFileSize(file.size)}</div>
             </div>
             <div class="file-actions">
-                <button class="btn btn-sm btn-outline-secondary" onclick="renameFile('${file.name}')" title="{{ _('Rename') }}">
+                <button class="btn btn-sm btn-outline-light" onclick="event.stopPropagation(); renameFile('${file.name}')" title="{{ _('Rename') }}">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('${file.name}')" title="{{ _('Delete') }}">
+                <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteFile('${file.name}')" title="{{ _('Delete') }}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
         `;
         
-        fileListElement.appendChild(li);
+        fileList.appendChild(fileItem);
     });
+    
+    updateFileListUI();
 }
 
-function getFileIcon(extension) {
-    switch(extension) {
-        case '.tex': return 'fas fa-file-alt';
-        case '.bib': return 'fas fa-book';
-        case '.pdf': return 'fas fa-file-pdf';
-        case '.png':
-        case '.jpg':
-        case '.jpeg':
-        case '.gif': return 'fas fa-file-image';
-        default: return 'fas fa-file';
-    }
+function getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const icons = {
+        'tex': '📄',
+        'bib': '📚',
+        'txt': '📝',
+        'png': '🖼️',
+        'jpg': '🖼️',
+        'jpeg': '🖼️',
+        'gif': '🖼️',
+        'pdf': '📕'
+    };
+    return icons[ext] || '📄';
 }
 
 function formatFileSize(bytes) {
@@ -589,22 +353,16 @@ function formatFileSize(bytes) {
 }
 
 function openFile(filename) {
-    if (filename === currentFile) return;
-    
-    // Save current file if it's a .tex file
-    if (currentFile.endsWith('.tex')) {
+    if (isDirty) {
+        if (!confirm('{{ _("You have unsaved changes. Save before switching files?") }}')) {
+            return;
+        }
         saveCurrentFile();
     }
     
     currentFile = filename;
+    loadFileContent(filename);
     updateFileListUI();
-    
-    // Load file content if it's a .tex file
-    if (filename.endsWith('.tex')) {
-        loadFileContent(filename);
-    } else {
-        showNotification('{{ _("Only .tex files can be edited") }}', 'info');
-    }
 }
 
 function loadFileContent(filename) {
@@ -614,100 +372,113 @@ function loadFileContent(filename) {
             if (data.success) {
                 editor.setValue(data.content);
                 isDirty = false;
-                updateAutoSaveStatus();
+                updateStatus('{{ _("Ready") }}', 'saved');
             } else {
-                showNotification(data.error || '{{ _("Error loading file") }}', 'error');
+                showAlert('{{ _("Error loading file:") }} ' + data.error, 'danger');
             }
         })
         .catch(error => {
             console.error('Error loading file:', error);
-            showNotification('{{ _("Error loading file") }}', 'error');
+            showAlert('{{ _("Error loading file") }}', 'danger');
         });
 }
 
 function saveCurrentFile() {
-    if (!currentProject || !currentFile.endsWith('.tex')) return;
+    if (!currentFile) return;
     
-    const content = editor.getValue();
+    updateStatus('{{ _("Saving") }}...', 'saving');
+    
     fetch(`/project/${currentProject}/files/${currentFile}/save`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({content: content})
+        body: JSON.stringify({
+            content: editor.getValue()
+        })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             isDirty = false;
-            updateAutoSaveStatus();
+            updateStatus('{{ _("Saved") }}', 'saved');
+        } else {
+            updateStatus('{{ _("Error") }}', 'error');
+            showAlert('{{ _("Error saving file:") }} ' + data.error, 'danger');
         }
     })
     .catch(error => {
         console.error('Error saving file:', error);
+        updateStatus('{{ _("Error") }}', 'error');
+        showAlert('{{ _("Error saving file") }}', 'danger');
     });
 }
 
 function updateFileListUI() {
-    document.querySelectorAll('.file-item').forEach(item => {
+    const fileItems = document.querySelectorAll('.file-item');
+    fileItems.forEach(item => {
         item.classList.remove('active');
-        if (item.getAttribute('data-file') === currentFile) {
+        const fileName = item.querySelector('.file-name').textContent;
+        if (fileName === currentFile) {
             item.classList.add('active');
         }
     });
 }
 
 function showCreateFileModal() {
-    if (!checkPlanRestriction('create_file')) return;
-    new bootstrap.Modal(document.getElementById('createFileModal')).show();
+    checkPlanRestriction('create_file', () => {
+        showModal('createFileModal');
+    });
 }
 
 function createFile() {
-    const filename = document.getElementById('filename').value.trim();
-    const fileType = document.getElementById('file-type').value;
+    const fileName = document.getElementById('fileName').value;
+    const fileType = document.getElementById('fileType').value;
     
-    if (!filename) {
-        showNotification('{{ _("Filename is required") }}', 'error');
+    if (!fileName) {
+        showAlert('{{ _("Please enter a file name") }}', 'warning');
         return;
     }
+    
+    const fullFileName = fileName.includes('.') ? fileName : `${fileName}.${fileType}`;
     
     fetch(`/project/${currentProject}/files/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({filename: filename, type: fileType})
+        body: JSON.stringify({
+            filename: fullFileName
+        })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showNotification('{{ _("File created successfully") }}', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('createFileModal')).hide();
-            document.getElementById('create-file-form').reset();
+            hideModal('createFileModal');
             loadFileList();
+            showAlert('{{ _("File created successfully") }}', 'success');
         } else {
-            showNotification(data.error || '{{ _("Error creating file") }}', 'error');
+            showAlert('{{ _("Error creating file:") }} ' + data.error, 'danger');
         }
     })
     .catch(error => {
         console.error('Error creating file:', error);
-        showNotification('{{ _("Error creating file") }}', 'error');
+        showAlert('{{ _("Error creating file") }}', 'danger');
     });
 }
 
 function showUploadModal() {
-    if (!checkPlanRestriction('upload_file')) return;
-    new bootstrap.Modal(document.getElementById('uploadModal')).show();
+    checkPlanRestriction('upload_file', () => {
+        showModal('uploadModal');
+    });
 }
 
 function uploadFile() {
-    const fileInput = document.getElementById('file-input');
+    const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
     
     if (!file) {
-        showNotification('{{ _("Please select a file") }}', 'error');
+        showAlert('{{ _("Please select a file") }}', 'warning');
         return;
     }
     
@@ -716,87 +487,81 @@ function uploadFile() {
     
     fetch(`/project/${currentProject}/files/upload`, {
         method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        },
         body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showNotification('{{ _("File uploaded successfully") }}', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide();
-            document.getElementById('upload-form').reset();
+            hideModal('uploadModal');
             loadFileList();
+            showAlert('{{ _("File uploaded successfully") }}', 'success');
         } else {
-            showNotification(data.error || '{{ _("Error uploading file") }}', 'error');
+            showAlert('{{ _("Error uploading file:") }} ' + data.error, 'danger');
         }
     })
     .catch(error => {
         console.error('Error uploading file:', error);
-        showNotification('{{ _("Error uploading file") }}', 'error');
+        showAlert('{{ _("Error uploading file") }}', 'danger');
     });
 }
 
-function renameFile(filename) {
-    if (!checkPlanRestriction('rename_file')) return;
-    const newName = prompt('{{ _("Enter new filename:") }}', filename);
-    if (!newName || newName === filename) return;
-    
-    fetch(`/project/${currentProject}/files/rename`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({old_name: filename, new_name: newName})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showNotification('{{ _("File renamed successfully") }}', 'success');
-            if (currentFile === filename) {
-                currentFile = newName;
-            }
-            loadFileList();
-        } else {
-            showNotification(data.error || '{{ _("Error renaming file") }}', 'error');
+function renameFile(oldName) {
+    checkPlanRestriction('rename_file', () => {
+        const newName = prompt('{{ _("Enter new name for") }} ' + oldName + ':', oldName);
+        if (newName && newName !== oldName) {
+            fetch(`/project/${currentProject}/files/rename`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    old_name: oldName,
+                    new_name: newName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadFileList();
+                    showAlert('{{ _("File renamed successfully") }}', 'success');
+                } else {
+                    showAlert('{{ _("Error renaming file:") }} ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error renaming file:', error);
+                showAlert('{{ _("Error renaming file") }}', 'danger');
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error renaming file:', error);
-        showNotification('{{ _("Error renaming file") }}', 'error');
     });
 }
 
-function deleteFile(filename) {
-    if (!checkPlanRestriction('delete_file')) return;
-    if (!confirm('{{ _("Are you sure you want to delete this file?") }}')) return;
-    
-    fetch(`/project/${currentProject}/files/delete`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({filename: filename})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showNotification('{{ _("File deleted successfully") }}', 'success');
-            if (currentFile === filename) {
-                currentFile = 'main.tex';
-                loadFileContent(currentFile);
-            }
-            loadFileList();
-        } else {
-            showNotification(data.error || '{{ _("Error deleting file") }}', 'error');
+function deleteFile(fileName) {
+    checkPlanRestriction('delete_file', () => {
+        if (confirm('{{ _("Are you sure you want to delete") }} ' + fileName + '?')) {
+            fetch(`/project/${currentProject}/files/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    filename: fileName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadFileList();
+                    showAlert('{{ _("File deleted successfully") }}', 'success');
+                } else {
+                    showAlert('{{ _("Error deleting file:") }} ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting file:', error);
+                showAlert('{{ _("Error deleting file") }}', 'danger');
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error deleting file:', error);
-        showNotification('{{ _("Error deleting file") }}', 'error');
     });
 }
 
@@ -804,54 +569,150 @@ function refreshFileList() {
     loadFileList();
 }
 
-function updateMainFileSelector() {
-    const select = document.getElementById('main-file-select');
-    select.innerHTML = '';
+function updateMainFileSelector(files) {
+    const select = document.getElementById('mainFileSelect');
+    select.innerHTML = '<option value="">{{ _("Select main file") }}</option>';
     
-    const texFiles = fileList.filter(f => f.extension === '.tex');
-    texFiles.forEach(file => {
-        const option = document.createElement('option');
-        option.value = file.name;
-        option.textContent = file.name;
-        select.appendChild(option);
+    files.forEach(file => {
+        if (file.name.endsWith('.tex')) {
+            const option = document.createElement('option');
+            option.value = file.name;
+            option.textContent = file.name;
+            if (file.name === currentFile) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        }
     });
 }
 
 function setMainFile() {
-    const mainFile = document.getElementById('main-file-select').value;
+    const select = document.getElementById('mainFileSelect');
+    const selectedFile = select.value;
     
-    fetch(`/project/${currentProject}/main-file`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({main_file: mainFile})
+    if (selectedFile) {
+        fetch(`/project/${currentProject}/main-file`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                filename: selectedFile
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('{{ _("Main file updated") }}', 'success');
+            } else {
+                showAlert('{{ _("Error updating main file:") }} ' + data.error, 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating main file:', error);
+            showAlert('{{ _("Error updating main file") }}', 'danger');
+        });
+    }
+}
+
+function compileProject() {
+    updateStatus('{{ _("Compiling") }}...', 'saving');
+    
+    fetch(`/project/${currentProject}/compile`, {
+        method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showNotification('{{ _("Main file updated") }}', 'success');
+            updateStatus('{{ _("Compiled successfully") }}', 'saved');
+            refreshPDF();
+            showAlert('{{ _("PDF compiled successfully") }}', 'success');
         } else {
-            showNotification(data.error || '{{ _("Error updating main file") }}', 'error');
+            updateStatus('{{ _("Compilation error") }}', 'error');
+            showAlert('{{ _("Compilation error:") }} ' + data.error, 'danger');
         }
     })
     .catch(error => {
-        console.error('Error updating main file:', error);
-        showNotification('{{ _("Error updating main file") }}', 'error');
+        console.error('Error compiling project:', error);
+        updateStatus('{{ _("Compilation error") }}', 'error');
+        showAlert('{{ _("Error compiling project") }}', 'danger');
     });
 }
 
-// Plan Management Functions
-let currentPlan = null;
+function refreshPDF() {
+    const pdfViewer = document.getElementById('pdfViewer');
+    pdfViewer.src = `/project/${currentProject}/pdf?t=${Date.now()}`;
+}
 
+function downloadPDF() {
+    window.open(`/project/${currentProject}/pdf`, '_blank');
+}
+
+function zoomIn() {
+    const pdfViewer = document.getElementById('pdfViewer');
+    const currentZoom = parseFloat(pdfViewer.style.zoom) || 1;
+    pdfViewer.style.zoom = Math.min(currentZoom + 0.2, 3);
+}
+
+function zoomOut() {
+    const pdfViewer = document.getElementById('pdfViewer');
+    const currentZoom = parseFloat(pdfViewer.style.zoom) || 1;
+    pdfViewer.style.zoom = Math.max(currentZoom - 0.2, 0.5);
+}
+
+function fitToWidth() {
+    const pdfViewer = document.getElementById('pdfViewer');
+    pdfViewer.style.zoom = 1;
+    pdfViewer.style.width = '100%';
+}
+
+function updateStatus(text, type) {
+    const statusText = document.getElementById('status-text');
+    const statusIndicator = document.querySelector('.status-indicator');
+    
+    statusText.textContent = text;
+    statusIndicator.className = `status-indicator ${type}`;
+}
+
+function startAutoSave() {
+    autoSaveInterval = setInterval(() => {
+        if (isDirty) {
+            saveCurrentFile();
+        }
+    }, 10000); // Auto-save every 10 seconds
+}
+
+function saveProject() {
+    saveCurrentFile();
+}
+
+// Text formatting functions
+function formatText(prefix, suffix) {
+    const selection = editor.getSelection();
+    if (selection) {
+        editor.replaceSelection(prefix + selection + suffix);
+    } else {
+        const cursor = editor.getCursor();
+        editor.replaceRange(prefix + suffix, cursor);
+        editor.setCursor(cursor.line, cursor.ch + prefix.length);
+    }
+    editor.focus();
+}
+
+function insertText(text, suffix = '') {
+    const cursor = editor.getCursor();
+    editor.replaceRange(text + suffix, cursor);
+    editor.setCursor(cursor.line, cursor.ch + text.length);
+    editor.focus();
+}
+
+// Plan management
 function loadPlanInfo() {
     fetch('/plan-info')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                currentPlan = data;
-                updatePlanUI();
+                updatePlanUI(data);
             }
         })
         .catch(error => {
@@ -859,500 +720,62 @@ function loadPlanInfo() {
         });
 }
 
-function updatePlanUI() {
-    if (!currentPlan) return;
-    
+function updatePlanUI(planInfo) {
     const planBadge = document.getElementById('plan-badge');
     const planLimits = document.getElementById('plan-limits');
-    const createFileBtn = document.getElementById('create-file-btn');
-    const uploadFileBtn = document.getElementById('upload-file-btn');
     
-    if (currentPlan.is_paid) {
+    if (planInfo.is_paid) {
         planBadge.textContent = '{{ _("Paid Plan") }}';
-        planBadge.className = 'badge bg-success';
-        planLimits.textContent = '{{ _("Unlimited projects & files") }}';
-        
-        // Enable all features
-        createFileBtn.disabled = false;
-        uploadFileBtn.disabled = false;
+        planBadge.className = 'plan-badge paid';
+        planLimits.textContent = '{{ _("Unlimited projects and files") }}';
     } else {
         planBadge.textContent = '{{ _("Free Plan") }}';
-        planBadge.className = 'badge bg-secondary';
+        planBadge.className = 'plan-badge free';
         planLimits.textContent = `{{ _("1 project, 1 file") }}`;
-        
-        // Disable restricted features
-        if (currentPlan.limits.max_files === 1) {
-            createFileBtn.disabled = true;
-            createFileBtn.title = '{{ _("Upgrade to create more files") }}';
-        }
-        
-        if (!currentPlan.limits.can_upload) {
-            uploadFileBtn.disabled = true;
-            uploadFileBtn.title = '{{ _("Upgrade to upload files") }}';
-        }
     }
+}
+
+function checkPlanRestriction(feature, callback) {
+    fetch('/plan-info')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.is_paid || (feature === 'create_file' && data.limits.max_files > 1)) {
+                    callback();
+                } else {
+                    showUpgradeModal();
+                }
+            } else {
+                showAlert('{{ _("Error checking plan limits") }}', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error checking plan:', error);
+            showAlert('{{ _("Error checking plan limits") }}', 'danger');
+        });
 }
 
 function showUpgradeModal() {
-    new bootstrap.Modal(document.getElementById('upgradeModal')).show();
+    showModal('upgradeModal');
 }
 
 function upgradeToPaid() {
-    // Redirect to payment page
     window.location.href = '{{ url_for("main.payment") }}';
 }
 
-function checkPlanRestriction(action) {
-    if (!currentPlan) return true;
-    
-    switch(action) {
-        case 'create_file':
-            if (currentPlan.limits.max_files === 1) {
-                showUpgradeModal();
-                return false;
-            }
-            break;
-        case 'upload_file':
-            if (!currentPlan.limits.can_upload) {
-                showUpgradeModal();
-                return false;
-            }
-            break;
-        case 'rename_file':
-            if (!currentPlan.limits.can_rename_files) {
-                showUpgradeModal();
-                return false;
-            }
-            break;
-        case 'delete_file':
-            if (!currentPlan.limits.can_delete_files) {
-                showUpgradeModal();
-                return false;
-            }
-            break;
-    }
-    return true;
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-function showNotification(message, type) {
-    // Simple notification - you can enhance this with a proper notification system
-    const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
-    const notification = document.createElement('div');
-    notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 5000);
-}
-
-// Warn before leaving if there are unsaved changes
+// Cleanup on page unload
 window.addEventListener('beforeunload', function(e) {
     if (isDirty) {
         e.preventDefault();
-        e.returnValue = '';
+        e.returnValue = '{{ _("You have unsaved changes. Are you sure you want to leave?") }}';
+    }
+});
+
+// Cleanup interval on page unload
+window.addEventListener('unload', function() {
+    if (autoSaveInterval) {
+        clearInterval(autoSaveInterval);
     }
 });
 </script>
-
-<style>
-.sidebar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-right: 1px solid #dee2e6;
-    min-height: calc(100vh - 56px);
-    padding: 0;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-}
-
-.sidebar-content {
-    padding: 20px;
-    color: white;
-}
-
-.sidebar-header {
-    margin-bottom: 25px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.file-tree-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.file-tree-header h6 {
-    margin: 0;
-}
-
-.file-list {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.file-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 4px;
-    border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.file-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateX(4px);
-}
-
-.file-item.active {
-    background: rgba(255, 255, 255, 0.25);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.file-item-content {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    cursor: pointer;
-    min-width: 0;
-}
-
-.file-item-content i {
-    margin-right: 12px;
-    width: 18px;
-    text-align: center;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.file-item.active .file-item-content i {
-    color: white;
-}
-
-.file-name {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-right: 8px;
-    color: white;
-    font-weight: 500;
-}
-
-.file-size {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.75em;
-    font-weight: 400;
-}
-
-.file-item.active .file-size {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.file-actions {
-    display: flex;
-    gap: 2px;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.file-item:hover .file-actions {
-    opacity: 1;
-}
-
-.file-item.active .file-actions {
-    opacity: 1;
-}
-
-.file-actions .btn {
-    padding: 4px 8px;
-    font-size: 0.75em;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    transition: all 0.2s ease;
-}
-
-.file-actions .btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.05);
-}
-
-.file-actions .btn.btn-outline-danger:hover {
-    background: rgba(220, 53, 69, 0.8);
-    border-color: #dc3545;
-}
-
-.main-file-selector {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: 15px;
-    margin-top: 15px;
-}
-
-.main-file-selector .form-select {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    border-radius: 8px;
-}
-
-.main-file-selector .form-select:focus {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
-}
-
-.main-file-selector .form-select option {
-    background: #667eea;
-    color: white;
-}
-
-.editor-container {
-    height: calc(100vh - 56px);
-    display: flex;
-    flex-direction: column;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    margin: 10px;
-}
-
-.editor-toolbar {
-    padding: 15px 20px;
-    border-bottom: 1px solid #dee2e6;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px 12px 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.editor-toolbar .btn {
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.editor-toolbar .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.editor-toolbar .btn-outline-secondary {
-    border-color: #6c757d;
-    color: #6c757d;
-}
-
-.editor-toolbar .btn-outline-secondary:hover {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    color: white;
-}
-
-#editor-container {
-    flex: 1;
-    position: relative;
-    border-radius: 0 0 12px 12px;
-    overflow: hidden;
-}
-
-.CodeMirror {
-    height: 100%;
-    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    border-radius: 0 0 12px 12px;
-    border: none;
-}
-
-.CodeMirror-focused .CodeMirror-cursor {
-    border-left: 1px solid #fff;
-}
-
-.CodeMirror-selected {
-    background: #3399ff !important;
-}
-
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
-    background: #3399ff !important;
-}
-
-.CodeMirror-gutters {
-    background-color: #2d2d2d;
-    border-right: 1px solid #555;
-}
-
-.CodeMirror-linenumber {
-    color: #888;
-}
-
-.CodeMirror-cursor {
-    border-left: 1px solid #fff;
-}
-
-.CodeMirror-activeline-background {
-    background: #2a2a2a;
-}
-
-.CodeMirror-matchingbracket {
-    background: #3399ff !important;
-    color: #fff !important;
-}
-
-.CodeMirror-nonmatchingbracket {
-    background: #ff3399 !important;
-    color: #fff !important;
-}
-
-/* Auto-save status indicator */
-#auto-save-status {
-    font-weight: bold;
-}
-
-/* PDF Modal styles */
-.pdf-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-}
-
-#pdf-preview {
-    transition: transform 0.2s ease;
-}
-
-.modal-xl {
-    max-width: 95vw;
-}
-
-.modal-body {
-    padding: 0;
-    position: relative;
-}
-
-.modal-body .pdf-toolbar {
-    margin: 0;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-}
-
-/* Custom scrollbar for file list */
-.file-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.file-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
-
-.file-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-}
-
-.file-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-/* Notification improvements */
-.notification {
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
-}
-
-/* Modal improvements */
-.modal-content {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header {
-    border-radius: 12px 12px 0 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-bottom: none;
-}
-
-.modal-header .btn-close {
-    filter: invert(1);
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .editor-toolbar {
-        flex-direction: column;
-    }
-    
-    .btn-group {
-        margin-bottom: 5px;
-    }
-    
-    .modal-xl {
-        max-width: 100vw;
-        margin: 0;
-    }
-    
-    .pdf-toolbar {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .sidebar {
-        min-height: auto;
-    }
-    
-    .editor-container {
-        margin: 5px;
-        border-radius: 8px;
-    }
-}
-</style>
 {% endblock %}

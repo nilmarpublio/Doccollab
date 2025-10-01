@@ -200,7 +200,14 @@ def main():
         "Plan upgraded successfully!": "Plano atualizado com sucesso!",
         "Error upgrading plan:": "Erro ao atualizar plano:",
         "Error upgrading plan. Please try again.": "Erro ao atualizar plano. Tente novamente.",
-        "Sessão encerrada.": "Sessão encerrada."
+        "Sessão encerrada.": "Sessão encerrada.",
+        "LaTeX Editor": "Editor LaTeX",
+        "Powerful LaTeX editor with syntax highlighting and auto-completion": "Editor LaTeX poderoso com destaque de sintaxe e autocompletar",
+        "Real-time collaboration on documents with your team": "Colaboração em tempo real em documentos com sua equipe",
+        "Works perfectly on desktop, tablet, and mobile devices": "Funciona perfeitamente em desktop, tablet e dispositivos móveis",
+        "No projects yet": "Nenhum projeto ainda",
+        "Create your first project to get started!": "Crie seu primeiro projeto para começar!",
+        "Are you sure you want to delete this project?": "Tem certeza de que deseja excluir este projeto?"
     }
     
     # Traduções em inglês
@@ -339,7 +346,14 @@ def main():
         "Plan upgraded successfully!": "Plan upgraded successfully!",
         "Error upgrading plan:": "Error upgrading plan:",
         "Error upgrading plan. Please try again.": "Error upgrading plan. Please try again.",
-        "Sessão encerrada.": "Session ended."
+        "Sessão encerrada.": "Session ended.",
+        "LaTeX Editor": "LaTeX Editor",
+        "Powerful LaTeX editor with syntax highlighting and auto-completion": "Powerful LaTeX editor with syntax highlighting and auto-completion",
+        "Real-time collaboration on documents with your team": "Real-time collaboration on documents with your team",
+        "Works perfectly on desktop, tablet, and mobile devices": "Works perfectly on desktop, tablet, and mobile devices",
+        "No projects yet": "No projects yet",
+        "Create your first project to get started!": "Create your first project to get started!",
+        "Are you sure you want to delete this project?": "Are you sure you want to delete this project?"
     }
     
     # Traduções em espanhol
@@ -382,7 +396,14 @@ def main():
         "Plan upgraded successfully!": "¡Plan actualizado con éxito!",
         "Error upgrading plan:": "Error al actualizar plan:",
         "Error upgrading plan. Please try again.": "Error al actualizar plan. Inténtalo de nuevo.",
-        "Sessão encerrada.": "Sesión cerrada."
+        "Sessão encerrada.": "Sesión cerrada.",
+        "LaTeX Editor": "Editor LaTeX",
+        "Powerful LaTeX editor with syntax highlighting and auto-completion": "Editor LaTeX potente con resaltado de sintaxis y autocompletado",
+        "Real-time collaboration on documents with your team": "Colaboración en tiempo real en documentos con tu equipo",
+        "Works perfectly on desktop, tablet, and mobile devices": "Funciona perfectamente en escritorio, tablet y dispositivos móviles",
+        "No projects yet": "Aún no hay proyectos",
+        "Create your first project to get started!": "¡Crea tu primer proyecto para comenzar!",
+        "Are you sure you want to delete this project?": "¿Estás seguro de que quieres eliminar este proyecto?"
     }
     
     project_dir = os.path.dirname(os.path.abspath(__file__))

@@ -10,12 +10,12 @@ msgstr ""
 "POT-Creation-Date: 2025-09-30 11:04-0300\n"
 "PO-Revision-Date: 2025-09-30 09:19-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en\n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: DocCollab/app.py:61 DocCollab/templates/base.html:19
@@ -26,7 +26,8 @@ msgstr "Home"
 msgid "DocCollab"
 msgstr "DocCollab"
 
-#: DocCollab/templates/auth/login.html:8 DocCollab/templates/auth/login.html:19
+#: DocCollab/templates/auth/login.html:8
+#: DocCollab/templates/auth/login.html:19
 #: DocCollab/templates/auth/register.html:42 DocCollab/templates/base.html:20
 #: DocCollab/templates/index.html:8
 msgid "Sign in"
@@ -48,7 +49,7 @@ msgstr ""
 
 #: DocCollab/templates/dashboard.html:5
 msgid "My Projects"
-msgstr ""
+msgstr "My Projects"
 
 #: DocCollab/templates/dashboard.html:6 DocCollab/templates/dashboard.html:66
 msgid "New Project"
@@ -68,11 +69,11 @@ msgstr ""
 
 #: DocCollab/templates/dashboard.html:21 DocCollab/templates/dashboard.html:48
 msgid "Rename"
-msgstr ""
+msgstr "Rename"
 
 #: DocCollab/templates/dashboard.html:23
 msgid "Delete"
-msgstr ""
+msgstr "Delete"
 
 #: DocCollab/templates/dashboard.html:37
 msgid "Rename Project"
@@ -84,7 +85,7 @@ msgstr ""
 
 #: DocCollab/templates/dashboard.html:47 DocCollab/templates/dashboard.html:80
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel"
 
 #: DocCollab/templates/dashboard.html:57
 msgid "No projects yet. Create the first one!"
@@ -96,11 +97,11 @@ msgstr ""
 
 #: DocCollab/templates/dashboard.html:75
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: DocCollab/templates/dashboard.html:81
 msgid "Create"
-msgstr ""
+msgstr "Create"
 
 #: DocCollab/templates/editor.html:2
 msgid "Editor"
@@ -161,16 +162,16 @@ msgstr ""
 #: DocCollab/templates/auth/login.html:11
 #: DocCollab/templates/auth/register.html:15
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: DocCollab/templates/auth/login.html:15
 #: DocCollab/templates/auth/register.html:19
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: DocCollab/templates/auth/login.html:23
 msgid "No account?"
-msgstr ""
+msgstr "No account?"
 
 #: DocCollab/templates/auth/register.html:2
 msgid "DocCollab - Sign up"
@@ -178,11 +179,11 @@ msgstr ""
 
 #: DocCollab/templates/auth/register.html:11
 msgid "Full name"
-msgstr ""
+msgstr "Full name"
 
 #: DocCollab/templates/auth/register.html:23
 msgid "Confirm password"
-msgstr ""
+msgstr "Confirm password"
 
 #: DocCollab/templates/auth/register.html:27
 msgid "Plan"
@@ -190,19 +191,19 @@ msgstr ""
 
 #: DocCollab/templates/auth/register.html:30
 msgid "Free (1 project)"
-msgstr ""
+msgstr "Free (1 project)"
 
 #: DocCollab/templates/auth/register.html:34
 msgid "Paid (unlimited)"
-msgstr ""
+msgstr "Paid (unlimited)"
 
 #: DocCollab/templates/auth/register.html:38
 msgid "Create account"
-msgstr ""
+msgstr "Create account"
 
 #: DocCollab/templates/auth/register.html:42
 msgid "Already have an account?"
-msgstr ""
+msgstr "Already have an account?"
 
 #: DocCollab/venv/Lib/site-packages/click/_termui_impl.py:608
 #, python-brace-format
@@ -267,8 +268,7 @@ msgstr[1] ""
 #: DocCollab/venv/Lib/site-packages/click/core.py:2505
 #, python-brace-format
 msgid ""
-"DeprecationWarning: The {param_type} {name!r} is "
-"deprecated.{extra_message}"
+"DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
 msgstr ""
 
 #: DocCollab/venv/Lib/site-packages/click/core.py:2956
@@ -510,6 +510,354 @@ msgid_plural "{len_type} values are required, but {len_value} were given."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Sign out"
+msgstr "Sign out"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Upgrade Plan"
+msgstr "Upgrade Plan"
+
+msgid "Create New Project"
+msgstr "Create New Project"
+
+msgid "Project Name"
+msgstr "Project Name"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Free Plan"
+msgstr "Free Plan"
+
+msgid "Paid Plan"
+msgstr "Paid Plan"
+
+msgid "Files"
+msgstr "Files"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Compile PDF"
+msgstr "Compile PDF"
+
+msgid "Auto-save:"
+msgstr "Auto-save:"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Project saved successfully!"
+msgstr "Project saved successfully!"
+
+msgid "Error saving project"
+msgstr "Error saving project"
+
+msgid "PDF compiled successfully!"
+msgstr "PDF compiled successfully!"
+
+msgid "Error compiling PDF"
+msgstr "Error compiling PDF"
+
+msgid "Compiling PDF..."
+msgstr "Compiling PDF..."
+
+msgid "PDF Preview"
+msgstr "PDF Preview"
+
+msgid "Back to Editor"
+msgstr "Back to Editor"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Refresh"
+msgstr "Refresh"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Fit"
+msgstr "Fit"
+
+msgid "Create New File"
+msgstr "Create New File"
+
+msgid "Filename"
+msgstr "Filename"
+
+msgid "File Type"
+msgstr "File Type"
+
+msgid "LaTeX Document (.tex)"
+msgstr "LaTeX Document (.tex)"
+
+msgid "Bibliography (.bib)"
+msgstr "Bibliography (.bib)"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Select File"
+msgstr "Select File"
+
+msgid "Upload"
+msgstr "Upload"
+
+msgid "Enter new filename:"
+msgstr "Enter new filename:"
+
+msgid "Are you sure you want to delete this file?"
+msgstr "Are you sure you want to delete this file?"
+
+msgid "File created successfully"
+msgstr "File created successfully"
+
+msgid "Error creating file"
+msgstr "Error creating file"
+
+msgid "File uploaded successfully"
+msgstr "File uploaded successfully"
+
+msgid "Error uploading file"
+msgstr "Error uploading file"
+
+msgid "File renamed successfully"
+msgstr "File renamed successfully"
+
+msgid "Error renaming file"
+msgstr "Error renaming file"
+
+msgid "File deleted successfully"
+msgstr "File deleted successfully"
+
+msgid "Error deleting file"
+msgstr "Error deleting file"
+
+msgid "Error loading files"
+msgstr "Error loading files"
+
+msgid "Only .tex files can be edited"
+msgstr "Only .tex files can be edited"
+
+msgid "Error loading file"
+msgstr "Error loading file"
+
+msgid "Main file updated"
+msgstr "Main file updated"
+
+msgid "Error updating main file"
+msgstr "Error updating main file"
+
+msgid "Upgrade to Paid Plan"
+msgstr "Upgrade to Paid Plan"
+
+msgid "1 projeto"
+msgstr "1 project"
+
+msgid "1 arquivo (.tex)"
+msgstr "1 file (.tex)"
+
+msgid "Upload de imagens"
+msgstr "Image uploads"
+
+msgid "Múltiplos arquivos"
+msgstr "Multiple files"
+
+msgid "Colaboração"
+msgstr "Collaboration"
+
+msgid "Projetos ilimitados"
+msgstr "Unlimited projects"
+
+msgid "Arquivos ilimitados"
+msgstr "Unlimited files"
+
+msgid "Colaboração em tempo real"
+msgstr "Real-time collaboration"
+
+msgid "Suporte prioritário"
+msgstr "Priority support"
+
+msgid "Recursos avançados"
+msgstr "Advanced features"
+
+msgid "Cancel anytime. No hidden fees."
+msgstr "Cancel anytime. No hidden fees."
+
+msgid "Maybe Later"
+msgstr "Maybe Later"
+
+msgid "Upgrade Now"
+msgstr "Upgrade Now"
+
+msgid "Payment integration coming soon!"
+msgstr "Payment integration coming soon!"
+
+msgid "All new accounts start with a free plan. You can upgrade anytime!"
+msgstr "All new accounts start with a free plan. You can upgrade anytime!"
+
+msgid "Feature Comparison"
+msgstr "Feature Comparison"
+
+msgid "Feature"
+msgstr "Feature"
+
+msgid "Free"
+msgstr "Free"
+
+msgid "Paid"
+msgstr "Paid"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Files per project"
+msgstr "Files per project"
+
+msgid "Image uploads"
+msgstr "Image uploads"
+
+msgid "Real-time collaboration"
+msgstr "Real-time collaboration"
+
+msgid "Priority support"
+msgstr "Priority support"
+
+msgid "Frequently Asked Questions"
+msgstr "Frequently Asked Questions"
+
+msgid "Can I cancel anytime?"
+msgstr "Can I cancel anytime?"
+
+msgid ""
+"Yes! You can cancel your subscription at any time. You will continue to have"
+" access to paid features until the end of your billing period."
+msgstr ""
+"Yes! You can cancel your subscription at any time. You will continue to have"
+" access to paid features until the end of your billing period."
+
+msgid "What payment methods do you accept?"
+msgstr "What payment methods do you accept?"
+
+msgid ""
+"We accept all major credit cards (Visa, MasterCard, American Express) and "
+"PayPal."
+msgstr ""
+"We accept all major credit cards (Visa, MasterCard, American Express) and "
+"PayPal."
+
+msgid "Is my data secure?"
+msgstr "Is my data secure?"
+
+msgid ""
+"Absolutely! We use industry-standard encryption to protect your data and "
+"never share your information with third parties."
+msgstr ""
+"Absolutely! We use industry-standard encryption to protect your data and "
+"never share your information with third parties."
+
+msgid "Payment Information"
+msgstr "Payment Information"
+
+msgid "Card Number"
+msgstr "Card Number"
+
+msgid "Expiry"
+msgstr "Expiry"
+
+msgid "CVV"
+msgstr "CVV"
+
+msgid "Cardholder Name"
+msgstr "Cardholder Name"
+
+msgid "Complete Payment"
+msgstr "Complete Payment"
+
+msgid "Payment integration coming soon! This is a demo."
+msgstr "Payment integration coming soon! This is a demo."
+
+msgid "Simulate successful payment?"
+msgstr "Simulate successful payment?"
+
+msgid "Unlock unlimited projects, files, and collaboration features"
+msgstr "Unlock unlimited projects, files, and collaboration features"
+
+msgid "1 project, 1 file"
+msgstr "1 project, 1 file"
+
+msgid "Unlimited projects & files"
+msgstr "Unlimited projects & files"
+
+msgid "Upgrade to create more files"
+msgstr "Upgrade to create more files"
+
+msgid "Upgrade to upload files"
+msgstr "Upgrade to upload files"
+
+msgid "Create File"
+msgstr "Create File"
+
+msgid "Upload File"
+msgstr "Upload File"
+
+msgid "Main File:"
+msgstr "Main File:"
+
+msgid "PDF refreshed"
+msgstr "PDF refreshed"
+
+msgid "PDF download started"
+msgstr "PDF download started"
+
+msgid "Current Plan"
+msgstr "Current Plan"
+
+msgid "Please select a file"
+msgstr "Please select a file"
+
+msgid "Plan upgraded successfully!"
+msgstr "Plan upgraded successfully!"
+
+msgid "Error upgrading plan:"
+msgstr "Error upgrading plan:"
+
+msgid "Error upgrading plan. Please try again."
+msgstr "Error upgrading plan. Please try again."
+
+msgid "Sessão encerrada."
+msgstr "Session ended."
+
+msgid "LaTeX Editor"
+msgstr "LaTeX Editor"
+
+msgid "Powerful LaTeX editor with syntax highlighting and auto-completion"
+msgstr "Powerful LaTeX editor with syntax highlighting and auto-completion"
+
+msgid "Real-time collaboration on documents with your team"
+msgstr "Real-time collaboration on documents with your team"
+
+msgid "Works perfectly on desktop, tablet, and mobile devices"
+msgstr "Works perfectly on desktop, tablet, and mobile devices"
+
+msgid "No projects yet"
+msgstr "No projects yet"
+
+msgid "Create your first project to get started!"
+msgstr "Create your first project to get started!"
+
+msgid "Are you sure you want to delete this project?"
+msgstr "Are you sure you want to delete this project?"
+
 #~ msgid "DocCollab"
 #~ msgstr ""
 
@@ -611,8 +959,7 @@ msgstr[1] ""
 #~ msgstr[1] ""
 
 #~ msgid ""
-#~ "DeprecationWarning: The {param_type} {name!r} "
-#~ "is deprecated.{extra_message}"
+#~ "DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
 #~ msgstr ""
 
 #~ msgid "env var: {var}"
@@ -785,4 +1132,3 @@ msgstr[1] ""
 
 #~ msgid "Idioma"
 #~ msgstr ""
-

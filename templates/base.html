@@ -5,44 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{{ _('DocCollab') }}{% endblock %}</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
   {% block head %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="{{ url_for('main.index') }}">DocCollab</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="nav-brand" href="{{ url_for('main.index') }}">DocCollab</a>
+      
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
+      
+      <div class="nav-menu" id="navMenu">
+        <ul class="nav-list">
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.index') }}">{{ _('Home') }}</a>
           </li>
           {% if current_user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('main.dashboard') }}">{{ _('Dashboard') }}</a></li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ current_user.name }}
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                <li><a class="dropdown-item" href="{{ url_for('main.dashboard') }}">{{ _('Dashboard') }}</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('main.payment') }}">{{ _('Upgrade Plan') }}</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{ _('Sign out') }}</a></li>
-              </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.dashboard') }}">{{ _('Dashboard') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.payment') }}">{{ _('Upgrade Plan') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ _('Sign out') }}</a>
             </li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a>
+            </li>
           {% endif %}
-          <li class="nav-item dropdown ms-lg-3">
-            <a class="nav-link dropdown-toggle" href="#" id="langMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ _('Language') }}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="langMenu">
+              {{ _('Language') }} ▼
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langMenu">
+            <ul class="dropdown-menu" id="langDropdown">
               <li><a class="dropdown-item" href="{{ url_for('set_language', lang_code='en') }}">English</a></li>
               <li><a class="dropdown-item" href="{{ url_for('set_language', lang_code='pt') }}">Português</a></li>
               <li><a class="dropdown-item" href="{{ url_for('set_language', lang_code='es') }}">Español</a></li>
@@ -53,13 +57,13 @@
     </div>
   </nav>
 
-  <main class="container py-4">
+  <main class="main-content">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          <div class="alert alert-{{ category }}" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
           </div>
         {% endfor %}
       {% endif %}
@@ -68,7 +72,7 @@
     {% block content %}{% endblock %}
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/responsive.js') }}"></script>
 </body>
 </html>
