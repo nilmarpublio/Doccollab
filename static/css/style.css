@@ -58,6 +58,7 @@ body.editor-page .main-content {
   min-height: 600px !important;
   display: flex;
   flex-direction: column;
+  grid-column: 2; /* Garantir que fica na segunda coluna (direita) */
   grid-row: 1; /* Ocupar toda a linha do grid */
 }
 
@@ -94,6 +95,7 @@ body.editor-page .main-content {
   min-width: 300px; /* Largura fixa */
   backdrop-filter: blur(10px); /* Efeito glassmorphism */
   position: relative;
+  grid-column: 1; /* Garantir que fica na primeira coluna (esquerda) */
 }
 
 .sidebar::-webkit-scrollbar {
@@ -147,6 +149,7 @@ body.editor-page .main-content {
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column; /* Layout flexível */
+  grid-column: 2; /* Garantir que fica na segunda coluna (direita) */
   grid-row: 1; /* Ocupar toda a linha do grid */
 }
 
