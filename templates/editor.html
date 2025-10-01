@@ -17,11 +17,8 @@
             <div class="sidebar-header">
                 <h4 class="text-white mb-3">{{ _('Project') }}: {{ project.name }}</h4>
                 <div class="btn-group w-100 mb-3" role="group">
-                    <button type="button" class="btn btn-sm btn-light" onclick="saveProject()">
+                    <button type="button" class="btn btn-sm btn-light w-100" onclick="saveProject()">
                         <i class="fas fa-save"></i> {{ _('Save') }}
-                    </button>
-                    <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
-                        <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
                     </button>
                 </div>
                 <div class="text-center mb-3">
@@ -120,7 +117,7 @@
     </div>
 
     <!-- PDF Panel -->
-    <div class="pdf-panel" id="pdfPanel" style="display: none;">
+    <div class="pdf-panel" id="pdfPanel">
         <div class="pdf-header">
             <h5 class="mb-3">{{ _('PDF Preview') }}</h5>
             <div class="pdf-controls">
@@ -771,7 +768,6 @@ let pdfVisible = false;
 
 function toggleView() {
     const container = document.querySelector('.editor-container');
-    const pdfPanel = document.getElementById('pdfPanel');
     const toggleBtn = document.getElementById('viewToggle');
     const toggleIcon = toggleBtn.querySelector('i');
     const toggleText = toggleBtn.querySelector('span') || toggleBtn.childNodes[2];
@@ -780,8 +776,7 @@ function toggleView() {
     
     if (pdfVisible) {
         // Show PDF panel
-        container.classList.remove('pdf-hidden');
-        pdfPanel.style.display = 'block';
+        container.classList.add('pdf-visible');
         toggleIcon.className = 'fas fa-eye-slash';
         if (toggleText && toggleText.textContent) {
             toggleText.textContent = ' {{ _("Hide PDF") }}';
@@ -790,8 +785,7 @@ function toggleView() {
         }
     } else {
         // Hide PDF panel
-        container.classList.add('pdf-hidden');
-        pdfPanel.style.display = 'none';
+        container.classList.remove('pdf-visible');
         toggleIcon.className = 'fas fa-eye';
         if (toggleText && toggleText.textContent) {
             toggleText.textContent = ' {{ _("Show PDF") }}';

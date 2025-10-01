@@ -6,20 +6,24 @@
 /* ===== EDITOR SPECIFIC STYLES ===== */
 .editor-container {
   display: grid;
-  grid-template-columns: 300px 1fr 400px;
+  grid-template-columns: 300px 1fr;
   grid-template-rows: 1fr;
   gap: 1rem;
   height: calc(100vh - 120px);
   min-height: 600px;
 }
 
-/* Layout when PDF panel is hidden */
-.editor-container.pdf-hidden {
-  grid-template-columns: 300px 1fr;
+/* Layout when PDF panel is shown */
+.editor-container.pdf-visible {
+  grid-template-columns: 300px 1fr 400px;
 }
 
-.editor-container.pdf-hidden .pdf-panel {
-  display: none !important;
+.editor-container .pdf-panel {
+  display: none;
+}
+
+.editor-container.pdf-visible .pdf-panel {
+  display: block;
 }
 
 .sidebar {
