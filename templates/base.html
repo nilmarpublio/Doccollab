@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{{ _('DocCollab') }}{% endblock %}</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
   {% block head %}{% endblock %}
 </head>
@@ -22,28 +24,47 @@
       <div class="nav-menu" id="navMenu">
         <ul class="nav-list">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.index') }}">{{ _('Home') }}</a>
+            <a class="nav-link" href="{{ url_for('main.index') }}">
+              <i class="fas fa-home"></i>
+              {{ _('Home') }}
+            </a>
           </li>
           {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.dashboard') }}">{{ _('Dashboard') }}</a>
+              <a class="nav-link" href="{{ url_for('main.dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i>
+                {{ _('Dashboard') }}
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.payment') }}">{{ _('Upgrade Plan') }}</a>
+              <a class="nav-link" href="{{ url_for('main.payment') }}">
+                <i class="fas fa-crown"></i>
+                {{ _('Upgrade Plan') }}
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.logout') }}">{{ _('Sign out') }}</a>
+              <a class="nav-link" href="{{ url_for('auth.logout') }}">
+                <i class="fas fa-sign-out-alt"></i>
+                {{ _('Sign out') }}
+              </a>
             </li>
           {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a>
+              <a class="nav-link" href="{{ url_for('auth.login') }}">
+                <i class="fas fa-sign-in-alt"></i>
+                {{ _('Sign in') }}
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a>
+              <a class="nav-link" href="{{ url_for('auth.register') }}">
+                <i class="fas fa-user-plus"></i>
+                {{ _('Sign up') }}
+              </a>
             </li>
           {% endif %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="langMenu">
+              <i class="fas fa-globe"></i>
               {{ _('Language') }} ▼
             </a>
             <ul class="dropdown-menu" id="langDropdown">
