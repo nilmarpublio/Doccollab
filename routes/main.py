@@ -4,6 +4,7 @@ from models import db
 from models.project import Project
 from utils.file_ops import ensure_project_dir, create_main_tex, rename_project_dir, trash_project_dir
 from services.latex import compile_latex_to_pdf
+from services.latex_compiler import compile_with_pdflatex
 import os
 
 main_bp = Blueprint('main', __name__)
@@ -137,7 +138,12 @@ def api_compile(project_id):
     if not project:
         return {'ok': False, 'error': 'not_found'}, 404
     project_path = ensure_project_dir(current_app.config['PROJECTS_ROOT'], current_user.id, project.name)
-    ok, pdf_path, err = compile_latex_to_pdf(project_path)
+    # Prefer local pdflatex binary if available; fallback to existing service
+    main_tex_path = os.path.join(project_path, 'main.tex')
+    ok, pdf_path, err = compile_with_pdflatex(main_tex_path)
+    if not ok:
+        # fallback to previous implementation (uses config/env too)
+        ok, pdf_path, err = compile_latex_to_pdf(project_path)
     if not ok:
         # Log server-side for troubleshooting
         try:
