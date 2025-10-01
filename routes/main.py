@@ -148,6 +148,27 @@ def api_compile(project_id):
     return {'success': True}
 
 
+@main_bp.route('/project/<int:project_id>/content')
+@login_required
+def get_project_content(project_id):
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id, is_active=True).first()
+    if not project:
+        return {'success': False, 'error': 'Project not found'}, 404
+    
+    project_path = ensure_project_dir(current_app.config['PROJECTS_ROOT'], current_user.id, project.name)
+    main_tex_path = os.path.join(project_path, 'main.tex')
+    
+    content = ''
+    if os.path.exists(main_tex_path):
+        try:
+            with open(main_tex_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+        except Exception as e:
+            return {'success': False, 'error': f'Error reading file: {str(e)}'}, 500
+    
+    return {'success': True, 'content': content}
+
+
 @main_bp.route('/project/<int:project_id>/pdf')
 @login_required
 def get_pdf(project_id):

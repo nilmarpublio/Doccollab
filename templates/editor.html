@@ -2,6 +2,13 @@
 
 {% block title %}{{ _('Editor') }} - {{ project.name }}{% endblock %}
 
+{% block head %}
+<!-- CodeMirror CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="row">
@@ -16,6 +23,11 @@
                     <button type="button" class="btn btn-sm btn-success" onclick="compileProject()">
                         <i class="fas fa-file-pdf"></i> {{ _('Compile PDF') }}
                     </button>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fas fa-clock"></i> {{ _('Auto-save:') }} <span id="auto-save-status">{{ _('Enabled') }}</span>
+                    </small>
                 </div>
             </div>
             
@@ -40,11 +52,19 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\textit{', '}')">
                             <i class="fas fa-italic"></i>
                         </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\underline{', '}')">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group">
                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\section{', '}')">
                             {{ _('Section') }}
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\subsection{', '}')">
                             {{ _('Subsection') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertText('\\subsubsection{', '}')">
+                            {{ _('Subsubsection') }}
                         </button>
                     </div>
                     <div class="btn-group" role="group">
@@ -55,9 +75,20 @@
                             {{ _('Numbered List') }}
                         </button>
                     </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="insertText('\\begin{quote}\n', '\n\\end{quote}')">
+                            {{ _('Quote') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning" onclick="insertText('\\begin{verbatim}\n', '\n\\end{verbatim}')">
+                            {{ _('Code') }}
+                        </button>
+                    </div>
                 </div>
                 
-                <textarea id="editor" class="form-control" rows="20" placeholder="{{ _('Start writing your LaTeX document...') }}">{{ content or '' }}</textarea>
+                <!-- CodeMirror Editor -->
+                <div id="editor-container">
+                    <textarea id="editor">{{ content or '' }}</textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -78,39 +109,121 @@
     </div>
 </div>
 
+<!-- CodeMirror JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/stex/stex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/anyword-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+
 <script>
 let currentProject = {{ project.id if project else 'null' }};
 let isDirty = false;
+let editor;
+let autoSaveInterval;
+let lastSaveTime = new Date();
 
-// Auto-save functionality
-setInterval(function() {
-    if (isDirty) {
-        saveProject();
-    }
-}, 30000); // Auto-save every 30 seconds
+// Initialize CodeMirror
+document.addEventListener('DOMContentLoaded', function() {
+    editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+        mode: 'stex',
+        theme: 'monokai',
+        lineNumbers: true,
+        lineWrapping: true,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        indentUnit: 2,
+        tabSize: 2,
+        extraKeys: {
+            "Ctrl-S": function(cm) {
+                saveProject();
+            },
+            "Ctrl-Space": "autocomplete"
+        },
+        hintOptions: {
+            words: [
+                'documentclass', 'usepackage', 'begin', 'end', 'section', 'subsection', 'subsubsection',
+                'textbf', 'textit', 'underline', 'emph', 'textsc', 'textsf', 'texttt',
+                'itemize', 'enumerate', 'item', 'label', 'ref', 'cite',
+                'title', 'author', 'date', 'maketitle', 'tableofcontents',
+                'chapter', 'part', 'paragraph', 'subparagraph',
+                'center', 'flushleft', 'flushright',
+                'footnote', 'marginpar', 'marginparwidth',
+                'figure', 'table', 'caption', 'label', 'ref',
+                'equation', 'align', 'gather', 'multline',
+                'frac', 'sqrt', 'sum', 'int', 'lim', 'infty',
+                'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta',
+                'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi',
+                'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega'
+            ]
+        }
+    });
 
-// Mark as dirty when content changes
-document.getElementById('editor').addEventListener('input', function() {
-    isDirty = true;
+    // Auto-save functionality
+    autoSaveInterval = setInterval(function() {
+        if (isDirty) {
+            saveProject(true); // true = auto-save
+        }
+    }, 10000); // Auto-save every 10 seconds
+
+    // Mark as dirty when content changes
+    editor.on('change', function() {
+        isDirty = true;
+        updateAutoSaveStatus();
+    });
+
+    // Load initial content
+    loadProjectContent();
 });
 
-function insertText(prefix, suffix) {
-    const editor = document.getElementById('editor');
-    const start = editor.selectionStart;
-    const end = editor.selectionEnd;
-    const selectedText = editor.value.substring(start, end);
-    const newText = prefix + selectedText + suffix;
-    
-    editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
-    editor.focus();
-    editor.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length);
-    isDirty = true;
-}
-
-function saveProject() {
+function loadProjectContent() {
     if (!currentProject) return;
     
-    const content = document.getElementById('editor').value;
+    fetch(`/project/${currentProject}/content`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.content) {
+                editor.setValue(data.content);
+                isDirty = false;
+                updateAutoSaveStatus();
+            }
+        })
+        .catch(error => {
+            console.error('Error loading content:', error);
+        });
+}
+
+function updateAutoSaveStatus() {
+    const status = document.getElementById('auto-save-status');
+    if (isDirty) {
+        status.textContent = '{{ _("Pending") }}';
+        status.className = 'text-warning';
+    } else {
+        status.textContent = '{{ _("Saved") }}';
+        status.className = 'text-success';
+    }
+}
+
+function insertText(prefix, suffix) {
+    const selection = editor.getSelection();
+    const newText = prefix + selection + suffix;
+    
+    editor.replaceSelection(newText);
+    editor.focus();
+    
+    // Position cursor after the prefix
+    const cursor = editor.getCursor();
+    editor.setCursor(cursor.line, cursor.ch - suffix.length);
+    
+    isDirty = true;
+    updateAutoSaveStatus();
+}
+
+function saveProject(isAutoSave = false) {
+    if (!currentProject) return;
+    
+    const content = editor.getValue();
     
     fetch(`/project/${currentProject}/save`, {
         method: 'POST',
@@ -124,7 +237,12 @@ function saveProject() {
     .then(data => {
         if (data.success) {
             isDirty = false;
-            showNotification('{{ _("Project saved successfully!") }}', 'success');
+            lastSaveTime = new Date();
+            updateAutoSaveStatus();
+            
+            if (!isAutoSave) {
+                showNotification('{{ _("Project saved successfully!") }}', 'success');
+            }
         } else {
             showNotification(data.error || '{{ _("Error saving project") }}', 'error');
         }
@@ -251,20 +369,76 @@ window.addEventListener('beforeunload', function(e) {
     padding: 10px;
     border-bottom: 1px solid #dee2e6;
     background-color: #f8f9fa;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
-#editor {
+#editor-container {
     flex: 1;
-    border: none;
-    resize: none;
+    position: relative;
+}
+
+.CodeMirror {
+    height: 100%;
     font-family: 'Courier New', monospace;
     font-size: 14px;
-    padding: 20px;
+    border: none;
 }
 
-#editor:focus {
-    outline: none;
-    box-shadow: none;
+.CodeMirror-focused .CodeMirror-cursor {
+    border-left: 1px solid #fff;
+}
+
+.CodeMirror-selected {
+    background: #3399ff !important;
+}
+
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
+    background: #3399ff !important;
+}
+
+.CodeMirror-gutters {
+    background-color: #2d2d2d;
+    border-right: 1px solid #555;
+}
+
+.CodeMirror-linenumber {
+    color: #888;
+}
+
+.CodeMirror-cursor {
+    border-left: 1px solid #fff;
+}
+
+.CodeMirror-activeline-background {
+    background: #2a2a2a;
+}
+
+.CodeMirror-matchingbracket {
+    background: #3399ff !important;
+    color: #fff !important;
+}
+
+.CodeMirror-nonmatchingbracket {
+    background: #ff3399 !important;
+    color: #fff !important;
+}
+
+/* Auto-save status indicator */
+#auto-save-status {
+    font-weight: bold;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .editor-toolbar {
+        flex-direction: column;
+    }
+    
+    .btn-group {
+        margin-bottom: 5px;
+    }
 }
 </style>
 {% endblock %}
