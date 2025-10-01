@@ -32,4 +32,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
-https://github.com/nilmarpublio/aqui-se-ensina.git
+
+
+# .gitignore
+*.zip
+*.tmp
+venv/
