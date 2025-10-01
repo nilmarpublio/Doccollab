@@ -43,10 +43,28 @@ def compile_with_pdflatex(main_tex_path: str) -> Tuple[bool, Optional[str], Opti
         out = getattr(e, 'stdout', b'').decode(errors='ignore') or str(e)
         return False, None, f"pdflatex error: {out} | bin={pdflatex_bin} | cwd={project_dir}"
 
-    pdf_path = os.path.join(project_dir, "main.pdf")
+    # Generate PDF with same name as tex file
+    pdf_filename = os.path.splitext(tex_filename)[0] + '.pdf'
+    pdf_path = os.path.join(project_dir, pdf_filename)
     if not os.path.exists(pdf_path):
         return False, None, "PDF not generated"
 
     return True, pdf_path, None
+
+
+def get_main_file(project_path: str) -> str:
+    """Get the main file for compilation from project directory"""
+    main_file_path = os.path.join(project_path, '.mainfile')
+    if os.path.exists(main_file_path):
+        try:
+            with open(main_file_path, 'r') as f:
+                main_file = f.read().strip()
+                if main_file and os.path.exists(os.path.join(project_path, main_file)):
+                    return main_file
+        except Exception:
+            pass
+    
+    # Fallback to main.tex
+    return 'main.tex'
 
 

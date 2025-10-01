@@ -32,12 +32,29 @@
             </div>
             
             <div class="file-tree">
-                <h6>{{ _('Files') }}</h6>
-                <ul id="file-list">
-                    <li class="file-item active" data-file="main.tex">
-                        <i class="fas fa-file-alt"></i> main.tex
-                    </li>
+                <div class="file-tree-header">
+                    <h6>{{ _('Files') }}</h6>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="showCreateFileModal()" title="{{ _('Create File') }}">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showUploadModal()" title="{{ _('Upload File') }}">
+                            <i class="fas fa-upload"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-info btn-sm" onclick="refreshFileList()" title="{{ _('Refresh') }}">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <ul id="file-list" class="file-list">
+                    <!-- Files will be loaded here -->
                 </ul>
+                <div class="main-file-selector mt-3">
+                    <label class="form-label small">{{ _('Main File:') }}</label>
+                    <select id="main-file-select" class="form-select form-select-sm" onchange="setMainFile()">
+                        <option value="main.tex">main.tex</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -89,6 +106,62 @@
                 <div id="editor-container">
                     <textarea id="editor">{{ content or '' }}</textarea>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create File Modal -->
+<div class="modal fade" id="createFileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('Create New File') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="create-file-form">
+                    <div class="mb-3">
+                        <label for="filename" class="form-label">{{ _('Filename') }}</label>
+                        <input type="text" class="form-control" id="filename" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file-type" class="form-label">{{ _('File Type') }}</label>
+                        <select class="form-select" id="file-type">
+                            <option value="tex">{{ _('LaTeX Document (.tex)') }}</option>
+                            <option value="bib">{{ _('Bibliography (.bib)') }}</option>
+                            <option value="other">{{ _('Other') }}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                <button type="button" class="btn btn-primary" onclick="createFile()">{{ _('Create') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload File Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('Upload File') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file-input" class="form-label">{{ _('Select File') }}</label>
+                        <input type="file" class="form-control" id="file-input" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                <button type="button" class="btn btn-primary" onclick="uploadFile()">{{ _('Upload') }}</button>
             </div>
         </div>
     </div>
@@ -205,6 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load initial content
     loadProjectContent();
+    
+    // Load file list
+    loadFileList();
 });
 
 function loadProjectContent() {
@@ -253,6 +329,12 @@ function insertText(prefix, suffix) {
 function saveProject(isAutoSave = false) {
     if (!currentProject) return;
     
+    // Save current file if it's a .tex file
+    if (currentFile.endsWith('.tex')) {
+        saveCurrentFile();
+    }
+    
+    // Also save to main.tex for backward compatibility
     const content = editor.getValue();
     
     fetch(`/project/${currentProject}/save`, {
@@ -362,6 +444,333 @@ function resetZoom() {
     document.getElementById('zoom-level').textContent = '100%';
 }
 
+// File Management Functions
+let currentFile = 'main.tex';
+let fileList = [];
+
+function loadFileList() {
+    if (!currentProject) return;
+    
+    fetch(`/project/${currentProject}/files`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                fileList = data.files;
+                renderFileList();
+                updateMainFileSelector();
+            } else {
+                showNotification(data.error || '{{ _("Error loading files") }}', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading files:', error);
+            showNotification('{{ _("Error loading files") }}', 'error');
+        });
+}
+
+function renderFileList() {
+    const fileListElement = document.getElementById('file-list');
+    fileListElement.innerHTML = '';
+    
+    fileList.forEach(file => {
+        const li = document.createElement('li');
+        li.className = `file-item ${file.name === currentFile ? 'active' : ''}`;
+        li.setAttribute('data-file', file.name);
+        
+        const icon = getFileIcon(file.extension);
+        const size = formatFileSize(file.size);
+        
+        li.innerHTML = `
+            <div class="file-item-content" onclick="openFile('${file.name}')">
+                <i class="${icon}"></i>
+                <span class="file-name">${file.name}</span>
+                <small class="file-size">${size}</small>
+            </div>
+            <div class="file-actions">
+                <button class="btn btn-sm btn-outline-secondary" onclick="renameFile('${file.name}')" title="{{ _('Rename') }}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteFile('${file.name}')" title="{{ _('Delete') }}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        fileListElement.appendChild(li);
+    });
+}
+
+function getFileIcon(extension) {
+    switch(extension) {
+        case '.tex': return 'fas fa-file-alt';
+        case '.bib': return 'fas fa-book';
+        case '.pdf': return 'fas fa-file-pdf';
+        case '.png':
+        case '.jpg':
+        case '.jpeg':
+        case '.gif': return 'fas fa-file-image';
+        default: return 'fas fa-file';
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function openFile(filename) {
+    if (filename === currentFile) return;
+    
+    // Save current file if it's a .tex file
+    if (currentFile.endsWith('.tex')) {
+        saveCurrentFile();
+    }
+    
+    currentFile = filename;
+    updateFileListUI();
+    
+    // Load file content if it's a .tex file
+    if (filename.endsWith('.tex')) {
+        loadFileContent(filename);
+    } else {
+        showNotification('{{ _("Only .tex files can be edited") }}', 'info');
+    }
+}
+
+function loadFileContent(filename) {
+    fetch(`/project/${currentProject}/files/${filename}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                editor.setValue(data.content);
+                isDirty = false;
+                updateAutoSaveStatus();
+            } else {
+                showNotification(data.error || '{{ _("Error loading file") }}', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading file:', error);
+            showNotification('{{ _("Error loading file") }}', 'error');
+        });
+}
+
+function saveCurrentFile() {
+    if (!currentProject || !currentFile.endsWith('.tex')) return;
+    
+    const content = editor.getValue();
+    fetch(`/project/${currentProject}/files/${currentFile}/save`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({content: content})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            isDirty = false;
+            updateAutoSaveStatus();
+        }
+    })
+    .catch(error => {
+        console.error('Error saving file:', error);
+    });
+}
+
+function updateFileListUI() {
+    document.querySelectorAll('.file-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-file') === currentFile) {
+            item.classList.add('active');
+        }
+    });
+}
+
+function showCreateFileModal() {
+    new bootstrap.Modal(document.getElementById('createFileModal')).show();
+}
+
+function createFile() {
+    const filename = document.getElementById('filename').value.trim();
+    const fileType = document.getElementById('file-type').value;
+    
+    if (!filename) {
+        showNotification('{{ _("Filename is required") }}', 'error');
+        return;
+    }
+    
+    fetch(`/project/${currentProject}/files/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({filename: filename, type: fileType})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('{{ _("File created successfully") }}', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('createFileModal')).hide();
+            document.getElementById('create-file-form').reset();
+            loadFileList();
+        } else {
+            showNotification(data.error || '{{ _("Error creating file") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error creating file:', error);
+        showNotification('{{ _("Error creating file") }}', 'error');
+    });
+}
+
+function showUploadModal() {
+    new bootstrap.Modal(document.getElementById('uploadModal')).show();
+}
+
+function uploadFile() {
+    const fileInput = document.getElementById('file-input');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showNotification('{{ _("Please select a file") }}', 'error');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    fetch(`/project/${currentProject}/files/upload`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('{{ _("File uploaded successfully") }}', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide();
+            document.getElementById('upload-form').reset();
+            loadFileList();
+        } else {
+            showNotification(data.error || '{{ _("Error uploading file") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error uploading file:', error);
+        showNotification('{{ _("Error uploading file") }}', 'error');
+    });
+}
+
+function renameFile(filename) {
+    const newName = prompt('{{ _("Enter new filename:") }}', filename);
+    if (!newName || newName === filename) return;
+    
+    fetch(`/project/${currentProject}/files/rename`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({old_name: filename, new_name: newName})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('{{ _("File renamed successfully") }}', 'success');
+            if (currentFile === filename) {
+                currentFile = newName;
+            }
+            loadFileList();
+        } else {
+            showNotification(data.error || '{{ _("Error renaming file") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error renaming file:', error);
+        showNotification('{{ _("Error renaming file") }}', 'error');
+    });
+}
+
+function deleteFile(filename) {
+    if (!confirm('{{ _("Are you sure you want to delete this file?") }}')) return;
+    
+    fetch(`/project/${currentProject}/files/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({filename: filename})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('{{ _("File deleted successfully") }}', 'success');
+            if (currentFile === filename) {
+                currentFile = 'main.tex';
+                loadFileContent(currentFile);
+            }
+            loadFileList();
+        } else {
+            showNotification(data.error || '{{ _("Error deleting file") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting file:', error);
+        showNotification('{{ _("Error deleting file") }}', 'error');
+    });
+}
+
+function refreshFileList() {
+    loadFileList();
+}
+
+function updateMainFileSelector() {
+    const select = document.getElementById('main-file-select');
+    select.innerHTML = '';
+    
+    const texFiles = fileList.filter(f => f.extension === '.tex');
+    texFiles.forEach(file => {
+        const option = document.createElement('option');
+        option.value = file.name;
+        option.textContent = file.name;
+        select.appendChild(option);
+    });
+}
+
+function setMainFile() {
+    const mainFile = document.getElementById('main-file-select').value;
+    
+    fetch(`/project/${currentProject}/main-file`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({main_file: mainFile})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('{{ _("Main file updated") }}', 'success');
+        } else {
+            showNotification(data.error || '{{ _("Error updating main file") }}', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating main file:', error);
+        showNotification('{{ _("Error updating main file") }}', 'error');
+    });
+}
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -419,25 +828,100 @@ window.addEventListener('beforeunload', function(e) {
     border-bottom: 1px solid #dee2e6;
 }
 
-.file-tree ul {
+.file-tree-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.file-tree-header h6 {
+    margin: 0;
+}
+
+.file-list {
     list-style: none;
     padding-left: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .file-item {
-    padding: 5px 10px;
-    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
     border-radius: 4px;
     margin-bottom: 2px;
+    border: 1px solid transparent;
 }
 
 .file-item:hover {
     background-color: #e9ecef;
+    border-color: #dee2e6;
 }
 
 .file-item.active {
     background-color: #007bff;
     color: white;
+    border-color: #0056b3;
+}
+
+.file-item-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.file-item-content i {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+.file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 8px;
+}
+
+.file-size {
+    color: #6c757d;
+    font-size: 0.75em;
+}
+
+.file-item.active .file-size {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.file-actions {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.file-item:hover .file-actions {
+    opacity: 1;
+}
+
+.file-item.active .file-actions {
+    opacity: 1;
+}
+
+.file-actions .btn {
+    padding: 2px 6px;
+    font-size: 0.75em;
+}
+
+.main-file-selector {
+    border-top: 1px solid #dee2e6;
+    padding-top: 10px;
 }
 
 .editor-container {
