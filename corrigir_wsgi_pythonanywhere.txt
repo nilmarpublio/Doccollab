@@ -1,0 +1,4 @@
+# COMANDO PARA CORRIGIR CONFIGURAÇÃO WSGI NO PYTHONANYWHERE
+# Copie e cole este comando no console do PythonAnywhere
+
+echo "🔧 CORRIGINDO CONFIGURAÇÃO WSGI" && echo "================================" && echo "1. Verificando configuração atual do WSGI..." && cat /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "" && echo "2. Corrigindo caminho no WSGI..." && sed -i 's|/home/123nilmarcastro/DocCollab|/home/123nilmarcastro/doccollab|g' /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "3. Verificando correção..." && cat /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "" && echo "4. Testando aplicação..." && cd ~/doccollab && source venv/bin/activate && python -c "from app import create_app; app, socketio = create_app(); print('✅ App OK')" && echo "================================" && echo "✅ CORREÇÃO CONCLUÍDA!" && echo "Agora vá para a aba 'Web' e clique em 'Reload'"

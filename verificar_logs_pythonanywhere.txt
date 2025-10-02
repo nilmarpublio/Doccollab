@@ -1,0 +1,4 @@
+# COMANDO PARA VERIFICAR LOGS DE ERRO NO PYTHONANYWHERE
+# Copie e cole este comando no console do PythonAnywhere
+
+echo "🔍 VERIFICANDO LOGS DE ERRO" && echo "===========================" && echo "1. Log de erro (últimas 20 linhas):" && tail -20 /var/log/123nilmarcastro.pythonanywhere.com.error.log && echo "" && echo "2. Log do servidor (últimas 10 linhas):" && tail -10 /var/log/123nilmarcastro.pythonanywhere.com.server.log && echo "" && echo "3. Verificando configuração WSGI:" && cat /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "" && echo "4. Testando aplicação localmente:" && cd ~/doccollab && source venv/bin/activate && python -c "from app import create_app; app, socketio = create_app(); print('✅ App OK')" 2>&1 || echo "❌ Erro na aplicação" && echo "===========================" && echo "✅ VERIFICAÇÃO CONCLUÍDA!"

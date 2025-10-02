@@ -1,0 +1,4 @@
+# COMANDO SIMPLES PARA CORRIGIR WSGI
+# Copie e cole este comando no console do PythonAnywhere
+
+echo "🔧 CORRIGINDO WSGI - ERRO DE UNPACK" && sed -i 's/app, socketio = create_app()/app = create_app()/g' /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "✅ WSGI corrigido!" && echo "Testando aplicação..." && cd ~/doccollab && source venv/bin/activate && python -c "from app import create_app; app = create_app(); print('✅ App OK')" && echo "Agora vá para a aba 'Web' e clique em 'Reload'"

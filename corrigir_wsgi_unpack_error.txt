@@ -1,0 +1,25 @@
+# COMANDO PARA CORRIGIR ERRO DE UNPACK NO WSGI
+# Copie e cole este comando no console do PythonAnywhere
+
+echo "🔧 CORRIGINDO ERRO DE UNPACK NO WSGI" && echo "====================================" && echo "1. Verificando função create_app no app.py..." && grep -A 10 "def create_app" app.py && echo "" && echo "2. Corrigindo wsgi.py..." && cat > /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py << 'EOF'
+import sys
+import os
+
+# Add your project directory to the Python path
+path = '/home/123nilmarcastro/doccollab'
+if path not in sys.path:
+    sys.path.append(path)
+
+# Change to the project directory
+os.chdir(path)
+
+# Import your Flask app
+from app import create_app
+
+# Create the Flask app
+app = create_app()
+
+# For PythonAnywhere, we need to use the app directly
+application = app
+EOF
+echo "3. Verificando correção..." && cat /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "" && echo "4. Testando aplicação..." && cd ~/doccollab && source venv/bin/activate && python -c "from app import create_app; app = create_app(); print('✅ App OK')" && echo "====================================" && echo "✅ CORREÇÃO CONCLUÍDA!" && echo "Agora vá para a aba 'Web' e clique em 'Reload'"

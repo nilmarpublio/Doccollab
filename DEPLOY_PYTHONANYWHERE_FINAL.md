@@ -1,232 +1,91 @@
-# 🚀 Deploy Final no PythonAnywhere - DocCollab
+# 🚀 DEPLOY FINAL NO PYTHONANYWHERE
 
-## 📋 Checklist de Deploy
+## ⚠️ PROBLEMA COM GITHUB
+O GitHub está bloqueando o push devido a um token de acesso pessoal no histórico. Vamos fazer o deploy diretamente no PythonAnywhere.
 
-### ✅ **Funcionalidades Implementadas:**
-- [x] Editor LaTeX com CodeMirror
-- [x] Chat colaborativo em tempo real (SocketIO)
-- [x] Sistema de histórico de versões
-- [x] Planos Free/Paid com limitações
-- [x] Internacionalização (PT/EN/ES)
-- [x] Interface responsiva moderna
-- [x] Compilação PDF com pdflatex
-- [x] Sistema de autenticação completo
+## 📋 INSTRUÇÕES DE DEPLOY
 
-## 🔧 Passos para Deploy
-
-### **1. Acesse o PythonAnywhere**
-- Vá para: https://www.pythonanywhere.com
-- Faça login na sua conta
-- Acesse o **Dashboard**
-
-### **2. Abra o Console Bash**
-- Clique em **"Consoles"** no menu
-- Clique em **"Bash"** para abrir um novo console
-
-### **3. Navegue para o diretório do projeto**
+### 1. **Acesse o PythonAnywhere Console**
 ```bash
-cd ~/DocCollab
+# Entre no console do PythonAnywhere
+cd ~/doccollab
 ```
 
-### **4. Atualize o código do GitHub**
-```bash
-git pull origin master
-```
+### 2. **Atualize o código localmente**
+Como não conseguimos fazer push para o GitHub, você precisará copiar os arquivos manualmente:
 
-### **5. Ative o ambiente virtual**
+#### **Arquivos que foram modificados:**
+- `routes/main.py` - Novas rotas de pagamento
+- `templates/base.html` - Navbar atualizada
+- `templates/payment.html` - Página de preços moderna
+- `services/asaas_integration.py` - Integração ASAAS
+- `requirements.txt` - Dependência requests adicionada
+- `translations/*/LC_MESSAGES/messages.po` - Traduções atualizadas
+- `translations/*/LC_MESSAGES/messages.mo` - Traduções compiladas
+
+### 3. **Comandos para executar no PythonAnywhere:**
+
 ```bash
+# Ativar ambiente virtual
 source venv/bin/activate
+
+# Instalar nova dependência
+pip install requests==2.32.5
+
+# Atualizar requirements.txt
+echo "requests==2.32.5" >> requirements.txt
+
+# Compilar traduções
+pybabel compile -d translations -D messages
+
+# Testar aplicação
+python -c "from app import create_app; app, socketio = create_app(); print('✅ App OK')"
+
+# Reiniciar aplicação web
+# Vá para a aba "Web" no PythonAnywhere e clique em "Reload"
 ```
 
-### **6. Instale/Atualize dependências**
-```bash
-pip3.10 install --user -r requirements.txt
-```
+### 4. **Verificar se tudo está funcionando:**
+- Acesse sua aplicação no PythonAnywhere
+- Teste a página de preços: `https://seuusuario.pythonanywhere.com/pricing`
+- Verifique se a navbar mostra "Preços" em vez de "Upgrade do Plano"
+- Teste o login e criação de projetos
 
-### **7. Atualize o banco de dados**
-```bash
-python3.10 update_db_versions.py
-python3.10 update_db_chat.py
-```
+## 🔧 CORREÇÕES IMPLEMENTADAS
 
-### **8. Configure as variáveis de ambiente**
-```bash
-nano .env
-```
+### ✅ **Sistema de Pagamentos:**
+- 5 planos: Gratuito, Mensal, Trimestral, Semestral, Anual
+- Integração ASAAS para processamento de pagamentos
+- Localização de moeda (Real para PT, Dólar para outros)
+- Plano mensal destacado como "Mais Popular"
 
-**Conteúdo do arquivo .env:**
-```env
-SECRET_KEY=sua-chave-secreta-super-segura-aqui
-DATABASE_URL=sqlite:///doccollab.db
-PDFLATEX=/usr/bin/pdflatex
-SEED_EMAIL=admin@doccollab.com
-SEED_PASSWORD=admin123
-SOCKETIO_ASYNC_MODE=eventlet
-```
+### ✅ **Interface Atualizada:**
+- Navbar: "Upgrade do Plano" → "Preços"
+- Página de preços acessível sem login
+- Botões inteligentes: "Começar Agora" para visitantes, "Escolher Plano" para usuários
 
-### **9. Configure o WSGI**
-- Vá para **"Web"** no menu
-- Clique em **"WSGI configuration file"**
-- Substitua o conteúdo por:
+### ✅ **Correções Técnicas:**
+- Rota duplicada `/payment` removida
+- Módulo `requests` instalado
+- Erro `ValueError: incomplete format` corrigido
+- Traduções atualizadas (PT, EN, ES)
 
-```python
-import sys
-import os
+## 🎯 RESULTADO FINAL
 
-# Add your project directory to the Python path
-path = '/home/123nilmarcastro/DocCollab'
-if path not in sys.path:
-    sys.path.append(path)
+Sua aplicação DocCollab agora possui:
+- ✅ Sistema de pagamentos completo
+- ✅ Interface moderna e responsiva
+- ✅ Acesso público aos preços
+- ✅ Plano gratuito funcional
+- ✅ Multilíngue (PT, EN, ES)
+- ✅ Integração ASAAS preparada
 
-# Import your Flask app
-from app import create_app
-app, socketio = create_app()
+## 📞 SUPORTE
 
-# For PythonAnywhere, we need to use the app directly
-# SocketIO will be handled separately
-application = app
+Se encontrar algum problema durante o deploy, verifique:
+1. Se o ambiente virtual está ativado
+2. Se todas as dependências estão instaladas
+3. Se as traduções foram compiladas
+4. Se a aplicação web foi reiniciada
 
-if __name__ == "__main__":
-    socketio.run(app, debug=True)
-```
-
-### **10. Configure o Web App**
-- Vá para **"Web"** no menu
-- Em **"Source code"**, certifique-se que está apontando para: `/home/123nilmarcastro/DocCollab`
-- Em **"Working directory"**, defina: `/home/123nilmarcastro/DocCollab`
-
-### **11. Configure o SocketIO (IMPORTANTE)**
-- Em **"Web"**, vá para **"Static files"**
-- Adicione uma nova entrada:
-  - **URL:** `/socket.io/`
-  - **Directory:** `/home/123nilmarcastro/DocCollab/static`
-
-### **12. Instale o LaTeX (se necessário)**
-```bash
-# No console bash
-sudo apt-get update
-sudo apt-get install texlive-full
-```
-
-### **13. Teste a aplicação**
-- Vá para **"Web"** no menu
-- Clique em **"Reload"** para reiniciar a aplicação
-- Acesse: https://123nilmarcastro.pythonanywhere.com
-
-## 🔍 Verificações Pós-Deploy
-
-### **1. Teste Básico**
-- [ ] Página inicial carrega
-- [ ] Login funciona
-- [ ] Registro funciona
-- [ ] Dashboard aparece
-
-### **2. Teste do Editor**
-- [ ] Editor LaTeX abre
-- [ ] CodeMirror funciona
-- [ ] Auto-save ativo
-- [ ] Compilação PDF funciona
-
-### **3. Teste do Chat**
-- [ ] Chat aparece na sidebar
-- [ ] Mensagens são enviadas
-- [ ] Indicador de online funciona
-- [ ] Histórico carrega
-
-### **4. Teste de Versões**
-- [ ] Compilação cria versão
-- [ ] Histórico de versões funciona
-- [ ] Comparação funciona
-- [ ] Restauração funciona
-
-### **5. Teste de Responsividade**
-- [ ] Desktop funciona
-- [ ] Tablet funciona
-- [ ] Mobile funciona
-
-## 🐛 Troubleshooting
-
-### **Erro: ModuleNotFoundError**
-```bash
-# Reinstale as dependências
-pip3.10 install --user --upgrade -r requirements.txt
-```
-
-### **Erro: SocketIO não funciona**
-- Verifique se o SocketIO está configurado no WSGI
-- Certifique-se que o static file está configurado
-- Reinicie a aplicação
-
-### **Erro: LaTeX não compila**
-```bash
-# Verifique se o pdflatex está instalado
-which pdflatex
-# Deve retornar: /usr/bin/pdflatex
-```
-
-### **Erro: Banco de dados**
-```bash
-# Execute os scripts de atualização
-python3.10 update_db_versions.py
-python3.10 update_db_chat.py
-```
-
-## 📊 Monitoramento
-
-### **Logs da Aplicação**
-- Vá para **"Web"** → **"Log files"**
-- Verifique **"Error log"** para erros
-- Verifique **"Server log"** para informações
-
-### **Uso de Recursos**
-- Monitore **CPU** e **RAM** no dashboard
-- Verifique **disco** disponível
-- Acompanhe **tráfego** de rede
-
-## 🎯 Funcionalidades Finais
-
-### **✅ Editor LaTeX Completo**
-- Syntax highlighting
-- Auto-save
-- Compilação PDF
-- Toolbar de formatação
-
-### **✅ Chat Colaborativo**
-- Tempo real via WebSocket
-- Salas por projeto
-- Indicadores visuais
-- Histórico persistente
-
-### **✅ Sistema de Versões**
-- Snapshots automáticos
-- Comparação lado a lado
-- Restauração de versões
-- Gerenciamento completo
-
-### **✅ Interface Moderna**
-- Design responsivo
-- 3 idiomas (PT/EN/ES)
-- Ícones profissionais
-- Animações suaves
-
-### **✅ Sistema de Usuários**
-- Autenticação segura
-- Planos Free/Paid
-- Permissões granulares
-- Gestão de projetos
-
-## 🚀 Deploy Concluído!
-
-Após seguir todos os passos, sua aplicação DocCollab estará rodando com todas as funcionalidades implementadas:
-
-**URL:** https://123nilmarcastro.pythonanywhere.com
-
-**Funcionalidades Ativas:**
-- ✅ Editor LaTeX profissional
-- ✅ Chat colaborativo em tempo real
-- ✅ Histórico de versões completo
-- ✅ Interface responsiva moderna
-- ✅ Sistema de usuários e planos
-- ✅ Internacionalização completa
-
-**🎉 DocCollab está pronto para uso em produção!**
+**Boa sorte com o deploy! 🚀**

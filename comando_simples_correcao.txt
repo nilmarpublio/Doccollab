@@ -1,0 +1,4 @@
+# COMANDO SIMPLES PARA CORRIGIR O ERRO
+# Copie e cole este comando no console do PythonAnywhere
+
+echo "🔧 CORRIGINDO ERRO DE CAMINHO NO WSGI" && sed -i 's|/home/123nilmarcastro/DocCollab|/home/123nilmarcastro/doccollab|g' /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py && echo "✅ Caminho corrigido!" && echo "Agora vá para a aba 'Web' e clique em 'Reload'"

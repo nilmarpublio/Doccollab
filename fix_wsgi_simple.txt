@@ -1,0 +1,9 @@
+# COMANDO SIMPLES PARA CORRIGIR WSGI
+# Copie e cole este comando no console do PythonAnywhere
+
+sed -i 's/app, socketio = create_app()/app = create_app()/g' /var/www/123nilmarcastro_pythonanywhere_com_wsgi.py
+echo "WSGI corrigido!"
+cd ~/doccollab
+source venv/bin/activate
+python -c "from app import create_app; app = create_app(); print('App OK')"
+echo "Agora va para a aba Web e clique em Reload"

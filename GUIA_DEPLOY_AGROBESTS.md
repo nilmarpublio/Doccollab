@@ -134,3 +134,4 @@ SEED_PASSWORD=admin123456
 **💡 Dica:** Se travar em algum passo, me fale exatamente onde parou que te ajudo!
 
 
+
