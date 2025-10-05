@@ -1,31 +1,31 @@
 {% extends "base.html" %}
-{% block title %}{{ _('DocCollab - Home') }}{% endblock %}
+{% block title %}DocCollab - Home{% endblock %}
 {% block content %}
   <div class="hero-section">
     <div class="hero-content">
-      <h1 class="hero-title">{{ _('Welcome to DocCollab') }}</h1>
-      <p class="hero-subtitle">{{ _('Create and collaborate on documents easily.') }}</p>
+      <h1 class="hero-title">Welcome to DocCollab</h1>
+      <p class="hero-subtitle">Create and collaborate on documents easily.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">{{ _('Sign in') }}</a>
-        <a class="btn btn-outline btn-lg" href="{{ url_for('auth.register') }}">{{ _('Sign up') }}</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}">Sign in</a>
+        <a class="btn btn-outline btn-lg" href="{{ url_for('register') }}">Sign up</a>
       </div>
     </div>
     <div class="hero-features">
       <div class="feature-grid">
         <div class="feature-card">
           <div class="feature-icon">📝</div>
-          <h3>{{ _('LaTeX Editor') }}</h3>
-          <p>{{ _('Powerful LaTeX editor with syntax highlighting and auto-completion') }}</p>
+          <h3>LaTeX Editor</h3>
+          <p>Powerful LaTeX editor with syntax highlighting and auto-completion</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">👥</div>
-          <h3>{{ _('Collaboration') }}</h3>
-          <p>{{ _('Real-time collaboration on documents with your team') }}</p>
+          <h3>Collaboration</h3>
+          <p>Real-time collaboration on documents with your team</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📱</div>
-          <h3>{{ _('Responsive') }}</h3>
-          <p>{{ _('Works perfectly on desktop, tablet, and mobile devices') }}</p>
+          <h3>Responsive</h3>
+          <p>Works perfectly on desktop, tablet, and mobile devices</p>
         </div>
       </div>
     </div>

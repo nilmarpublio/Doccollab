@@ -1,0 +1,510 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Card03 - PDF Viewer - DocCollab') }}{% endblock %}
+{% block content %}
+<div class="pdf-container">
+  <div class="pdf-header">
+    <h1 class="pdf-title">
+      <i class="fas fa-file-pdf"></i>
+      {{ _('Visualizador de PDF') }}
+    </h1>
+    <p class="pdf-subtitle">{{ _('Visualize e gerencie seus documentos PDF') }}</p>
+  </div>
+
+  <div class="pdf-controls">
+    <div class="control-group">
+      <button class="btn btn-primary" onclick="loadSamplePDF()">
+        <i class="fas fa-file-upload"></i>
+        {{ _('Carregar PDF de Exemplo') }}
+      </button>
+      <button class="btn btn-secondary" onclick="openFileDialog()">
+        <i class="fas fa-folder-open"></i>
+        {{ _('Abrir Arquivo') }}
+      </button>
+    </div>
+    
+    <div class="control-group">
+      <button class="btn btn-outline" onclick="zoomIn()">
+        <i class="fas fa-search-plus"></i>
+        {{ _('Aumentar Zoom') }}
+      </button>
+      <button class="btn btn-outline" onclick="zoomOut()">
+        <i class="fas fa-search-minus"></i>
+        {{ _('Diminuir Zoom') }}
+      </button>
+      <button class="btn btn-outline" onclick="resetZoom()">
+        <i class="fas fa-expand-arrows-alt"></i>
+        {{ _('Zoom Padrão') }}
+      </button>
+    </div>
+
+    <div class="control-group">
+      <button class="btn btn-secondary" onclick="downloadPDF()">
+        <i class="fas fa-download"></i>
+        {{ _('Download') }}
+      </button>
+      <button class="btn btn-secondary" onclick="printPDF()">
+        <i class="fas fa-print"></i>
+        {{ _('Imprimir') }}
+      </button>
+    </div>
+  </div>
+
+  <div class="pdf-viewer-container">
+    <div class="pdf-info" id="pdfInfo">
+      <div class="info-card">
+        <i class="fas fa-info-circle"></i>
+        <h3>{{ _('Nenhum PDF Carregado') }}</h3>
+        <p>{{ _('Use os controles acima para carregar um arquivo PDF ou selecione um projeto do dashboard.') }}</p>
+        <div class="info-actions">
+          <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            <i class="fas fa-tachometer-alt"></i>
+            {{ _('Ir para Dashboard') }}
+          </a>
+          <a href="{{ url_for('card01') }}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            {{ _('Voltar para Card01') }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pdf-viewer" id="pdfViewer" style="display: none;">
+      <iframe id="pdfFrame" src="" width="100%" height="600px" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <div class="pdf-projects" id="pdfProjects" style="display: none;">
+    <h2>
+      <i class="fas fa-folder"></i>
+      {{ _('Projetos com PDF') }}
+    </h2>
+    <div class="projects-grid" id="projectsGrid">
+      <!-- Projetos serão carregados via JavaScript -->
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelect(event)">
+</div>
+
+<style>
+.pdf-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.pdf-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--gradient-surface);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  border: 1px solid var(--border-light);
+}
+
+.pdf-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.pdf-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 400;
+}
+
+.pdf-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--surface-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-light);
+  border: 1px solid var(--border-light);
+}
+
+.control-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pdf-viewer-container {
+  background: var(--surface-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-light);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  min-height: 600px;
+}
+
+.pdf-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  padding: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  max-width: 500px;
+  padding: 3rem 2rem;
+  background: var(--gradient-surface);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  border: 1px solid var(--border-light);
+}
+
+.info-card i {
+  font-size: 4rem;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+}
+
+.info-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.info-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.info-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 600px;
+}
+
+.pdf-viewer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.pdf-projects {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: var(--gradient-surface);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  border: 1px solid var(--border-light);
+}
+
+.pdf-projects h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: var(--surface-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px var(--shadow-light);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: 16px 16px 0 0;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px var(--shadow-medium);
+  border-color: var(--primary-light);
+}
+
+.project-card h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-card p {
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+  font-size: 0.9rem;
+}
+
+.project-card .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.btn-secondary {
+  background: var(--surface-light);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  background: var(--border-light);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pdf-title {
+    font-size: 2rem;
+  }
+  
+  .pdf-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-group {
+    justify-content: center;
+  }
+  
+  .info-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script>
+let currentZoom = 100;
+
+function loadSamplePDF() {
+  // Simular carregamento de PDF de exemplo
+  const pdfViewer = document.getElementById('pdfViewer');
+  const pdfInfo = document.getElementById('pdfInfo');
+  const pdfFrame = document.getElementById('pdfFrame');
+  
+  // URL de exemplo de PDF (você pode substituir por um PDF real)
+  const samplePDFUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+  
+  pdfFrame.src = samplePDFUrl;
+  pdfInfo.style.display = 'none';
+  pdfViewer.style.display = 'block';
+  
+  // Mostrar controles de zoom
+  updateZoomControls();
+}
+
+function openFileDialog() {
+  document.getElementById('fileInput').click();
+}
+
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (file && file.type === 'application/pdf') {
+    const url = URL.createObjectURL(file);
+    const pdfViewer = document.getElementById('pdfViewer');
+    const pdfInfo = document.getElementById('pdfInfo');
+    const pdfFrame = document.getElementById('pdfFrame');
+    
+    pdfFrame.src = url;
+    pdfInfo.style.display = 'none';
+    pdfViewer.style.display = 'block';
+    
+    updateZoomControls();
+  } else {
+    alert('Por favor, selecione um arquivo PDF válido.');
+  }
+}
+
+function zoomIn() {
+  currentZoom = Math.min(currentZoom + 25, 300);
+  updateZoom();
+}
+
+function zoomOut() {
+  currentZoom = Math.max(currentZoom - 25, 50);
+  updateZoom();
+}
+
+function resetZoom() {
+  currentZoom = 100;
+  updateZoom();
+}
+
+function updateZoom() {
+  const pdfFrame = document.getElementById('pdfFrame');
+  if (pdfFrame.src) {
+    pdfFrame.style.transform = `scale(${currentZoom / 100})`;
+    pdfFrame.style.transformOrigin = 'top left';
+    pdfFrame.style.width = `${100 / (currentZoom / 100)}%`;
+    pdfFrame.style.height = `${600 / (currentZoom / 100)}px`;
+  }
+  updateZoomControls();
+}
+
+function updateZoomControls() {
+  const zoomButtons = document.querySelectorAll('.control-group button');
+  zoomButtons.forEach(btn => {
+    if (btn.textContent.includes('Zoom')) {
+      btn.style.display = 'inline-flex';
+    }
+  });
+}
+
+function downloadPDF() {
+  const pdfFrame = document.getElementById('pdfFrame');
+  if (pdfFrame.src) {
+    const link = document.createElement('a');
+    link.href = pdfFrame.src;
+    link.download = 'documento.pdf';
+    link.click();
+  } else {
+    alert('Nenhum PDF carregado para download.');
+  }
+}
+
+function printPDF() {
+  const pdfFrame = document.getElementById('pdfFrame');
+  if (pdfFrame.src) {
+    pdfFrame.contentWindow.print();
+  } else {
+    alert('Nenhum PDF carregado para impressão.');
+  }
+}
+
+// Carregar projetos com PDF (simulação)
+function loadProjectsWithPDF() {
+  // Esta função seria implementada para carregar projetos reais do backend
+  const projectsGrid = document.getElementById('projectsGrid');
+  const pdfProjects = document.getElementById('pdfProjects');
+  
+  // Simulação de projetos
+  const sampleProjects = [
+    {
+      id: 1,
+      name: 'Relatório Anual 2023',
+      description: 'Relatório financeiro anual da empresa',
+      pdfUrl: '#'
+    },
+    {
+      id: 2,
+      name: 'Manual do Usuário',
+      description: 'Documentação completa do sistema',
+      pdfUrl: '#'
+    },
+    {
+      id: 3,
+      name: 'Apresentação de Vendas',
+      description: 'Slides da apresentação trimestral',
+      pdfUrl: '#'
+    }
+  ];
+  
+  projectsGrid.innerHTML = sampleProjects.map(project => `
+    <div class="project-card" onclick="loadProjectPDF(${project.id})">
+      <h4>
+        <i class="fas fa-file-pdf"></i>
+        ${project.name}
+      </h4>
+      <p>${project.description}</p>
+      <button class="btn btn-primary">
+        <i class="fas fa-eye"></i>
+        Visualizar PDF
+      </button>
+    </div>
+  `).join('');
+  
+  pdfProjects.style.display = 'block';
+}
+
+function loadProjectPDF(projectId) {
+  // Implementar carregamento de PDF do projeto específico
+  console.log('Carregando PDF do projeto:', projectId);
+  // Aqui você faria uma requisição para o backend para obter o PDF do projeto
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  loadProjectsWithPDF();
+});
+</script>
+{% endblock %}

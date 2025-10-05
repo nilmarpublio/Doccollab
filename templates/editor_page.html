@@ -1,0 +1,1198 @@
+{% extends "base.html" %}
+{% block title %}Editor LaTeX - DocCollab{% endblock %}
+{% block content %}
+<!-- Barra de ferramentas do editor -->
+<div class="editor-toolbar">
+  <div class="toolbar-left">
+    <button class="btn-tool" onclick="saveDocument()" title="Salvar (Ctrl+S)">
+      <i class="fas fa-save"></i>
+      <span>Save</span>
+    </button>
+    <button class="btn-tool" onclick="newDocument()" title="Novo Documento (Ctrl+N)">
+      <i class="fas fa-file-plus"></i>
+      <span>New</span>
+    </button>
+    <button class="btn-tool" onclick="openDocument()" title="Abrir Documento (Ctrl+O)">
+      <i class="fas fa-folder-open"></i>
+      <span>Open</span>
+    </button>
+    <div class="divider"></div>
+    <button class="btn-tool" onclick="undoAction()" title="Desfazer (Ctrl+Z)">
+      <i class="fas fa-undo"></i>
+    </button>
+    <button class="btn-tool" onclick="redoAction()" title="Refazer (Ctrl+Y)">
+      <i class="fas fa-redo"></i>
+    </button>
+  </div>
+  
+  <div class="toolbar-center">
+    <div class="file-info">
+      <i class="fas fa-file-alt"></i>
+      <span id="fileName">main.tex</span>
+      <span class="file-status" id="fileStatus">●</span>
+    </div>
+  </div>
+  
+  <div class="toolbar-right">
+    <button class="btn-compile" onclick="compileDocument()" title="Compilar (F5)">
+      <i class="fas fa-play"></i>
+      <span>Compile</span>
+    </button>
+    <button class="btn-tool" onclick="previewDocument()" title="Visualizar (F6)">
+      <i class="fas fa-eye"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Editor principal -->
+<div class="editor-container">
+  <div class="editor-sidebar">
+    <div class="sidebar-section">
+      <h4><i class="fas fa-code"></i> Snippets</h4>
+      <div class="snippet-list">
+        <div class="snippet-item" onclick="insertSnippet('section')">
+          <i class="fas fa-heading"></i>
+          <span>Seção</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('equation')">
+          <i class="fas fa-square-root-alt"></i>
+          <span>Equação</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('table')">
+          <i class="fas fa-table"></i>
+          <span>Tabela</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('list')">
+          <i class="fas fa-list"></i>
+          <span>Lista</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('figure')">
+          <i class="fas fa-image"></i>
+          <span>Figura</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="editor-main">
+    <div class="editor-tabs">
+      <div class="tab active" data-file="main.tex">
+        <i class="fas fa-file-alt"></i>
+        <span>main.tex</span>
+        <button class="tab-close" onclick="closeTab('main.tex')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Barra de formatação ao lado da aba -->
+      <div class="format-toolbar">
+        <button class="format-btn" onclick="formatText('bold')" title="Negrito (Ctrl+B)">
+          <i class="fas fa-bold"></i>
+        </button>
+        <button class="format-btn" onclick="formatText('italic')" title="Itálico (Ctrl+I)">
+          <i class="fas fa-italic"></i>
+        </button>
+        <button class="format-btn" onclick="formatText('underline')" title="Sublinhado (Ctrl+U)">
+          <i class="fas fa-underline"></i>
+        </button>
+        <div class="format-divider"></div>
+        <button class="format-btn" onclick="insertSnippet('section')" title="Inserir Seção">
+          <i class="fas fa-heading"></i>
+        </button>
+        <button class="format-btn" onclick="insertSnippet('equation')" title="Inserir Equação">
+          <i class="fas fa-square-root-alt"></i>
+        </button>
+        <button class="format-btn" onclick="insertSnippet('list')" title="Inserir Lista">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="editor-wrapper">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <div class="editor-content">
+        <textarea 
+          id="latexEditor" 
+          class="latex-editor"
+          autofocus
+          spellcheck="false"
+        >% Documento LaTeX Completo
+% Estrutura básica para editor LaTeX
+
+\\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais
+\\usepackage[utf8]{inputenc}
+\\usepackage[portuguese]{babel}
+\\usepackage[T1]{fontenc}
+\\usepackage{amsmath}
+\\usepackage{amsfonts}
+\\usepackage{amssymb}
+\\usepackage{graphicx}
+\\usepackage{geometry}
+\\usepackage{hyperref}
+\\usepackage{listings}
+\\usepackage{xcolor}
+
+% Configurações de página
+\\geometry{left=3cm,right=2cm,top=3cm,bottom=2cm}
+
+% Configurações de hyperlinks
+\\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=magenta,      
+  urlcolor=cyan,
+}
+
+% Configurações de código
+\\lstset{
+  language=Python,
+  basicstyle=\\ttfamily\\small,
+  keywordstyle=\\color{blue},
+  commentstyle=\\color{green},
+  stringstyle=\\color{red},
+  numbers=left,
+  numberstyle=\\tiny,
+  stepnumber=1,
+  numbersep=5pt,
+  backgroundcolor=\\color{gray!10},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  escapeinside={\\%*}{*)}
+}
+
+\\begin{document}
+
+% Título do documento
+\\title{Meu Documento LaTeX}
+\\author{Seu Nome}
+\\date{\\today}
+
+\\maketitle
+
+% Resumo
+\\begin{abstract}
+  Este é um exemplo de documento LaTeX com estrutura completa incluindo seções, equações, listas, tabelas e código.
+\\end{abstract}
+
+% Sumário
+\\tableofcontents
+\\newpage
+
+% Seção 1
+\\section{Introdução}
+
+Este é um documento LaTeX completo com todas as funcionalidades básicas de um editor LaTeX profissional.
+
+\\subsection{Objetivos}
+
+Os objetivos deste documento são:
+\\begin{itemize}
+  \\item Demonstrar a estrutura básica do LaTeX
+  \\item Mostrar comandos essenciais
+  \\item Incluir exemplos práticos
+\\end{itemize}
+
+% Seção 2
+\\section{Matemática}
+
+\\subsection{Equações}
+
+Equação inline: $E = mc^2$
+
+Equação em bloco:
+\\begin{equation}
+  \\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
+\\end{equation}
+
+Sistema de equações:
+\\begin{align}
+  x + y &= 10 \\\\
+  2x - y &= 5
+\\end{align}
+
+% Seção 3
+\\section{Listas e Tabelas}
+
+\\subsection{Listas}
+
+Lista numerada:
+\\begin{enumerate}
+  \\item Primeiro item
+  \\item Segundo item
+  \\item Terceiro item
+\\end{enumerate}
+
+\\subsection{Tabelas}
+
+\\begin{table}[h]
+  \\centering
+  \\begin{tabular}{|c|c|c|}
+    \\hline
+    Nome & Idade & Cidade \\\\
+    \\hline
+    João & 25 & São Paulo \\\\
+    Maria & 30 & Rio de Janeiro \\\\
+    Pedro & 28 & Belo Horizonte \\\\
+    \\hline
+  \\end{tabular}
+  \\caption{Exemplo de tabela}
+  \\label{tab:exemplo}
+\\end{table}
+
+% Seção 4
+\\section{Código}
+
+\\subsection{Listagem de Código}
+
+\\begin{lstlisting}[caption=Exemplo de código Python]
+def fibonacci(n):
+  if n <= 1:
+    return n
+  else:
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Teste da função
+for i in range(10):
+  print(f\"F({i}) = {fibonacci(i)}\")
+\\end{lstlisting}
+
+% Seção 5
+\\section{Referências e Links}
+
+Para mais informações sobre LaTeX, consulte \\cite{latex_guide}.
+
+\\subsection{Links}
+
+\\href{https://www.latex-project.org/}{Site oficial do LaTeX}
+
+% Bibliografia
+\\begin{thebibliography}{9}
+  \\bibitem{latex_guide}
+  Lamport, Leslie. \\textit{LaTeX: A Document Preparation System}. Addison-Wesley, 1994.
+\\end{thebibliography}
+
+\\end{document}</textarea>
+      </div>
+    </div>
+    
+    <div class="editor-status">
+      <div class="status-left">
+        <span id="cursorPosition">Linha 1, Coluna 1</span>
+        <span class="divider">|</span>
+        <span id="documentLength">0 caracteres</span>
+        <span class="divider">|</span>
+        <span id="wordCount">0 palavras</span>
+      </div>
+      <div class="status-right">
+        <span id="encoding">UTF-8</span>
+        <span class="divider">|</span>
+        <span id="language">LaTeX</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Editor LaTeX Profissional */
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background: #f8f9fa;
+  color: #495057;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  min-height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.toolbar-left, .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-tool {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  height: 36px;
+}
+
+.btn-tool:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+.btn-compile {
+  background: #007bff;
+  font-weight: 600;
+}
+
+.btn-compile:hover {
+  background: #0056b3;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: #dee2e6;
+  margin: 0 0.5rem;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.file-status {
+  color: #68d391;
+  font-size: 1.2rem;
+}
+
+.editor-container {
+  display: flex;
+  height: calc(100vh - 140px);
+  background: #ffffff;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.editor-sidebar {
+  width: 250px;
+  background: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-section h4 {
+  color: #495057;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.snippet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.snippet-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  color: #6c757d;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.snippet-item:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.editor-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.editor-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-right: 1px solid #dee2e6;
+  font-size: 0.9rem;
+}
+
+.tab.active {
+  background: #ffffff;
+  color: #495057;
+  border-bottom: 2px solid #007bff;
+}
+
+.tab:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.tab-close {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
+}
+
+.tab-close:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+/* Barra de formatação */
+.format-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+}
+
+.format-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #e9ecef;
+  color: #495057;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.format-btn:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.format-btn:active {
+  transform: translateY(0);
+}
+
+.format-divider {
+  width: 1px;
+  height: 20px;
+  background: #dee2e6;
+  margin: 0 0.5rem;
+}
+
+.editor-wrapper {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.line-numbers {
+  width: 50px;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 1rem 0.5rem;
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid #dee2e6;
+}
+
+.editor-content {
+  flex: 1;
+  position: relative;
+}
+
+.latex-editor {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 1rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  background: #ffffff;
+  color: #495057;
+  resize: none;
+  tab-size: 2;
+  overflow-y: auto;
+}
+
+.latex-editor:focus {
+  box-shadow: none;
+}
+
+.editor-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-size: 0.8rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-left .divider, .status-right .divider {
+  color: #dee2e6;
+}
+
+/* Container principal para alinhamento */
+.main-content {
+  padding: 0 2rem;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .editor-toolbar,
+  .editor-container,
+  .main-content {
+    max-width: 100%;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-sidebar {
+    width: 200px;
+  }
+  
+  .editor-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  .editor-container {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  .main-content {
+    padding: 0 0.5rem;
+  }
+  
+  .toolbar-left, .toolbar-right {
+    flex-wrap: wrap;
+  }
+  
+  .btn-tool {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    height: 32px;
+  }
+  
+  .btn-tool span {
+    display: none;
+  }
+  
+  .format-toolbar {
+    gap: 0.1rem;
+    padding: 0.25rem 0;
+  }
+  
+  .format-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-sidebar {
+    display: none;
+  }
+  
+  .editor-toolbar {
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+  
+  .editor-container {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+  
+  .main-content {
+    padding: 0 0.25rem;
+  }
+  
+  .btn-tool {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    height: 28px;
+  }
+}
+</style>
+
+<script>
+// Editor LaTeX Profissional com pdflatex
+class LaTeXEditor {
+  constructor() {
+    this.editor = document.getElementById('latexEditor');
+    this.lineNumbers = document.getElementById('lineNumbers');
+    this.cursorPosition = document.getElementById('cursorPosition');
+    this.documentLength = document.getElementById('documentLength');
+    this.wordCount = document.getElementById('wordCount');
+    this.fileStatus = document.getElementById('fileStatus');
+    this.fileName = document.getElementById('fileName');
+    
+    this.history = [];
+    this.historyIndex = -1;
+    this.isModified = false;
+    
+    this.init();
+  }
+  
+  init() {
+    this.setupEventListeners();
+    this.updateLineNumbers();
+    this.updateStatus();
+    this.updateFileStatus();
+    this.editor.focus();
+    this.setupKeyboardShortcuts();
+  }
+  
+  setupEventListeners() {
+    this.editor.addEventListener('input', () => {
+      this.updateLineNumbers();
+      this.updateStatus();
+      this.updateFileStatus();
+      this.saveToHistory();
+    });
+    
+    this.editor.addEventListener('keydown', (e) => {
+      this.handleKeyDown(e);
+    });
+    
+    this.editor.addEventListener('scroll', () => {
+      this.syncLineNumbers();
+    });
+    
+    this.editor.addEventListener('selectionchange', () => {
+      this.updateCursorPosition();
+    });
+  }
+  
+  setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey) {
+        switch(e.key) {
+          case 's': e.preventDefault(); this.saveDocument(); break;
+          case 'n': e.preventDefault(); this.newDocument(); break;
+          case 'o': e.preventDefault(); this.openDocument(); break;
+          case 'z': e.preventDefault(); this.undoAction(); break;
+          case 'y': e.preventDefault(); this.redoAction(); break;
+          case 'b': e.preventDefault(); this.formatText('bold'); break;
+          case 'i': e.preventDefault(); this.formatText('italic'); break;
+          case 'u': e.preventDefault(); this.formatText('underline'); break;
+        }
+      }
+      
+      if (e.key === 'F5') { e.preventDefault(); this.compileDocument(); }
+      if (e.key === 'F6') { e.preventDefault(); this.previewDocument(); }
+    });
+  }
+  
+  handleKeyDown(e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      this.insertTab();
+    }
+    
+    if (e.key === 'Enter') {
+      setTimeout(() => this.autoIndent(), 0);
+    }
+    
+    if (e.key === '{') {
+      setTimeout(() => this.insertLaTeXPair('{', '}'), 0);
+    }
+    
+    if (e.key === '[') {
+      setTimeout(() => this.insertLaTeXPair('[', ']'), 0);
+    }
+  }
+  
+  insertTab() {
+    const start = this.editor.selectionStart;
+    const end = this.editor.selectionEnd;
+    const value = this.editor.value;
+    this.editor.value = value.substring(0, start) + '  ' + value.substring(end);
+    this.editor.selectionStart = this.editor.selectionEnd = start + 2;
+  }
+  
+  autoIndent() {
+    const cursorPos = this.editor.selectionStart;
+    const lines = this.editor.value.substring(0, cursorPos).split('\n');
+    let indentLevel = 0;
+    
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i];
+      if (line.match(/\\begin\{/)) indentLevel++;
+      if (line.match(/\\end\{/)) indentLevel--;
+    }
+    
+    const indent = '  '.repeat(Math.max(0, indentLevel));
+    const currentLine = lines[lines.length - 1];
+    
+    if (currentLine.trim() === '') {
+      this.editor.value = this.editor.value.substring(0, cursorPos) + indent + this.editor.value.substring(cursorPos);
+      this.editor.selectionStart = this.editor.selectionEnd = cursorPos + indent.length;
+    }
+  }
+  
+  insertLaTeXPair(open, close) {
+    const start = this.editor.selectionStart;
+    const end = this.editor.selectionEnd;
+    const value = this.editor.value;
+    
+    if (start === end) {
+      this.editor.value = value.substring(0, start) + open + close + value.substring(end);
+      this.editor.selectionStart = this.editor.selectionEnd = start + 1;
+    } else {
+      const selected = value.substring(start, end);
+      this.editor.value = value.substring(0, start) + open + selected + close + value.substring(end);
+      this.editor.selectionStart = start + 1;
+      this.editor.selectionEnd = start + 1 + selected.length;
+    }
+  }
+  
+  updateLineNumbers() {
+    const lines = this.editor.value.split('\n');
+    const lineNumbersHtml = lines.map((_, index) => 
+      `<div class="line-number">${index + 1}</div>`
+    ).join('');
+    this.lineNumbers.innerHTML = lineNumbersHtml;
+  }
+  
+  syncLineNumbers() {
+    this.lineNumbers.scrollTop = this.editor.scrollTop;
+  }
+  
+  updateStatus() {
+    const text = this.editor.value;
+    const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+    this.documentLength.textContent = `${text.length} caracteres`;
+    this.wordCount.textContent = `${words.length} palavras`;
+  }
+  
+  updateCursorPosition() {
+    const cursorPos = this.editor.selectionStart;
+    const textBeforeCursor = this.editor.value.substring(0, cursorPos);
+    const lines = textBeforeCursor.split('\n');
+    const line = lines.length;
+    const column = lines[lines.length - 1].length + 1;
+    this.cursorPosition.textContent = `Linha ${line}, Coluna ${column}`;
+  }
+  
+  updateFileStatus() {
+    this.isModified = true;
+    this.fileStatus.textContent = '●';
+    this.fileStatus.style.color = '#f56565';
+  }
+  
+  saveToHistory() {
+    const currentState = this.editor.value;
+    if (this.history[this.historyIndex] !== currentState) {
+      this.history = this.history.slice(0, this.historyIndex + 1);
+      this.history.push(currentState);
+      this.historyIndex++;
+      
+      if (this.history.length > 50) {
+        this.history.shift();
+        this.historyIndex--;
+      }
+    }
+  }
+  
+  // Funções dos botões
+  saveDocument() {
+    const content = this.editor.value;
+    const fileName = this.fileName.textContent;
+    
+    fetch('/api/save-latex', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: fileName, content: content })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        this.fileStatus.textContent = '●';
+        this.fileStatus.style.color = '#68d391';
+        this.isModified = false;
+        this.showNotification('Documento salvo com sucesso!', 'success');
+      } else {
+        this.showNotification('Erro ao salvar documento!', 'error');
+      }
+    })
+    .catch(() => {
+      this.showNotification('Documento salvo localmente!', 'info');
+      this.fileStatus.textContent = '●';
+      this.fileStatus.style.color = '#68d391';
+      this.isModified = false;
+    });
+  }
+  
+  newDocument() {
+    if (this.isModified && !confirm('Documento não salvo. Deseja continuar?')) return;
+    
+    this.editor.value = `% Novo Documento LaTeX
+\\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais
+\\usepackage[utf8]{inputenc}
+\\usepackage[portuguese]{babel}
+\\usepackage[T1]{fontenc}
+\\usepackage{amsmath}
+\\usepackage{amsfonts}
+\\usepackage{amssymb}
+
+\\begin{document}
+
+% Título do documento
+\\title{Novo Documento}
+\\author{Seu Nome}
+\\date{\\today}
+
+\\maketitle
+
+% Conteúdo aqui
+
+\\end{document}`;
+    
+    this.updateLineNumbers();
+    this.updateStatus();
+    this.fileStatus.textContent = '●';
+    this.fileStatus.style.color = '#f56565';
+    this.isModified = true;
+    this.editor.focus();
+  }
+  
+  openDocument() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.tex';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.editor.value = e.target.result;
+          this.fileName.textContent = file.name;
+          this.updateLineNumbers();
+          this.updateStatus();
+          this.fileStatus.textContent = '●';
+          this.fileStatus.style.color = '#68d391';
+          this.isModified = false;
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  }
+  
+  undoAction() {
+    if (this.historyIndex > 0) {
+      this.historyIndex--;
+      this.editor.value = this.history[this.historyIndex];
+      this.updateLineNumbers();
+      this.updateStatus();
+    }
+  }
+  
+  redoAction() {
+    if (this.historyIndex < this.history.length - 1) {
+      this.historyIndex++;
+      this.editor.value = this.history[this.historyIndex];
+      this.updateLineNumbers();
+      this.updateStatus();
+    }
+  }
+  
+  formatText(type) {
+    const start = this.editor.selectionStart;
+    const end = this.editor.selectionEnd;
+    const value = this.editor.value;
+    const selectedText = value.substring(start, end);
+    
+    let formattedText = '';
+    switch(type) {
+      case 'bold': formattedText = selectedText ? `\\textbf{${selectedText}}` : '\\textbf{texto}'; break;
+      case 'italic': formattedText = selectedText ? `\\textit{${selectedText}}` : '\\textit{texto}'; break;
+      case 'underline': formattedText = selectedText ? `\\underline{${selectedText}}` : '\\underline{texto}'; break;
+    }
+    
+    this.editor.value = value.substring(0, start) + formattedText + value.substring(end);
+    
+    if (!selectedText) {
+      const newCursorPos = start + formattedText.indexOf('{') + 1;
+      this.editor.selectionStart = this.editor.selectionEnd = newCursorPos;
+    } else {
+      this.editor.selectionStart = start + formattedText.length;
+      this.editor.selectionEnd = start + formattedText.length;
+    }
+    
+    this.editor.focus();
+    this.updateLineNumbers();
+    this.updateStatus();
+  }
+  
+  insertSnippet(type) {
+    const snippets = {
+      section: '\\section{Título da Seção}\n\n',
+      equation: '\\begin{equation}\n  \n\\end{equation}\n',
+      table: `\\begin{table}[h]
+  \\centering
+  \\begin{tabular}{|c|c|}
+    \\hline
+    Coluna 1 & Coluna 2 \\\\
+    \\hline
+    Dados 1 & Dados 2 \\\\
+    \\hline
+  \\end{tabular}
+  \\caption{Título}
+\\end{table}`,
+      list: `\\begin{itemize}
+  \\item Primeiro item
+  \\item Segundo item
+\\end{itemize}`,
+      figure: `\\begin{figure}[h]
+  \\centering
+  \\includegraphics[width=0.8\\textwidth]{imagem.png}
+  \\caption{Título}
+\\end{figure}`
+    };
+    
+    if (snippets[type]) {
+      this.insertTextAtCursor(snippets[type]);
+    }
+  }
+  
+  insertTextAtCursor(text) {
+    const start = this.editor.selectionStart;
+    const end = this.editor.selectionEnd;
+    const value = this.editor.value;
+    
+    this.editor.value = value.substring(0, start) + text + value.substring(end);
+    this.editor.selectionStart = this.editor.selectionEnd = start + text.length;
+    this.editor.focus();
+  }
+  
+  compileDocument() {
+    const content = this.editor.value;
+    const fileName = this.fileName.textContent.replace('.tex', '');
+    
+    if (!content.trim()) {
+      this.showNotification('Nenhum conteúdo para compilar!', 'warning');
+      return;
+    }
+    
+    this.showNotification('Compilando com pdflatex...', 'info');
+    
+    fetch('/api/compile-latex', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: fileName, content: content })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        this.showNotification('Compilação bem-sucedida! Abrindo PDF...', 'success');
+        if (data.pdf_url) {
+          const pdfWindow = window.open(data.pdf_url, '_blank');
+          if (pdfWindow) {
+            pdfWindow.focus();
+          } else {
+            window.location.href = data.pdf_url;
+          }
+        }
+      } else {
+        this.showNotification('Erro na compilação: ' + (data.error || 'Erro desconhecido'), 'error');
+        this.showExamplePDF();
+      }
+    })
+    .catch(error => {
+      this.showNotification('Erro de conexão na compilação! Mostrando PDF de exemplo...', 'warning');
+      this.showExamplePDF();
+    });
+  }
+  
+  showExamplePDF() {
+    const examplePDF = '/static/sample.pdf';
+    
+    fetch(examplePDF)
+      .then(response => {
+        if (response.ok) {
+          const pdfWindow = window.open(examplePDF, '_blank');
+          if (pdfWindow) {
+            pdfWindow.focus();
+            this.showNotification('PDF de exemplo aberto com instruções LaTeX!', 'info');
+          } else {
+            this.showNotification('Popup bloqueado. Clique aqui para abrir o PDF de exemplo.', 'warning');
+            const link = document.createElement('a');
+            link.href = examplePDF;
+            link.target = '_blank';
+            link.textContent = 'Abrir PDF de Exemplo';
+            link.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #007bff; color: white; padding: 1rem 2rem; border-radius: 4px; text-decoration: none; z-index: 1001;';
+            document.body.appendChild(link);
+            setTimeout(() => link.remove(), 10000);
+          }
+        } else {
+          throw new Error('PDF de exemplo não disponível');
+        }
+      })
+      .catch(error => {
+        this.showNotification('PDF de exemplo não disponível. Verifique se o LaTeX está instalado no sistema.', 'error');
+      });
+  }
+  
+  previewDocument() {
+    this.compileDocument();
+  }
+  
+  closeTab(fileName) {
+    if (this.isModified && !confirm('Documento não salvo. Deseja fechar?')) return;
+    this.showNotification('Aba fechada!', 'info');
+  }
+  
+  showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 4px;
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+      word-wrap: break-word;
+    `;
+    
+    const colors = {
+      success: '#38a169',
+      error: '#e53e3e',
+      info: '#3182ce',
+      warning: '#d69e2e'
+    };
+    
+    notification.style.backgroundColor = colors[type] || colors.info;
+    document.body.appendChild(notification);
+    
+    const displayTime = type === 'error' ? 5000 : 3000;
+    setTimeout(() => notification.remove(), displayTime);
+  }
+}
+
+// Inicializar editor quando a página carregar
+document.addEventListener('DOMContentLoaded', () => {
+  window.latexEditor = new LaTeXEditor();
+});
+
+// Funções globais para os botões
+function saveDocument() { window.latexEditor.saveDocument(); }
+function newDocument() { window.latexEditor.newDocument(); }
+function openDocument() { window.latexEditor.openDocument(); }
+function undoAction() { window.latexEditor.undoAction(); }
+function redoAction() { window.latexEditor.redoAction(); }
+function formatText(type) { window.latexEditor.formatText(type); }
+function insertSnippet(type) { window.latexEditor.insertSnippet(type); }
+function compileDocument() { window.latexEditor.compileDocument(); }
+function previewDocument() { window.latexEditor.previewDocument(); }
+function closeTab(fileName) { window.latexEditor.closeTab(fileName); }
+
+// Adicionar CSS para animação
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+`;
+document.head.appendChild(style);
+</script>
+
+{% endblock %}

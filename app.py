@@ -1,134 +1,405 @@
-from flask import Flask, request, session, redirect, url_for, send_from_directory
-from flask_login import LoginManager
-from flask_babel import Babel, gettext as _
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from dotenv import load_dotenv
+from flask import Flask, request, redirect, url_for, render_template, flash, jsonify, send_from_directory, send_file
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 import os
+import tempfile
+import subprocess
+import shutil
 
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+# Função simples de tradução
+def _(text):
+    return text
 
-from models import db
-from models.user import User
+# Criar app Flask
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
-def create_app():
-    app = Flask(__name__, template_folder='templates', static_folder='static')
+# Configurações
+app.config['SECRET_KEY'] = 'dev-secret-key-change-in-production'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///doccollab.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///doccollab.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    # Projects filesystem roots
-    app.config['PROJECTS_ROOT'] = os.path.join(app.root_path, 'projects')
-    app.config['TRASH_ROOT'] = os.path.join(app.root_path, 'trash')
-    # External tools
-    app.config['PDFLATEX'] = os.getenv('PDFLATEX')
+# Criar instância única do SQLAlchemy
+db = SQLAlchemy(app)
 
-    # i18n
-    app.config['BABEL_DEFAULT_LOCALE'] = 'pt'
-    app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'pt', 'es']
-    # Ensure Flask-Babel can locate compiled translations
-    app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.path.join(app.root_path, 'translations')
+# Definir modelos
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    db.init_app(app)
+    def set_password(self, password: str) -> None:
+        self.password_hash = generate_password_hash(password)
 
-    # Initialize SocketIO
-    socketio = SocketIO(app, cors_allowed_origins="*")
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
 
-    login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
+class Project(db.Model):
+    __tablename__ = 'projects'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+# Configurar Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Por favor, faça login para acessar esta página.'
+login_manager.login_message_category = 'info'
 
-    babel = Babel()
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-    def get_locale():
-        # Primeiro verifica se há idioma na URL (para forçar mudança)
-        if request.args.get('lang') and request.args.get('lang') in app.config['BABEL_SUPPORTED_LOCALES']:
-            # Atualiza a sessão com o idioma da URL
-            session['lang'] = request.args.get('lang')
-            # Force refresh of translations
-            from flask_babel import refresh
-            refresh()
-            return request.args.get('lang')
+
+# ===== ROTAS PRINCIPAIS =====
+
+@app.route('/')
+def index():
+    """Página inicial"""
+    return render_template('index.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de login"""
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        user = User.query.filter_by(email=email).first()
         
-        # Depois verifica se há idioma na sessão
-        if 'lang' in session and session['lang'] in app.config['BABEL_SUPPORTED_LOCALES']:
-            return session['lang']
-        
-        # Por último, usa o idioma padrão do navegador
-        return request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES']) or app.config['BABEL_DEFAULT_LOCALE']
+        if user and user.check_password(password):
+            login_user(user)
+            flash('Login realizado com sucesso!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Email ou senha incorretos!', 'error')
     
-    # Exportar função para uso externo
-    app.get_locale = get_locale
+    return render_template('auth/login.html')
 
-    babel.init_app(app, locale_selector=get_locale)
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Página de registro"""
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-    @app.context_processor
-    def inject_lang():
-        return {'current_locale': get_locale(), 'get_locale': get_locale}
+        if User.query.filter_by(email=email).first():
+            flash('Email já cadastrado!', 'error')
+            return render_template('auth/register.html')
 
-    @app.route('/set-language/<lang_code>')
-    def set_language(lang_code):
-        if lang_code in app.config['BABEL_SUPPORTED_LOCALES']:
-            # Atualiza a sessão
-            session['lang'] = lang_code
+        user = User(name=name, email=email)
+        user.set_password(password)
+        
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Conta criada com sucesso! Faça login.', 'success')
+        return redirect(url_for('login'))
+    
+    return render_template('auth/register.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Logout do usuário"""
+    logout_user()
+    flash('Logout realizado com sucesso!', 'info')
+    return redirect(url_for('index'))
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    """Dashboard do usuário"""
+    projects = Project.query.filter_by(user_id=current_user.id).all()
+    return render_template('dashboard_simple.html', projects=projects)
+
+@app.route('/editor-page')
+def editor_page():
+    """Editor LaTeX"""
+    return render_template('editor_page.html')
+
+# ===== ROTAS DE PROJETOS =====
+
+@app.route('/create_project', methods=['POST'])
+@login_required
+def create_project():
+    """Criar novo projeto"""
+    name = request.form.get('name')
+    description = request.form.get('description', '')
+    
+    if not name:
+        flash('Nome do projeto é obrigatório!', 'error')
+        return redirect(url_for('dashboard'))
+    
+    project = Project(name=name, description=description, user_id=current_user.id)
+    db.session.add(project)
+    db.session.commit()
+    
+    flash('Projeto criado com sucesso!', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/delete_project/<int:project_id>', methods=['POST'])
+@login_required
+def delete_project(project_id):
+    """Deletar projeto"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id).first()
+    
+    if project:
+        db.session.delete(project)
+        db.session.commit()
+        flash('Projeto deletado com sucesso!', 'success')
+    else:
+        flash('Projeto não encontrado!', 'error')
+    
+    return redirect(url_for('dashboard'))
+
+@app.route('/rename_project/<int:project_id>', methods=['POST'])
+@login_required
+def rename_project(project_id):
+    """Renomear projeto"""
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id).first()
+    new_name = request.form.get('new_name')
+    
+    if project and new_name:
+        project.name = new_name
+        db.session.commit()
+        flash('Projeto renomeado com sucesso!', 'success')
+    else:
+        flash('Erro ao renomear projeto!', 'error')
+    
+    return redirect(url_for('dashboard'))
+
+# ===== API ROUTES FOR LATEX EDITOR =====
+
+@app.route('/api/save-latex', methods=['POST'])
+def save_latex():
+    """Save LaTeX document"""
+    try:
+        data = request.get_json()
+        filename = data.get('filename', 'document.tex')
+        content = data.get('content', '')
+        
+        # Create uploads directory if it doesn't exist
+        uploads_dir = os.path.join(app.root_path, 'uploads')
+        if not os.path.exists(uploads_dir):
+            os.makedirs(uploads_dir)
+        
+        # Save file
+        file_path = os.path.join(uploads_dir, filename)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Documento salvo com sucesso',
+            'filename': filename
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/compile-latex', methods=['POST'])
+def compile_latex():
+    """Compile LaTeX document using pdflatex"""
+    try:
+        data = request.get_json()
+        filename = data.get('filename', 'document')
+        content = data.get('content', '')
+        
+        # Create temp directory for compilation
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Write LaTeX file
+            tex_file = os.path.join(temp_dir, f'{filename}.tex')
+            with open(tex_file, 'w', encoding='utf-8') as f:
+                f.write(content)
             
-            # Force refresh of translations
-            from flask_babel import refresh
-            refresh()
-            
-            # Força o reload do contexto de tradução
-            with app.app_context():
-                from flask_babel import get_locale as babel_get_locale
-                # Força a atualização do locale
-                app.config['BABEL_DEFAULT_LOCALE'] = lang_code
-            
-            # Redirect to current page with lang parameter to force refresh
-            referrer = request.referrer or url_for('main.index')
-            if '?' in referrer:
-                separator = '&'
+            # Compile with pdflatex
+            try:
+                result = subprocess.run([
+                    'pdflatex',
+                    '-interaction=nonstopmode',
+                    '-output-directory', temp_dir,
+                    tex_file
+                ], capture_output=True, text=True, timeout=30)
+                
+                pdf_file = os.path.join(temp_dir, f'{filename}.pdf')
+                
+                if os.path.exists(pdf_file):
+                    # Copy PDF to uploads directory
+                    uploads_dir = os.path.join(app.root_path, 'uploads')
+                    if not os.path.exists(uploads_dir):
+                        os.makedirs(uploads_dir)
+                    
+                    final_pdf = os.path.join(uploads_dir, f'{filename}.pdf')
+                    shutil.copy2(pdf_file, final_pdf)
+                    
+                    return jsonify({
+                        'success': True,
+                        'message': 'Compilação bem-sucedida',
+                        'pdf_url': f'/uploads/{filename}.pdf',
+                        'log': result.stdout
+                    })
+                else:
+                    return jsonify({
+                        'success': False,
+                        'error': 'PDF não foi gerado',
+                        'log': result.stdout + '\n' + result.stderr
+                    })
+                    
+            except subprocess.TimeoutExpired:
+                return jsonify({
+                    'success': False,
+                    'error': 'Timeout na compilação (máximo 30 segundos)'
+                })
+            except FileNotFoundError:
+                return jsonify({
+                    'success': False,
+                    'error': 'pdflatex não encontrado. Instale o LaTeX no sistema.'
+                })
+            except Exception as e:
+                return jsonify({
+                    'success': False,
+                    'error': f'Erro na compilação: {str(e)}'
+                })
+                
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Erro interno: {str(e)}'
+        }), 500
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files"""
+    return send_from_directory(os.path.join(app.root_path, 'uploads'), filename)
+
+@app.route('/static/sample.pdf')
+def sample_pdf():
+    """Serve sample PDF for demonstration"""
+    try:
+        # Criar um PDF de exemplo simples
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter
+        from reportlab.lib.colors import black, blue
+        import io
+        
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+        
+        # Título
+        p.setFont("Helvetica-Bold", 18)
+        p.setFillColor(blue)
+        p.drawString(100, height - 80, "DocCollab - Editor LaTeX")
+        
+        # Subtítulo
+        p.setFont("Helvetica", 14)
+        p.setFillColor(black)
+        p.drawString(100, height - 110, "Documento de Exemplo")
+        
+        # Linha separadora
+        p.line(100, height - 130, width - 100, height - 130)
+        
+        # Conteúdo principal
+        p.setFont("Helvetica", 12)
+        y_pos = height - 160
+        
+        lines = [
+            "Este é um PDF de exemplo gerado pelo DocCollab.",
+            "",
+            "Para compilar seu documento LaTeX, certifique-se de que:",
+            "• O LaTeX está instalado no sistema",
+            "• O pdflatex está disponível no PATH", 
+            "• O documento LaTeX está bem formado",
+            "",
+            "Comandos LaTeX básicos:",
+            "• \\textbf{texto} - Negrito",
+            "• \\textit{texto} - Itálico", 
+            "• \\underline{texto} - Sublinhado",
+            "• \\section{título} - Seção",
+            "• \\subsection{título} - Subseção",
+            "• \\begin{equation}...\\end{equation} - Equação",
+            "• \\begin{itemize}...\\end{itemize} - Lista",
+            "• \\begin{table}...\\end{table} - Tabela",
+            "",
+            "Dicas importantes:",
+            "• Use \\documentclass{article} no início",
+            "• Sempre feche os ambientes com \\end{}",
+            "• Use \\begin{document} e \\end{document}",
+            "• Salve o arquivo com extensão .tex",
+            "",
+            "Se houver erros de compilação:",
+            "• Verifique a sintaxe LaTeX",
+            "• Certifique-se de que todos os \\begin{} têm \\end{}",
+            "• Instale pacotes necessários com \\usepackage{}"
+        ]
+        
+        for line in lines:
+            if line.startswith("•"):
+                p.setFont("Helvetica-Bold", 12)
+                p.drawString(120, y_pos, line)
+            elif line.startswith("Comandos") or line.startswith("Dicas") or line.startswith("Se houver"):
+                p.setFont("Helvetica-Bold", 12)
+                p.setFillColor(blue)
+                p.drawString(100, y_pos, line)
+                p.setFillColor(black)
             else:
-                separator = '?'
-            return redirect(f"{referrer}{separator}lang={lang_code}")
-        return redirect(request.referrer or url_for('main.index'))
+                p.setFont("Helvetica", 12)
+                p.drawString(100, y_pos, line)
+            
+            y_pos -= 20
+            if y_pos < 100:  # Nova página se necessário
+                p.showPage()
+                y_pos = height - 50
+        
+        # Rodapé
+        p.setFont("Helvetica", 10)
+        p.setFillColor(blue)
+        p.drawString(100, 50, "DocCollab - Editor LaTeX Profissional")
+        p.drawString(100, 35, "Gerado automaticamente em caso de erro de compilação")
+        
+        p.showPage()
+        p.save()
+        
+        buffer.seek(0)
+        return send_file(buffer, as_attachment=False, download_name='sample.pdf', mimetype='application/pdf')
+        
+    except ImportError:
+        # Fallback se reportlab não estiver instalado
+        return jsonify({
+            'error': 'ReportLab não instalado. Instale com: pip install reportlab',
+            'message': 'PDF de exemplo não disponível'
+        }), 500
+    except Exception as e:
+        return jsonify({
+            'error': f'Erro ao gerar PDF: {str(e)}',
+            'message': 'Tente instalar o LaTeX no sistema'
+        }), 500
 
-    @app.route('/favicon.ico')
-    def favicon():
-        return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.svg', mimetype='image/svg+xml')
+# Criar banco de dados e usuário admin
+with app.app_context():
+    db.create_all()
     
-    @app.route('/test-lang')
-    def test_lang():
-        from flask_babel import gettext
-        return f"Current locale: {get_locale()}, Test: {gettext('Home')}"
-
-    from routes.main import main_bp
-    from routes.auth import auth_bp
-    from routes.chat import chat_bp, socketio_events
-    app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(chat_bp, url_prefix='/chat')
-    
-    # Register SocketIO events
-    socketio_events(socketio)
-
-    with app.app_context():
-        # Ensure project directories exist
-        os.makedirs(app.config['PROJECTS_ROOT'], exist_ok=True)
-        os.makedirs(app.config['TRASH_ROOT'], exist_ok=True)
-        db.create_all()
-        seed_email = os.getenv('SEED_EMAIL', 'admin@test.com')
-        seed_pass = os.getenv('SEED_PASSWORD', 'admin123')
-        existing = User.query.filter_by(email=seed_email).first()
-        if not existing:
-            u = User(name='Admin Test', email=seed_email, plan='paid')
-            u.set_password(seed_pass)
-            db.session.add(u)
-            db.session.commit()
-
-    return app, socketio
+    # Criar usuário admin se não existir
+    admin_user = User.query.filter_by(email='admin@doccollab.com').first()
+    if not admin_user:
+        admin = User(name='Administrador', email='admin@doccollab.com')
+        admin.set_password('admin123')
+        db.session.add(admin)
+        db.session.commit()
+        print("Usuário admin criado: admin@doccollab.com / admin123")
 
 if __name__ == '__main__':
-    app, socketio = create_app()
-    socketio.run(app, debug=True, host='127.0.0.1', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

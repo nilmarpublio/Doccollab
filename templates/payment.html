@@ -1,63 +1,235 @@
 {% extends "base.html" %}
-{% block title %}{{ _('DocCollab - Upgrade Plan') }}{% endblock %}
+{% block title %}{{ _('DocCollab - Preços') }}{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="text-center mb-5">
-                <h1 class="display-4">{{ _('Upgrade to Paid Plan') }}</h1>
-                <p class="lead text-muted">{{ _('Unlock unlimited projects, files, and collaboration features') }}</p>
-            </div>
+<div class="pricing-container">
+    <div class="pricing-header">
+        <h1 class="pricing-title">
+            <i class="fas fa-crown"></i>
+            {{ _('Preços') }}
+        </h1>
+        <p class="pricing-subtitle">{{ _('Escolha o plano ideal para suas necessidades') }}</p>
+    </div>
 
-            <div class="row">
-                <!-- Free Plan -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 border-secondary">
-                        <div class="card-header bg-secondary text-white text-center">
-                            <h3 class="mb-0">{{ _('Free Plan') }}</h3>
-                            <div class="display-6">$0<small class="text-muted">/mês</small></div>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('1 projeto') }}</li>
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('1 arquivo (.tex)') }}</li>
-                                <li class="mb-2"><i class="fas fa-times text-danger"></i> {{ _('Upload de imagens') }}</li>
-                                <li class="mb-2"><i class="fas fa-times text-danger"></i> {{ _('Múltiplos arquivos') }}</li>
-                                <li class="mb-2"><i class="fas fa-times text-danger"></i> {{ _('Colaboração') }}</li>
-                                <li class="mb-2"><i class="fas fa-times text-danger"></i> {{ _('Suporte prioritário') }}</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer text-center">
-                            <span class="badge bg-secondary fs-6">{{ _('Current Plan') }}</span>
-                        </div>
-                    </div>
+    <div class="pricing-cards">
+        <!-- Plano 1 - Gratuito -->
+        <div class="pricing-card free-plan">
+            <div class="plan-header">
+                <div class="plan-icon">
+                    <i class="fas fa-gift"></i>
                 </div>
-
-                <!-- Paid Plan -->
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 border-success shadow-lg">
-                        <div class="card-header bg-success text-white text-center">
-                            <h3 class="mb-0">{{ _('Paid Plan') }}</h3>
-                            <div class="display-6">$9.99<small class="text-muted">/mês</small></div>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('Projetos ilimitados') }}</li>
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('Arquivos ilimitados') }}</li>
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('Upload de imagens') }}</li>
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('Colaboração em tempo real') }}</li>
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('Suporte prioritário') }}</li>
-                                <li class="mb-2"><i class="fas fa-check text-success"></i> {{ _('Recursos avançados') }}</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer text-center">
-                            <button class="btn btn-success btn-lg" onclick="processPayment()">
-                                <i class="fas fa-credit-card"></i> {{ _('Upgrade Now') }}
-                            </button>
-                        </div>
-                    </div>
+                <h3 class="plan-name">{{ _('Plano Gratuito') }}</h3>
+                <div class="plan-price">
+                    <span class="currency">R$</span>
+                    <span class="amount">0</span>
+                    <span class="period">/mês</span>
                 </div>
             </div>
+            <div class="plan-features">
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('1 projeto') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('1 arquivo (.tex)') }}</span>
+                    </li>
+                    <li class="feature-item disabled">
+                        <i class="fas fa-times"></i>
+                        <span>{{ _('Upload de imagens') }}</span>
+                    </li>
+                    <li class="feature-item disabled">
+                        <i class="fas fa-times"></i>
+                        <span>{{ _('Colaboração') }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="plan-footer">
+                <span class="current-plan-badge">{{ _('Plano Atual') }}</span>
+            </div>
+        </div>
+
+        <!-- Plano 2 - Mensal -->
+        <div class="pricing-card paid-plan">
+            <div class="plan-header">
+                <div class="plan-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <h3 class="plan-name">{{ _('Plano Mensal') }}</h3>
+                <div class="plan-price">
+                    <span class="currency">R$</span>
+                    <span class="amount">10,00</span>
+                    <span class="period">/mês</span>
+                </div>
+            </div>
+            <div class="plan-features">
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Projetos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Arquivos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Upload de imagens') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Colaboração básica') }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="plan-footer">
+                <button class="btn btn-primary" onclick="processPayment('monthly')">
+                    <i class="fas fa-credit-card"></i>
+                    {{ _('Assinar') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Plano 3 - Trimestral -->
+        <div class="pricing-card paid-plan featured">
+            <div class="plan-badge">{{ _('Mais Popular') }}</div>
+            <div class="plan-header">
+                <div class="plan-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="plan-name">{{ _('Plano Trimestral') }}</h3>
+                <div class="plan-price">
+                    <span class="currency">R$</span>
+                    <span class="amount">25,00</span>
+                    <span class="period">/trimestre</span>
+                </div>
+                <div class="plan-savings">{{ _('Economize 17%%') }}</div>
+            </div>
+            <div class="plan-features">
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Projetos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Arquivos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Upload de imagens') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Colaboração em tempo real') }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="plan-footer">
+                <button class="btn btn-primary btn-large" onclick="processPayment('quarterly')">
+                    <i class="fas fa-credit-card"></i>
+                    {{ _('Assinar') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Plano 4 - Semestral -->
+        <div class="pricing-card paid-plan">
+            <div class="plan-header">
+                <div class="plan-icon">
+                    <i class="fas fa-calendar-week"></i>
+                </div>
+                <h3 class="plan-name">{{ _('Plano Semestral') }}</h3>
+                <div class="plan-price">
+                    <span class="currency">R$</span>
+                    <span class="amount">50,00</span>
+                    <span class="period">/semestre</span>
+                </div>
+                <div class="plan-savings">{{ _('Economize 33%%') }}</div>
+            </div>
+            <div class="plan-features">
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Projetos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Arquivos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Upload de imagens') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Colaboração em tempo real') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Suporte prioritário') }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="plan-footer">
+                <button class="btn btn-primary" onclick="processPayment('semiannual')">
+                    <i class="fas fa-credit-card"></i>
+                    {{ _('Assinar') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Plano 5 - Anual -->
+        <div class="pricing-card paid-plan premium">
+            <div class="plan-badge premium">{{ _('Melhor Oferta') }}</div>
+            <div class="plan-header">
+                <div class="plan-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3 class="plan-name">{{ _('Plano Anual') }}</h3>
+                <div class="plan-price">
+                    <span class="currency">R$</span>
+                    <span class="amount">100,00</span>
+                    <span class="period">/ano</span>
+                </div>
+                <div class="plan-savings premium">{{ _('Economize 50%%') }}</div>
+            </div>
+            <div class="plan-features">
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Projetos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Arquivos ilimitados') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Upload de imagens') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Colaboração em tempo real') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Suporte prioritário') }}</span>
+                    </li>
+                    <li class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>{{ _('Recursos avançados') }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="plan-footer">
+                <button class="btn btn-primary btn-large" onclick="processPayment('annual')">
+                    <i class="fas fa-credit-card"></i>
+                    {{ _('Assinar') }}
+                </button>
+            </div>
+        </div>
+    </div>
 
             <!-- Payment Form (Hidden by default) -->
             <div id="payment-form" class="card mt-4" style="display: none;">
@@ -98,112 +270,279 @@
                 </div>
             </div>
 
-            <!-- Features Comparison -->
-            <div class="card mt-5">
-                <div class="card-header">
-                    <h4 class="mb-0">{{ _('Feature Comparison') }}</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>{{ _('Feature') }}</th>
-                                    <th class="text-center">{{ _('Free') }}</th>
-                                    <th class="text-center">{{ _('Paid') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ _('Projects') }}</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">{{ _('Unlimited') }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ _('Files per project') }}</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">{{ _('Unlimited') }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ _('Image uploads') }}</td>
-                                    <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-                                    <td class="text-center"><i class="fas fa-check text-success"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>{{ _('Real-time collaboration') }}</td>
-                                    <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-                                    <td class="text-center"><i class="fas fa-check text-success"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>{{ _('Priority support') }}</td>
-                                    <td class="text-center"><i class="fas fa-times text-danger"></i></td>
-                                    <td class="text-center"><i class="fas fa-check text-success"></i></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <!-- Features Comparison -->
+    <div class="comparison-section">
+        <div class="comparison-header">
+            <h2 class="comparison-title">
+                <i class="fas fa-chart-bar"></i>
+                {{ _('Comparação de Recursos') }}
+            </h2>
+            <p class="comparison-subtitle">{{ _('Veja todos os recursos disponíveis em cada plano') }}</p>
+        </div>
+        
+        <div class="comparison-table-container">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th class="feature-column">{{ _('Recursos') }}</th>
+                        <th class="plan-column">
+                            <div class="plan-header-cell">
+                                <div class="plan-name">{{ _('Gratuito') }}</div>
+                                <div class="plan-price">R$ 0</div>
+                            </div>
+                        </th>
+                        <th class="plan-column">
+                            <div class="plan-header-cell">
+                                <div class="plan-name">{{ _('Mensal') }}</div>
+                                <div class="plan-price">R$ 10</div>
+                            </div>
+                        </th>
+                        <th class="plan-column featured">
+                            <div class="plan-header-cell">
+                                <div class="plan-name">{{ _('Trimestral') }}</div>
+                                <div class="plan-price">R$ 25</div>
+                                <div class="plan-badge">{{ _('Popular') }}</div>
+                            </div>
+                        </th>
+                        <th class="plan-column">
+                            <div class="plan-header-cell">
+                                <div class="plan-name">{{ _('Semestral') }}</div>
+                                <div class="plan-price">R$ 50</div>
+                            </div>
+                        </th>
+                        <th class="plan-column premium">
+                            <div class="plan-header-cell">
+                                <div class="plan-name">{{ _('Anual') }}</div>
+                                <div class="plan-price">R$ 100</div>
+                                <div class="plan-badge premium">{{ _('Melhor') }}</div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">
+                            <i class="fas fa-folder"></i>
+                            {{ _('Projetos') }}
+                        </td>
+                        <td class="feature-value">1</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">
+                            <i class="fas fa-file-alt"></i>
+                            {{ _('Arquivos por projeto') }}
+                        </td>
+                        <td class="feature-value">1</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                        <td class="feature-value unlimited">{{ _('Ilimitados') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">
+                            <i class="fas fa-image"></i>
+                            {{ _('Upload de imagens') }}
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">
+                            <i class="fas fa-users"></i>
+                            {{ _('Colaboração em tempo real') }}
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value basic">{{ _('Básica') }}</td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">
+                            <i class="fas fa-headset"></i>
+                            {{ _('Suporte prioritário') }}
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">
+                            <i class="fas fa-star"></i>
+                            {{ _('Recursos avançados') }}
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value disabled">
+                            <i class="fas fa-times"></i>
+                        </td>
+                        <td class="feature-value enabled">
+                            <i class="fas fa-check"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-            <!-- FAQ -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h4 class="mb-0">{{ _('Frequently Asked Questions') }}</h4>
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <div class="faq-header">
+            <h2 class="faq-title">
+                <i class="fas fa-question-circle"></i>
+                {{ _('Perguntas Frequentes') }}
+            </h2>
+            <p class="faq-subtitle">{{ _('Tire suas dúvidas sobre nossos planos e serviços') }}</p>
+        </div>
+        
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>{{ _('Posso cancelar a qualquer momento?') }}</h3>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
-                <div class="card-body">
-                    <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faq1">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
-                                    {{ _('Can I cancel anytime?') }}
-                                </button>
-                            </h2>
-                            <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    {{ _('Yes! You can cancel your subscription at any time. You will continue to have access to paid features until the end of your billing period.') }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faq2">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
-                                    {{ _('What payment methods do you accept?') }}
-                                </button>
-                            </h2>
-                            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    {{ _('We accept all major credit cards (Visa, MasterCard, American Express) and PayPal.') }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="faq3">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
-                                    {{ _('Is my data secure?') }}
-                                </button>
-                            </h2>
-                            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    {{ _('Absolutely! We use industry-standard encryption to protect your data and never share your information with third parties.') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="faq-answer">
+                    <p>{{ _('Sim! Você pode cancelar sua assinatura a qualquer momento. Você continuará tendo acesso aos recursos pagos até o final do período de cobrança atual.') }}</p>
                 </div>
             </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>{{ _('Quais métodos de pagamento vocês aceitam?') }}</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>{{ _('Aceitamos todos os cartões de crédito principais (Visa, MasterCard, American Express), PIX e boleto bancário.') }}</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>{{ _('Meus dados estão seguros?') }}</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>{{ _('Absolutamente! Utilizamos criptografia de padrão industrial para proteger seus dados e nunca compartilhamos suas informações com terceiros.') }}</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>{{ _('Posso mudar de plano a qualquer momento?') }}</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>{{ _('Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento. As alterações entrarão em vigor imediatamente.') }}</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>{{ _('Há período de teste gratuito?') }}</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>{{ _('Oferecemos 7 dias de teste gratuito para todos os planos pagos. Você pode cancelar sem custos durante este período.') }}</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>{{ _('Como funciona o suporte?') }}</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>{{ _('Oferecemos suporte por email para todos os usuários. Usuários dos planos Semestral e Anual têm acesso ao suporte prioritário com resposta em até 24 horas.') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
         </div>
     </div>
 </div>
 
 <script>
-function processPayment() {
+function processPayment(planType) {
     // Show payment form
     document.getElementById('payment-form').style.display = 'block';
     document.getElementById('payment-form').scrollIntoView({ behavior: 'smooth' });
+    
+    // Store selected plan
+    document.getElementById('payment-form').setAttribute('data-plan', planType);
 }
 
 function hidePaymentForm() {
     document.getElementById('payment-form').style.display = 'none';
+}
+
+function toggleFAQ(element) {
+    const faqItem = element.parentElement;
+    const answer = faqItem.querySelector('.faq-answer');
+    const icon = element.querySelector('i');
+    
+    // Close all other FAQ items
+    document.querySelectorAll('.faq-item').forEach(item => {
+        if (item !== faqItem) {
+            item.classList.remove('active');
+            item.querySelector('.faq-answer').style.maxHeight = '0';
+            item.querySelector('.faq-question i').style.transform = 'rotate(0deg)';
+        }
+    });
+    
+    // Toggle current FAQ item
+    faqItem.classList.toggle('active');
+    
+    if (faqItem.classList.contains('active')) {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        answer.style.maxHeight = '0';
+        icon.style.transform = 'rotate(0deg)';
+    }
 }
 
 // Handle payment form submission
@@ -225,7 +564,7 @@ document.getElementById('payment-form-data').addEventListener('submit', function
             if (data.success) {
                 alert('{{ _("Plan upgraded successfully!") }}');
                 // Redirect to dashboard with success message
-                window.location.href = '{{ url_for("main.dashboard") }}?upgrade=success';
+                window.location.href = '{{ url_for("dashboard") }}?upgrade=success';
             } else {
                 alert('{{ _("Error upgrading plan:") }} ' + data.error);
             }
@@ -252,4 +591,563 @@ function getCookie(name) {
     return cookieValue;
 }
 </script>
+
+<style>
+/* Pricing Page Styles */
+.pricing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.pricing-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.pricing-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.pricing-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+
+.pricing-card {
+    background: var(--surface-color);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px var(--shadow-light);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px var(--shadow-medium);
+}
+
+.pricing-card.featured {
+    border: 2px solid var(--primary-color);
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-8px);
+}
+
+.plan-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.plan-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+    background: var(--gradient-surface);
+}
+
+.plan-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.free-plan .plan-icon {
+    background: var(--gradient-light);
+    color: var(--text-primary);
+}
+
+.plan-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+}
+
+.plan-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.currency {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.amount {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.period {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.plan-features {
+    padding: 1rem 2rem;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 1rem;
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+.feature-item i {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.feature-item:not(.disabled) i {
+    background: #d4edda;
+    color: #155724;
+}
+
+.feature-item.disabled i {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.feature-item.disabled span {
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.plan-footer {
+    padding: 1.5rem 2rem;
+    text-align: center;
+    background: var(--surface-light);
+}
+
+.current-plan-badge {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(74, 144, 226, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
+}
+
+/* Payment Form */
+#payment-form {
+    background: var(--surface-color);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px var(--shadow-light);
+    border: 1px solid var(--border-light);
+    margin-top: 2rem;
+}
+
+#payment-form .card-header {
+    background: var(--gradient-surface);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1.5rem 2rem;
+}
+
+#payment-form .card-body {
+    padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pricing-title {
+        font-size: 2rem;
+    }
+    
+    .pricing-cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .pricing-card.featured {
+        transform: none;
+    }
+    
+    .pricing-card.featured:hover {
+        transform: translateY(-8px);
+    }
+    
+    .plan-header {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+    
+    .plan-features {
+        padding: 1rem 1.5rem;
+    }
+    
+    .plan-footer {
+        padding: 1.5rem;
+    }
+}
+
+/* Plan Savings */
+.plan-savings {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+.plan-savings.premium {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+/* Premium Plan Styles */
+.pricing-card.premium {
+    border: 2px solid #ff6b6b;
+    background: linear-gradient(135deg, #fff5f5, #ffffff);
+}
+
+.pricing-card.premium .plan-icon {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+.plan-badge.premium {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+/* Comparison Section */
+.comparison-section {
+    margin: 4rem 0;
+}
+
+.comparison-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.comparison-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.comparison-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.comparison-table-container {
+    overflow-x: auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px var(--shadow-light);
+    border: 1px solid var(--border-light);
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-color);
+    min-width: 800px;
+}
+
+.comparison-table th {
+    background: var(--gradient-surface);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-light);
+}
+
+.feature-column {
+    text-align: left !important;
+    background: var(--surface-light) !important;
+    font-size: 1.1rem;
+}
+
+.plan-column {
+    min-width: 120px;
+}
+
+.plan-column.featured {
+    background: var(--primary-lighter) !important;
+    border-left: 3px solid var(--primary-color);
+    border-right: 3px solid var(--primary-color);
+}
+
+.plan-column.premium {
+    background: linear-gradient(135deg, #fff5f5, #ffffff) !important;
+    border-left: 3px solid #ff6b6b;
+    border-right: 3px solid #ff6b6b;
+}
+
+.plan-header-cell {
+    text-align: center;
+}
+
+.plan-header-cell .plan-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.plan-header-cell .plan-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 0.5rem 0;
+}
+
+.plan-header-cell .plan-badge {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.plan-header-cell .plan-badge.premium {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+}
+
+.comparison-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+}
+
+.feature-name {
+    text-align: left !important;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.feature-name i {
+    color: var(--primary-color);
+    width: 20px;
+}
+
+.feature-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.feature-value.unlimited {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.feature-value.enabled {
+    color: var(--accent-color);
+}
+
+.feature-value.disabled {
+    color: var(--text-muted);
+}
+
+.feature-value.basic {
+    color: var(--primary-color);
+    font-style: italic;
+}
+
+/* FAQ Section */
+.faq-section {
+    margin: 4rem 0;
+}
+
+.faq-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.faq-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.faq-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px var(--shadow-light);
+    border: 1px solid var(--border-light);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 8px 24px var(--shadow-medium);
+}
+
+.faq-item.active {
+    border-color: var(--primary-color);
+}
+
+.faq-question {
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+    background: var(--surface-light);
+}
+
+.faq-question h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.faq-question i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.faq-answer p {
+    padding: 0 2rem 1.5rem;
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Responsive adjustments for new sections */
+@media (max-width: 768px) {
+    .comparison-title,
+    .faq-title {
+        font-size: 2rem;
+    }
+    
+    .comparison-table {
+        font-size: 0.9rem;
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .faq-question {
+        padding: 1rem 1.5rem;
+    }
+    
+    .faq-question h3 {
+        font-size: 1rem;
+    }
+    
+    .faq-answer p {
+        padding: 0 1.5rem 1rem;
+    }
+}
+</style>
 {% endblock %}

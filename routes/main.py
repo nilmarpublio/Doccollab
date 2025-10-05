@@ -649,3 +649,29 @@ def delete_version(project_id, version_id):
         
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ===== CARD PAGES ROUTES =====
+
+@main_bp.route('/card01')
+def card01():
+    """Card01 page"""
+    return render_template('card01.html')
+
+@main_bp.route('/card02')
+def card02():
+    """Card02 page"""
+    return render_template('card02.html')
+
+@main_bp.route('/card03')
+def card03():
+    """Card03 page"""
+    return render_template('card03.html')
+
+@main_bp.route('/set-language/<lang_code>')
+def set_language(lang_code):
+    """Set language preference"""
+    from flask_babel import refresh
+    session['language'] = lang_code
+    refresh()
+    return redirect(request.referrer or url_for('main.index'))

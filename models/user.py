@@ -13,6 +13,8 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     projects = db.relationship('Project', backref='owner', lazy=True, cascade='all, delete-orphan')
+    
+    # Subscription relationship removed to avoid circular import issues
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -23,7 +25,9 @@ class User(UserMixin, db.Model):
     def get_subscription(self):
         """Get user's subscription, create free one if doesn't exist"""
         from .subscription import Subscription, PlanType
-        if not hasattr(self, 'subscription') or not self.subscription:
+        # Check if subscription already exists
+        subscription = Subscription.query.filter_by(user_id=self.id).first()
+        if not subscription:
             # Create free subscription if doesn't exist
             subscription = Subscription(
                 user_id=self.id,
@@ -31,8 +35,7 @@ class User(UserMixin, db.Model):
             )
             db.session.add(subscription)
             db.session.commit()
-            return subscription
-        return self.subscription
+        return subscription
 
     def can_create_project(self) -> bool:
         """Check if user can create a new project"""

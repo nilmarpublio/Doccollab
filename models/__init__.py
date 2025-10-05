@@ -1,10 +1,11 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+# Import db from app_fixed instead of creating new instance
+from app_fixed import db
 
 # Import all models to ensure they are registered
+# Import User first to avoid circular dependency
 from .user import User
 from .project import Project
-from .subscription import Subscription, PlanType
 from .version import Version
 from .chat_message import ChatMessage
+# Import Subscription last since it references User
+from .subscription import Subscription, PlanType

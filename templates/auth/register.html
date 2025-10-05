@@ -11,7 +11,7 @@
     </div>
     
     <div class="auth-body">
-      <form method="POST" action="{{ url_for('auth.register_post') }}" class="auth-form" id="registerForm">
+      <form method="POST" action="{{ url_for('register') }}" class="auth-form" id="registerForm">
         <div class="form-group">
           <label for="name" class="form-label">
             <i class="fas fa-user-circle"></i>
@@ -112,7 +112,7 @@
       </div>
       
       <div class="auth-footer">
-        <p>{{ _('Already have an account?') }} <a href="{{ url_for('auth.login') }}" class="auth-link">{{ _('Sign in') }}</a></p>
+        <p>{{ _('Already have an account?') }} <a href="{{ url_for('login') }}" class="auth-link">{{ _('Sign in') }}</a></p>
       </div>
     </div>
   </div>

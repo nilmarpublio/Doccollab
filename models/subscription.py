@@ -18,8 +18,8 @@ class Subscription(db.Model):
     expires_at = db.Column(db.DateTime, nullable=True)  # None for free plan
     is_active = db.Column(db.Boolean, default=True)
     
-    # Relationship
-    user = db.relationship('User', backref=db.backref('subscription', uselist=False))
+    # Relationship removed temporarily to avoid circular import issues
+    # Will be added back after both models are fully loaded
     
     def __repr__(self):
         return f'<Subscription {self.plan_type.value} for user {self.user_id}>'

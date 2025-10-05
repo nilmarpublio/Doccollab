@@ -1,0 +1,673 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Editor - DocCollab') }}{% endblock %}
+{% block content %}
+<div class="unified-editor">
+  <!-- Barra horizontal com nome do projeto -->
+  <div class="project-bar">
+    <div class="project-info">
+      <h1 class="project-name">
+        <i class="fas fa-file-alt"></i>
+        <span id="projectName">{{ _('Novo Projeto') }}</span>
+      </h1>
+      <div class="project-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">{{ _('Salvo') }}</span>
+      </div>
+    </div>
+    <div class="project-controls">
+      <button class="btn-rename" onclick="renameProject()">
+        <i class="fas fa-edit"></i>
+        {{ _('Renomear') }}
+      </button>
+      <a href="{{ url_for('dashboard') }}" class="btn-back">
+        <i class="fas fa-arrow-left"></i>
+        {{ _('Voltar') }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Linha de botões: Save, New File, Compile -->
+  <div class="action-bar">
+    <div class="action-group">
+      <button class="btn-save" onclick="saveProject()">
+        <i class="fas fa-save"></i>
+        {{ _('Save') }}
+      </button>
+      <button class="btn-new" onclick="newFile()">
+        <i class="fas fa-file-plus"></i>
+        {{ _('New File') }}
+      </button>
+      <button class="btn-compile" onclick="compileProject()">
+        <i class="fas fa-play"></i>
+        {{ _('Compile') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Card02 - Editor -->
+  <div class="editor-card">
+    <div class="editor-tabs">
+      <div class="tab active" id="mainTab">
+        <i class="fas fa-file-alt"></i>
+        <span>main.tex</span>
+        <button class="tab-close" onclick="closeTab('main')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="editor-area">
+      <div class="editor-main">
+        <textarea 
+          id="codeEditor" 
+          class="code-textarea"
+          placeholder="\\documentclass{article}
+\\usepackage[utf8]{inputenc}
+
+\\begin{document}
+
+\\title{Meu Documento}
+\\author{Seu Nome}
+\\date{\\today}
+
+\\maketitle
+
+\\section{Introdução}
+
+Aqui está o conteúdo do seu documento LaTeX.
+
+\\end{document}"
+        ></textarea>
+      </div>
+      
+      <div class="editor-sidebar">
+        <div class="sidebar-panel">
+          <h3>
+            <i class="fas fa-folder"></i>
+            {{ _('Arquivos') }}
+          </h3>
+          <div class="file-list" id="fileList">
+            <div class="file-item active">
+              <i class="fas fa-file-alt"></i>
+              <span>main.tex</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="sidebar-panel">
+          <h3>
+            <i class="fas fa-list"></i>
+            {{ _('Estrutura') }}
+          </h3>
+          <div class="outline-list" id="outlineList">
+            <div class="outline-item">
+              <i class="fas fa-file-alt"></i>
+              <span>Documento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <div class="status-left">
+      <span id="cursorInfo">Linha 1, Coluna 1</span>
+      <span class="divider">|</span>
+      <span id="fileInfo">0 caracteres</span>
+    </div>
+    <div class="status-right">
+      <span id="lastSave">{{ _('Nunca salvo') }}</span>
+      <span class="divider">|</span>
+      <span>UTF-8</span>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Container principal */
+.unified-editor {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Barra do projeto */
+.project-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.project-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.project-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #28a745;
+  display: inline-block;
+}
+
+.project-controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-rename, .btn-back {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-rename:hover, .btn-back:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+/* Barra de ações */
+.action-bar {
+  padding: 1rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.action-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-save, .btn-new, .btn-compile {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-save {
+  background: #28a745;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-new {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-new:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.btn-compile {
+  background: #007bff;
+  color: white;
+}
+
+.btn-compile:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Card do editor */
+.editor-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  margin: 0 2rem 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Abas do editor */
+.editor-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 0 1rem;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  margin-right: 0.25rem;
+}
+
+.tab.active {
+  background: white;
+  border-color: #007bff;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.tab:hover {
+  background: #e9ecef;
+}
+
+.tab-close {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
+}
+
+.tab-close:hover {
+  background: #dee2e6;
+  color: #495057;
+}
+
+/* Área do editor */
+.editor-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.editor-main {
+  flex: 1;
+  position: relative;
+}
+
+.code-textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 1.5rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background: white;
+  color: #212529;
+  resize: none;
+  tab-size: 2;
+}
+
+.code-textarea::placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Sidebar */
+.editor-sidebar {
+  width: 280px;
+  background: #f8f9fa;
+  border-left: 1px solid #e9ecef;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.sidebar-panel {
+  margin-bottom: 2rem;
+}
+
+.sidebar-panel h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-list, .outline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.file-item, .outline-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.file-item:hover, .outline-item:hover {
+  background: #e9ecef;
+}
+
+.file-item.active {
+  background: #007bff;
+  color: white;
+}
+
+/* Status bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.status-left, .status-right {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.divider {
+  color: #dee2e6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .project-bar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .action-group {
+    flex-wrap: wrap;
+  }
+  
+  .editor-card {
+    margin: 0 1rem 1rem 1rem;
+  }
+  
+  .editor-area {
+    flex-direction: column;
+  }
+  
+  .editor-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .editor-tabs {
+    overflow-x: auto;
+  }
+}
+</style>
+
+<script>
+// Variáveis globais
+let editor = document.getElementById('codeEditor');
+let projectName = document.getElementById('projectName');
+let statusDot = document.getElementById('statusDot');
+let statusText = document.getElementById('statusText');
+let cursorInfo = document.getElementById('cursorInfo');
+let fileInfo = document.getElementById('fileInfo');
+let lastSave = document.getElementById('lastSave');
+let isModified = false;
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    updateFileInfo();
+    updateCursorInfo();
+    
+    // Event listeners
+    editor.addEventListener('input', function() {
+        isModified = true;
+        updateFileInfo();
+        updateStatus('Modificado');
+    });
+    
+    editor.addEventListener('keyup', function() {
+        updateCursorInfo();
+    });
+    
+    editor.addEventListener('click', function() {
+        updateCursorInfo();
+    });
+    
+    // Auto-save a cada 30 segundos
+    setInterval(autoSave, 30000);
+});
+
+// Atualizar informações do arquivo
+function updateFileInfo() {
+    const content = editor.value;
+    const size = content.length;
+    fileInfo.textContent = `${size} caracteres`;
+}
+
+// Atualizar posição do cursor
+function updateCursorInfo() {
+    const text = editor.value;
+    const cursorPos = editor.selectionStart;
+    const lines = text.substring(0, cursorPos).split('\n');
+    const line = lines.length;
+    const column = lines[lines.length - 1].length + 1;
+    cursorInfo.textContent = `Linha ${line}, Coluna ${column}`;
+}
+
+// Atualizar status
+function updateStatus(status) {
+    if (status === 'Salvo') {
+        statusDot.style.background = '#28a745';
+        statusText.textContent = 'Salvo';
+    } else if (status === 'Modificado') {
+        statusDot.style.background = '#ffc107';
+        statusText.textContent = 'Modificado';
+    } else if (status === 'Salvando...') {
+        statusDot.style.background = '#17a2b8';
+        statusText.textContent = 'Salvando...';
+    } else if (status === 'Compilando...') {
+        statusDot.style.background = '#6f42c1';
+        statusText.textContent = 'Compilando...';
+    }
+}
+
+// Salvar projeto
+function saveProject() {
+    updateStatus('Salvando...');
+    
+    setTimeout(() => {
+        isModified = false;
+        updateStatus('Salvo');
+        lastSave.textContent = new Date().toLocaleTimeString();
+        showNotification('Projeto salvo com sucesso!', 'success');
+    }, 1000);
+}
+
+// Auto-save
+function autoSave() {
+    if (isModified) {
+        saveProject();
+    }
+}
+
+// Novo arquivo
+function newFile() {
+    if (isModified) {
+        if (confirm('Você tem alterações não salvas. Deseja continuar?')) {
+            createNewFile();
+        }
+    } else {
+        createNewFile();
+    }
+}
+
+function createNewFile() {
+    const fileName = prompt('Nome do arquivo:', 'novo_arquivo.tex');
+    if (fileName) {
+        addFileTab(fileName);
+        editor.value = '';
+        isModified = false;
+        updateStatus('Salvo');
+        updateFileInfo();
+    }
+}
+
+// Compilar projeto
+function compileProject() {
+    updateStatus('Compilando...');
+    
+    setTimeout(() => {
+        updateStatus('Salvo');
+        showNotification('Compilação concluída!', 'success');
+    }, 2000);
+}
+
+// Adicionar aba de arquivo
+function addFileTab(fileName) {
+    const tabsContainer = document.querySelector('.editor-tabs');
+    const newTab = document.createElement('div');
+    newTab.className = 'tab';
+    newTab.innerHTML = `
+        <i class="fas fa-file-alt"></i>
+        <span>${fileName}</span>
+        <button class="tab-close" onclick="closeTab('${fileName}')">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // Remover active de outras abas
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    newTab.classList.add('active');
+    tabsContainer.appendChild(newTab);
+}
+
+// Fechar aba
+function closeTab(fileName) {
+    const tab = document.querySelector(`[onclick="closeTab('${fileName}')"]`).parentElement;
+    tab.remove();
+    
+    if (tab.classList.contains('active')) {
+        const mainTab = document.getElementById('mainTab');
+        if (mainTab) {
+            mainTab.classList.add('active');
+        }
+    }
+}
+
+// Renomear projeto
+function renameProject() {
+    const newName = prompt('Novo nome do projeto:', projectName.textContent);
+    if (newName && newName.trim()) {
+        projectName.textContent = newName.trim();
+        showNotification('Projeto renomeado!', 'success');
+    }
+}
+
+// Mostrar notificação
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        notification.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Atalhos de teclado
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        saveProject();
+    }
+    
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        newFile();
+    }
+    
+    if (e.key === 'F5') {
+        e.preventDefault();
+        compileProject();
+    }
+});
+</script>
+
+{% endblock %}

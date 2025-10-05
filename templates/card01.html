@@ -1,0 +1,811 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Editor - DocCollab') }}{% endblock %}
+{% block content %}
+<div class="editor-container">
+  <!-- Barra horizontal com nome do projeto -->
+  <div class="project-header">
+    <div class="project-info">
+      <h1 class="project-title">
+        <i class="fas fa-file-alt"></i>
+        <span id="projectName">{{ _('Novo Projeto') }}</span>
+      </h1>
+      <div class="project-status">
+        <span class="status-indicator" id="statusIndicator">
+          <i class="fas fa-circle"></i>
+          {{ _('Salvo') }}
+        </span>
+      </div>
+    </div>
+    <div class="project-actions">
+      <button class="btn btn-outline" onclick="renameProject()">
+        <i class="fas fa-edit"></i>
+        {{ _('Renomear') }}
+      </button>
+      <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        {{ _('Voltar') }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Linha de botões -->
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="btn btn-primary" onclick="saveProject()">
+        <i class="fas fa-save"></i>
+        {{ _('Save') }}
+      </button>
+      <button class="btn btn-secondary" onclick="newFile()">
+        <i class="fas fa-file-plus"></i>
+        {{ _('New File') }}
+      </button>
+      <button class="btn btn-success" onclick="compileProject()">
+        <i class="fas fa-play"></i>
+        {{ _('Compile') }}
+      </button>
+    </div>
+    
+    <div class="toolbar-group">
+      <button class="btn btn-outline" onclick="undo()">
+        <i class="fas fa-undo"></i>
+        {{ _('Undo') }}
+      </button>
+      <button class="btn btn-outline" onclick="redo()">
+        <i class="fas fa-redo"></i>
+        {{ _('Redo') }}
+      </button>
+    </div>
+
+    <div class="toolbar-group">
+      <button class="btn btn-outline" onclick="togglePreview()">
+        <i class="fas fa-eye"></i>
+        {{ _('Preview') }}
+      </button>
+      <a href="{{ url_for('card03') }}" class="btn btn-outline">
+        <i class="fas fa-file-pdf"></i>
+        {{ _('View PDF') }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Card02 - Editor -->
+  <div class="editor-card">
+    <div class="editor-header">
+      <div class="file-tabs">
+        <div class="file-tab active" id="mainTab">
+          <i class="fas fa-file-alt"></i>
+          <span>main.tex</span>
+          <button class="tab-close" onclick="closeTab('main')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="editor-options">
+        <select class="form-select" id="fontSize">
+          <option value="12">12px</option>
+          <option value="14" selected>14px</option>
+          <option value="16">16px</option>
+          <option value="18">18px</option>
+        </select>
+        <button class="btn btn-sm btn-outline" onclick="toggleTheme()">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="editor-content">
+      <div class="editor-wrapper">
+        <textarea 
+          id="editor" 
+          class="code-editor"
+          placeholder="\\documentclass{article}
+\\usepackage[utf8]{inputenc}
+
+\\begin{document}
+
+\\title{Meu Documento}
+\\author{Seu Nome}
+\\date{\\today}
+
+\\maketitle
+
+\\section{Introdução}
+
+Aqui está o conteúdo do seu documento LaTeX.
+
+\\end{document}"
+        ></textarea>
+      </div>
+      
+      <div class="editor-sidebar" id="editorSidebar">
+        <div class="sidebar-section">
+          <h4>
+            <i class="fas fa-folder"></i>
+            {{ _('Arquivos do Projeto') }}
+          </h4>
+          <div class="file-list" id="fileList">
+            <div class="file-item active">
+              <i class="fas fa-file-alt"></i>
+              <span>main.tex</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h4>
+            <i class="fas fa-list"></i>
+            {{ _('Estrutura') }}
+          </h4>
+          <div class="outline" id="outline">
+            <div class="outline-item">
+              <i class="fas fa-file-alt"></i>
+              <span>Documento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <div class="status-left">
+      <span id="cursorPosition">Linha 1, Coluna 1</span>
+      <span class="separator">|</span>
+      <span id="fileSize">0 caracteres</span>
+    </div>
+    <div class="status-right">
+      <span id="lastSaved">{{ _('Nunca salvo') }}</span>
+      <span class="separator">|</span>
+      <span id="encoding">UTF-8</span>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Editor Container */
+.editor-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-color);
+}
+
+/* Project Header */
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--gradient-surface);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.project-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.status-indicator i {
+  color: #28a745;
+  font-size: 0.5rem;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  background: var(--surface-light);
+  border-bottom: 1px solid var(--border-light);
+  gap: 1rem;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Editor Card */
+.editor-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-color);
+  overflow: hidden;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--surface-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.file-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.file-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-light);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.file-tab.active {
+  background: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.file-tab:hover {
+  background: var(--border-light);
+}
+
+.tab-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.tab-close:hover {
+  background: var(--surface-light);
+  color: var(--text-primary);
+}
+
+.editor-options {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.form-select {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: var(--surface-color);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+/* Editor Content */
+.editor-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.editor-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.code-editor {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 1rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--surface-color);
+  color: var(--text-primary);
+  resize: none;
+  tab-size: 2;
+}
+
+.code-editor::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Editor Sidebar */
+.editor-sidebar {
+  width: 250px;
+  background: var(--surface-light);
+  border-left: 1px solid var(--border-light);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-section h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  background: var(--border-light);
+}
+
+.file-item.active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.outline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.outline-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.outline-item:hover {
+  background: var(--border-light);
+  color: var(--text-primary);
+}
+
+/* Status Bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--surface-light);
+  border-top: 1px solid var(--border-light);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.status-left, .status-right {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.separator {
+  color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.btn-secondary {
+  background: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  background: var(--border-light);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .project-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .toolbar-group {
+    flex-wrap: wrap;
+  }
+  
+  .editor-content {
+    flex-direction: column;
+  }
+  
+  .editor-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-light);
+  }
+  
+  .file-tabs {
+    overflow-x: auto;
+  }
+}
+</style>
+
+<script>
+// Editor functionality
+let editor = document.getElementById('editor');
+let projectName = document.getElementById('projectName');
+let statusIndicator = document.getElementById('statusIndicator');
+let cursorPosition = document.getElementById('cursorPosition');
+let fileSize = document.getElementById('fileSize');
+let lastSaved = document.getElementById('lastSaved');
+let isModified = false;
+
+// Initialize editor
+document.addEventListener('DOMContentLoaded', function() {
+    updateFileSize();
+    updateCursorPosition();
+    
+    // Add event listeners
+    editor.addEventListener('input', function() {
+        isModified = true;
+        updateFileSize();
+        updateStatus('Modificado');
+    });
+    
+    editor.addEventListener('keyup', function() {
+        updateCursorPosition();
+    });
+    
+    editor.addEventListener('click', function() {
+        updateCursorPosition();
+    });
+    
+    // Auto-save every 30 seconds
+    setInterval(autoSave, 30000);
+});
+
+// Update file size
+function updateFileSize() {
+    const content = editor.value;
+    const size = content.length;
+    fileSize.textContent = `${size} caracteres`;
+}
+
+// Update cursor position
+function updateCursorPosition() {
+    const text = editor.value;
+    const cursorPos = editor.selectionStart;
+    const lines = text.substring(0, cursorPos).split('\n');
+    const line = lines.length;
+    const column = lines[lines.length - 1].length + 1;
+    cursorPosition.textContent = `Linha ${line}, Coluna ${column}`;
+}
+
+// Update status
+function updateStatus(status) {
+    const indicator = statusIndicator.querySelector('i');
+    const text = statusIndicator.querySelector('span');
+    
+    if (status === 'Salvo') {
+        indicator.style.color = '#28a745';
+        text.textContent = 'Salvo';
+    } else if (status === 'Modificado') {
+        indicator.style.color = '#ffc107';
+        text.textContent = 'Modificado';
+    } else if (status === 'Salvando...') {
+        indicator.style.color = '#17a2b8';
+        text.textContent = 'Salvando...';
+    }
+}
+
+// Save project
+function saveProject() {
+    updateStatus('Salvando...');
+    
+    // Simulate save operation
+    setTimeout(() => {
+        isModified = false;
+        updateStatus('Salvo');
+        lastSaved.textContent = new Date().toLocaleTimeString();
+        
+        // Show success message
+        showNotification('Projeto salvo com sucesso!', 'success');
+    }, 1000);
+}
+
+// Auto save
+function autoSave() {
+    if (isModified) {
+        saveProject();
+    }
+}
+
+// New file
+function newFile() {
+    if (isModified) {
+        if (confirm('Você tem alterações não salvas. Deseja continuar?')) {
+            createNewFile();
+        }
+    } else {
+        createNewFile();
+    }
+}
+
+function createNewFile() {
+    const fileName = prompt('Nome do arquivo:', 'novo_arquivo.tex');
+    if (fileName) {
+        // Add new tab
+        addFileTab(fileName);
+        // Clear editor
+        editor.value = '';
+        isModified = false;
+        updateStatus('Salvo');
+        updateFileSize();
+    }
+}
+
+// Compile project
+function compileProject() {
+    updateStatus('Compilando...');
+    
+    // Simulate compilation
+    setTimeout(() => {
+        updateStatus('Salvo');
+        showNotification('Compilação concluída!', 'success');
+        
+        // Enable PDF view button
+        const pdfButton = document.querySelector('a[href*="card03"]');
+        if (pdfButton) {
+            pdfButton.style.opacity = '1';
+            pdfButton.style.pointerEvents = 'auto';
+        }
+    }, 2000);
+}
+
+// Add file tab
+function addFileTab(fileName) {
+    const tabsContainer = document.querySelector('.file-tabs');
+    const newTab = document.createElement('div');
+    newTab.className = 'file-tab';
+    newTab.innerHTML = `
+        <i class="fas fa-file-alt"></i>
+        <span>${fileName}</span>
+        <button class="tab-close" onclick="closeTab('${fileName}')">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // Remove active class from other tabs
+    document.querySelectorAll('.file-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Add active class to new tab
+    newTab.classList.add('active');
+    
+    tabsContainer.appendChild(newTab);
+}
+
+// Close tab
+function closeTab(fileName) {
+    const tab = document.querySelector(`[onclick="closeTab('${fileName}')"]`).parentElement;
+    tab.remove();
+    
+    // If this was the active tab, switch to main tab
+    if (tab.classList.contains('active')) {
+        const mainTab = document.getElementById('mainTab');
+        if (mainTab) {
+            mainTab.classList.add('active');
+        }
+    }
+}
+
+// Undo/Redo (simplified)
+function undo() {
+    document.execCommand('undo');
+}
+
+function redo() {
+    document.execCommand('redo');
+}
+
+// Toggle preview
+function togglePreview() {
+    const sidebar = document.getElementById('editorSidebar');
+    if (sidebar.style.display === 'none') {
+        sidebar.style.display = 'block';
+    } else {
+        sidebar.style.display = 'none';
+    }
+}
+
+// Toggle theme
+function toggleTheme() {
+    const body = document.body;
+    const isDark = body.classList.contains('dark-theme');
+    
+    if (isDark) {
+        body.classList.remove('dark-theme');
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Rename project
+function renameProject() {
+    const newName = prompt('Novo nome do projeto:', projectName.textContent);
+    if (newName && newName.trim()) {
+        projectName.textContent = newName.trim();
+        showNotification('Projeto renomeado!', 'success');
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+        color: white;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Ctrl+S - Save
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        saveProject();
+    }
+    
+    // Ctrl+N - New file
+    if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        newFile();
+    }
+    
+    // F5 - Compile
+    if (e.key === 'F5') {
+        e.preventDefault();
+        compileProject();
+    }
+});
+
+// Load theme from localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+});
+</script>
+
+{% endblock %}

@@ -236,7 +236,7 @@
 
 {% block content %}
 <div class="compare-page">
-  <a href="{{ url_for('main.project_versions', project_id=project.id) }}" class="back-button">
+  <a href="{{ url_for('project_versions', project_id=project.id) }}" class="back-button">
     <i class="fas fa-arrow-left"></i>
     {{ _('Back to Version History') }}
   </a>
@@ -250,7 +250,7 @@
       </div>
     </div>
     <div class="version-actions">
-      <a href="{{ url_for('main.editor', project_id=project.id) }}" class="btn btn-outline-primary">
+      <a href="{{ url_for('editor', project_id=project.id) }}" class="btn btn-outline-primary">
         <i class="fas fa-edit"></i>
         {{ _('Back to Editor') }}
       </a>
@@ -349,7 +349,7 @@
 <script>
 function restoreVersion(versionId) {
   if (confirm('{{ _("Are you sure you want to restore this version? This will replace your current file.") }}')) {
-    fetch(`{{ url_for('main.restore_version', project_id=project.id, version_id=0) }}`.replace('0', versionId), {
+    fetch(`{{ url_for('restore_version', project_id=project.id, version_id=0) }}`.replace('0', versionId), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -359,7 +359,7 @@ function restoreVersion(versionId) {
     .then(data => {
       if (data.success) {
         alert(data.message);
-        window.location.href = '{{ url_for("main.editor", project_id=project.id) }}';
+        window.location.href = '{{ url_for("editor", project_id=project.id) }}';
       } else {
         alert('Error: ' + data.error);
       }

@@ -1,7 +1,6 @@
 from functools import wraps
 from flask import jsonify, request, current_app
 from flask_login import current_user
-from models.subscription import PlanType
 
 def require_paid_plan(f):
     """Decorator to require paid plan for a function"""
