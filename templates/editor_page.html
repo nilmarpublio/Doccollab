@@ -4,17 +4,27 @@
 <!-- Barra de ferramentas do editor -->
 <div class="editor-toolbar">
   <div class="toolbar-left">
-    <button class="btn-tool" onclick="saveDocument()" title="Salvar (Ctrl+S)">
+    <a href="{{ url_for('dashboard') }}" class="btn-tool btn-back" title="Voltar ao Dashboard">
+      <i class="fas fa-arrow-left"></i>
+      <span>Voltar</span>
+    </a>
+    <div class="divider"></div>
+    <button class="btn-tool" onclick="saveDocument()" title="{{ _('Save') }} (Ctrl+S)">
       <i class="fas fa-save"></i>
-      <span>Save</span>
+      <span>{{ _('Save') }}</span>
     </button>
-    <button class="btn-tool" onclick="newDocument()" title="Novo Documento (Ctrl+N)">
+    <button class="btn-tool" onclick="newDocument()" title="{{ _('New') }} (Ctrl+N)">
       <i class="fas fa-file-plus"></i>
-      <span>New</span>
+      <span>{{ _('New') }}</span>
     </button>
-    <button class="btn-tool" onclick="openDocument()" title="Abrir Documento (Ctrl+O)">
+    <button class="btn-tool" onclick="openDocument()" title="{{ _('Open') }} (Ctrl+O)">
       <i class="fas fa-folder-open"></i>
-      <span>Open</span>
+      <span>{{ _('Open') }}</span>
+    </button>
+    <div class="divider"></div>
+    <button class="btn-tool" onclick="uploadImage()" title="Upload Imagem" style="background: #28a745;">
+      <i class="fas fa-image"></i>
+      <span>Imagem</span>
     </button>
     <div class="divider"></div>
     <button class="btn-tool" onclick="undoAction()" title="Desfazer (Ctrl+Z)">
@@ -28,15 +38,15 @@
   <div class="toolbar-center">
     <div class="file-info">
       <i class="fas fa-file-alt"></i>
-      <span id="fileName">main.tex</span>
+      <span id="fileName">Sem título</span>
       <span class="file-status" id="fileStatus">●</span>
     </div>
   </div>
   
   <div class="toolbar-right">
-    <button class="btn-compile" onclick="compileDocument()" title="Compilar (F5)">
+    <button class="btn-compile" onclick="compileDocument()" title="{{ _('Compile') }} (F5)">
       <i class="fas fa-play"></i>
-      <span>Compile</span>
+      <span>{{ _('Compile') }}</span>
     </button>
     <button class="btn-tool" onclick="previewDocument()" title="Visualizar (F6)">
       <i class="fas fa-eye"></i>
@@ -52,26 +62,27 @@
       <div class="snippet-list">
         <div class="snippet-item" onclick="insertSnippet('section')">
           <i class="fas fa-heading"></i>
-          <span>Seção</span>
+          <span>{{ _('Section') }}</span>
         </div>
         <div class="snippet-item" onclick="insertSnippet('equation')">
           <i class="fas fa-square-root-alt"></i>
-          <span>Equação</span>
+          <span>{{ _('Equation') }}</span>
         </div>
         <div class="snippet-item" onclick="insertSnippet('table')">
           <i class="fas fa-table"></i>
-          <span>Tabela</span>
+          <span>{{ _('Table') }}</span>
         </div>
         <div class="snippet-item" onclick="insertSnippet('list')">
           <i class="fas fa-list"></i>
-          <span>Lista</span>
+          <span>{{ _('List') }}</span>
         </div>
         <div class="snippet-item" onclick="insertSnippet('figure')">
           <i class="fas fa-image"></i>
-          <span>Figura</span>
+          <span>{{ _('Figure') }}</span>
         </div>
       </div>
     </div>
+    
   </div>
   
   <div class="editor-main">
@@ -111,175 +122,14 @@
     <div class="editor-wrapper">
       <div class="line-numbers" id="lineNumbers"></div>
       <div class="editor-content">
+        <div class="line-highlight-background" id="lineHighlightBg"></div>
         <textarea 
           id="latexEditor" 
           class="latex-editor"
           autofocus
           spellcheck="false"
-        >% Documento LaTeX Completo
-% Estrutura básica para editor LaTeX
-
-\\documentclass[12pt,a4paper]{article}
-
-% Pacotes essenciais
-\\usepackage[utf8]{inputenc}
-\\usepackage[portuguese]{babel}
-\\usepackage[T1]{fontenc}
-\\usepackage{amsmath}
-\\usepackage{amsfonts}
-\\usepackage{amssymb}
-\\usepackage{graphicx}
-\\usepackage{geometry}
-\\usepackage{hyperref}
-\\usepackage{listings}
-\\usepackage{xcolor}
-
-% Configurações de página
-\\geometry{left=3cm,right=2cm,top=3cm,bottom=2cm}
-
-% Configurações de hyperlinks
-\\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  filecolor=magenta,      
-  urlcolor=cyan,
-}
-
-% Configurações de código
-\\lstset{
-  language=Python,
-  basicstyle=\\ttfamily\\small,
-  keywordstyle=\\color{blue},
-  commentstyle=\\color{green},
-  stringstyle=\\color{red},
-  numbers=left,
-  numberstyle=\\tiny,
-  stepnumber=1,
-  numbersep=5pt,
-  backgroundcolor=\\color{gray!10},
-  showspaces=false,
-  showstringspaces=false,
-  showtabs=false,
-  frame=single,
-  tabsize=2,
-  captionpos=b,
-  breaklines=true,
-  breakatwhitespace=false,
-  escapeinside={\\%*}{*)}
-}
-
-\\begin{document}
-
-% Título do documento
-\\title{Meu Documento LaTeX}
-\\author{Seu Nome}
-\\date{\\today}
-
-\\maketitle
-
-% Resumo
-\\begin{abstract}
-  Este é um exemplo de documento LaTeX com estrutura completa incluindo seções, equações, listas, tabelas e código.
-\\end{abstract}
-
-% Sumário
-\\tableofcontents
-\\newpage
-
-% Seção 1
-\\section{Introdução}
-
-Este é um documento LaTeX completo com todas as funcionalidades básicas de um editor LaTeX profissional.
-
-\\subsection{Objetivos}
-
-Os objetivos deste documento são:
-\\begin{itemize}
-  \\item Demonstrar a estrutura básica do LaTeX
-  \\item Mostrar comandos essenciais
-  \\item Incluir exemplos práticos
-\\end{itemize}
-
-% Seção 2
-\\section{Matemática}
-
-\\subsection{Equações}
-
-Equação inline: $E = mc^2$
-
-Equação em bloco:
-\\begin{equation}
-  \\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
-\\end{equation}
-
-Sistema de equações:
-\\begin{align}
-  x + y &= 10 \\\\
-  2x - y &= 5
-\\end{align}
-
-% Seção 3
-\\section{Listas e Tabelas}
-
-\\subsection{Listas}
-
-Lista numerada:
-\\begin{enumerate}
-  \\item Primeiro item
-  \\item Segundo item
-  \\item Terceiro item
-\\end{enumerate}
-
-\\subsection{Tabelas}
-
-\\begin{table}[h]
-  \\centering
-  \\begin{tabular}{|c|c|c|}
-    \\hline
-    Nome & Idade & Cidade \\\\
-    \\hline
-    João & 25 & São Paulo \\\\
-    Maria & 30 & Rio de Janeiro \\\\
-    Pedro & 28 & Belo Horizonte \\\\
-    \\hline
-  \\end{tabular}
-  \\caption{Exemplo de tabela}
-  \\label{tab:exemplo}
-\\end{table}
-
-% Seção 4
-\\section{Código}
-
-\\subsection{Listagem de Código}
-
-\\begin{lstlisting}[caption=Exemplo de código Python]
-def fibonacci(n):
-  if n <= 1:
-    return n
-  else:
-    return fibonacci(n-1) + fibonacci(n-2)
-
-# Teste da função
-for i in range(10):
-  print(f\"F({i}) = {fibonacci(i)}\")
-\\end{lstlisting}
-
-% Seção 5
-\\section{Referências e Links}
-
-Para mais informações sobre LaTeX, consulte \\cite{latex_guide}.
-
-\\subsection{Links}
-
-\\href{https://www.latex-project.org/}{Site oficial do LaTeX}
-
-% Bibliografia
-\\begin{thebibliography}{9}
-  \\bibitem{latex_guide}
-  Lamport, Leslie. \\textit{LaTeX: A Document Preparation System}. Addison-Wesley, 1994.
-\\end{thebibliography}
-
-\\end{document}</textarea>
+          placeholder="Clique em 'New' para criar um novo documento ou 'Open' para abrir um arquivo existente..."
+        ></textarea>
       </div>
     </div>
     
@@ -354,6 +204,17 @@ Para mais informações sobre LaTeX, consulte \\cite{latex_guide}.
 .btn-compile {
   background: #007bff;
   font-weight: 600;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
 }
 
 .btn-compile:hover {
@@ -438,6 +299,126 @@ Para mais informações sobre LaTeX, consulte \\cite{latex_guide}.
 .snippet-item:hover {
   background: #e9ecef;
   color: #495057;
+}
+
+
+.file-item .file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-item .file-actions {
+  display: none;
+  gap: 0.25rem;
+}
+
+.file-item:hover .file-actions {
+  display: flex;
+}
+
+.file-action-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.file-action-btn:hover {
+  opacity: 1;
+}
+
+.file-separator {
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  border-top: 1px solid #dee2e6;
+  margin-top: 0.5rem;
+}
+
+/* Botões de Ação na Sidebar */
+.btn-new-file, .btn-new-folder {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  transition: all 0.2s;
+}
+
+.btn-new-file:first-of-type {
+  margin-left: auto;
+}
+
+.btn-new-folder {
+  background: #17a2b8;
+}
+
+.btn-new-file:hover {
+  background: #218838;
+  transform: scale(1.05);
+}
+
+.btn-new-folder:hover {
+  background: #138496;
+  transform: scale(1.05);
+}
+
+.files-loading {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #6c757d;
+}
+
+.files-loading i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.sidebar-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+
+
+/* Drag and Drop Zone */
+.drop-zone {
+  border: 2px dashed #dee2e6;
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+  color: #6c757d;
+  transition: all 0.2s;
+}
+
+.drop-zone.drag-over {
+  border-color: #007bff;
+  background: #e7f3ff;
+  color: #007bff;
+}
+
+.drop-zone i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .editor-main {
@@ -554,11 +535,35 @@ Para mais informações sobre LaTeX, consulte \\cite{latex_guide}.
   text-align: right;
   user-select: none;
   border-right: 1px solid #dee2e6;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.line-number {
+  height: 1.5em;
+  line-height: 1.5;
 }
 
 .editor-content {
   flex: 1;
   position: relative;
+  background: #ffffff;
+}
+
+.line-highlight-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  padding: 1rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+  white-space: pre;
 }
 
 .latex-editor {
@@ -570,11 +575,13 @@ Para mais informações sobre LaTeX, consulte \\cite{latex_guide}.
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
   font-size: 14px;
   line-height: 1.5;
-  background: #ffffff;
+  background: transparent;
   color: #495057;
   resize: none;
   tab-size: 2;
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .latex-editor:focus {
@@ -716,6 +723,11 @@ class LaTeXEditor {
     this.historyIndex = -1;
     this.isModified = false;
     
+    // Gerenciamento de arquivos LOCAL (pasta Arquivos do usuário)
+    this.workingDirectory = null;
+    this.currentFileHandle = null;
+    this.projectFiles = [];
+    
     this.init();
   }
   
@@ -726,6 +738,585 @@ class LaTeXEditor {
     this.updateFileStatus();
     this.editor.focus();
     this.setupKeyboardShortcuts();
+    
+    // Marcar como NÃO modificado no início (documento padrão)
+    this.isModified = false;
+    this.fileStatus.textContent = '●';
+    this.fileStatus.style.color = '#68d391';
+    
+    // Configurar drag-and-drop de imagens
+    this.setupImageDragDrop();
+    
+    // Solicitar acesso à pasta "Arquivos" automaticamente
+    this.requestWorkingDirectory();
+  }
+  
+  // ============================================================================
+  // GERENCIAMENTO DE ARQUIVOS LOCAL (PASTA ARQUIVOS)
+  // ============================================================================
+  
+  async requestWorkingDirectory() {
+    if (!window.showDirectoryPicker) {
+      alert('Seu navegador não suporta acesso a arquivos locais.\n\nPor favor, use Chrome ou Edge atualizado.');
+      return;
+    }
+    
+    try {
+      const dirHandle = await window.showDirectoryPicker({
+        mode: 'readwrite',
+        startIn: 'documents'
+      });
+      
+      this.workingDirectory = dirHandle;
+      this.showNotification('✓ Pasta selecionada: ' + dirHandle.name, 'success');
+      
+      // Atualizar lista de arquivos
+      await this.updateFilesList();
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Erro ao selecionar pasta:', err);
+        this.showNotification('❌ Erro ao selecionar pasta!', 'error');
+      }
+    }
+  }
+  
+  async updateFilesList() {
+    const filesList = document.getElementById('filesList');
+    if (!filesList) return;
+    
+    if (!this.workingDirectory) {
+      filesList.innerHTML = `
+        <div class="files-empty">
+          <i class="fas fa-folder-open"></i>
+          <p>Selecione a pasta "Arquivos"</p>
+          <small>Clique no botão + para começar</small>
+        </div>
+      `;
+      return;
+    }
+    
+    try {
+      const files = [];
+      for await (const entry of this.workingDirectory.values()) {
+        if (entry.kind === 'file' && entry.name.endsWith('.tex')) {
+          files.push(entry);
+        }
+      }
+      
+      if (files.length === 0) {
+        filesList.innerHTML = `
+          <div class="files-empty">
+            <i class="fas fa-folder-open"></i>
+            <p>Nenhum arquivo .tex</p>
+            <small>Crie um novo documento!</small>
+          </div>
+        `;
+        return;
+      }
+      
+      // Ordenar por nome
+      files.sort((a, b) => a.name.localeCompare(b.name));
+      
+      // Renderizar lista
+      filesList.innerHTML = files.map(fileHandle => `
+        <div class="file-item ${this.currentFileHandle?.name === fileHandle.name ? 'active' : ''}" 
+             onclick="window.latexEditor.openFileFromList('${fileHandle.name}')"
+             title="${fileHandle.name}">
+          <i class="fas fa-file-alt"></i>
+          <span class="file-name">${fileHandle.name}</span>
+        </div>
+      `).join('');
+      
+    } catch (err) {
+      console.error('Erro ao listar arquivos:', err);
+      filesList.innerHTML = `
+        <div class="files-empty">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Erro ao listar arquivos</p>
+          <small>${err.message}</small>
+        </div>
+      `;
+    }
+  }
+  
+  async openFileFromList(fileName) {
+    if (!this.workingDirectory) {
+      this.showNotification('❌ Pasta não selecionada!', 'error');
+      return;
+    }
+    
+    try {
+      const fileHandle = await this.workingDirectory.getFileHandle(fileName);
+      this.currentFileHandle = fileHandle;
+      
+      const file = await fileHandle.getFile();
+      const content = await file.text();
+      
+      this.editor.value = content;
+      this.fileName.textContent = fileHandle.name;
+      this.updateLineNumbers();
+      this.updateStatus();
+      this.fileStatus.textContent = '●';
+      this.fileStatus.style.color = '#68d391';
+      this.isModified = false;
+      this.showNotification('✓ Arquivo aberto: ' + fileName, 'success');
+      
+      // Atualizar lista
+      await this.updateFilesList();
+    } catch (err) {
+      console.error('Erro ao abrir arquivo:', err);
+      this.showNotification('❌ Erro ao abrir arquivo!', 'error');
+    }
+  }
+  
+  async saveDocument() {
+    if (!this.currentFileHandle) {
+      // Se não tem arquivo aberto, fazer "Salvar Como"
+      return this.saveAsDocument();
+    }
+    
+    try {
+      const writable = await this.currentFileHandle.createWritable();
+      await writable.write(this.editor.value);
+      await writable.close();
+      
+      this.fileStatus.textContent = '●';
+      this.fileStatus.style.color = '#68d391';
+      this.isModified = false;
+      this.showNotification('✓ Documento salvo!', 'success');
+      
+      await this.updateFilesList();
+    } catch (err) {
+      console.error('Erro ao salvar:', err);
+      this.showNotification('❌ Erro ao salvar documento!', 'error');
+    }
+  }
+  
+  async saveAsDocument() {
+    if (!this.workingDirectory) {
+      this.showNotification('❌ Selecione a pasta "Arquivos" primeiro!', 'error');
+      return;
+    }
+    
+    const fileName = prompt('Nome do arquivo:', this.fileName.textContent || 'documento.tex');
+    if (!fileName) return;
+    
+    const finalFileName = fileName.endsWith('.tex') ? fileName : fileName + '.tex';
+    
+    try {
+      const fileHandle = await this.workingDirectory.getFileHandle(finalFileName, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(this.editor.value);
+      await writable.close();
+      
+      this.currentFileHandle = fileHandle;
+      this.fileName.textContent = finalFileName;
+      this.fileStatus.textContent = '●';
+      this.fileStatus.style.color = '#68d391';
+      this.isModified = false;
+      this.showNotification('✓ Documento salvo como: ' + finalFileName, 'success');
+      
+      await this.updateFilesList();
+    } catch (err) {
+      console.error('Erro ao salvar como:', err);
+      this.showNotification('❌ Erro ao salvar documento!', 'error');
+    }
+  }
+  
+  async newDocument() {
+    if (!this.workingDirectory) {
+      await this.requestWorkingDirectory();
+      if (!this.workingDirectory) return;
+    }
+    
+    const fileName = prompt('Nome do novo documento:', 'documento.tex');
+    if (!fileName) return;
+    
+    const finalFileName = fileName.endsWith('.tex') ? fileName : fileName + '.tex';
+    
+    try {
+      const fileHandle = await this.workingDirectory.getFileHandle(finalFileName, { create: true });
+      
+      const defaultContent = `% ${finalFileName}
+\\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais
+\\usepackage[utf8]{inputenc}
+\\usepackage[portuguese]{babel}
+\\usepackage{graphicx}
+
+% Informações do documento
+\\title{Título do Documento}
+\\author{Seu Nome}
+\\date{\\today}
+
+\\begin{document}
+
+\\maketitle
+
+\\section{Introdução}
+
+Escreva seu conteúdo aqui.
+
+\\end{document}`;
+      
+      const writable = await fileHandle.createWritable();
+      await writable.write(defaultContent);
+      await writable.close();
+      
+      this.currentFileHandle = fileHandle;
+      this.editor.value = defaultContent;
+      this.fileName.textContent = finalFileName;
+      this.updateLineNumbers();
+      this.updateStatus();
+      this.fileStatus.textContent = '●';
+      this.fileStatus.style.color = '#68d391';
+      this.isModified = false;
+      this.showNotification('✓ Novo documento criado: ' + finalFileName, 'success');
+      
+      await this.updateFilesList();
+    } catch (err) {
+      console.error('Erro ao criar documento:', err);
+      this.showNotification('❌ Erro ao criar documento!', 'error');
+    }
+  }
+  
+  async openDocument() {
+    if (!this.workingDirectory) {
+      await this.requestWorkingDirectory();
+      if (!this.workingDirectory) return;
+    }
+    
+    try {
+      const [fileHandle] = await window.showOpenFilePicker({
+        types: [{
+          description: 'Arquivos LaTeX',
+          accept: { 'text/plain': ['.tex'] }
+        }],
+        startIn: this.workingDirectory
+      });
+      
+      this.currentFileHandle = fileHandle;
+      const file = await fileHandle.getFile();
+      const content = await file.text();
+      
+      this.editor.value = content;
+      this.fileName.textContent = fileHandle.name;
+      this.updateLineNumbers();
+      this.updateStatus();
+      this.fileStatus.textContent = '●';
+      this.fileStatus.style.color = '#68d391';
+      this.isModified = false;
+      this.showNotification('✓ Documento aberto: ' + fileHandle.name, 'success');
+      
+      await this.updateFilesList();
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Erro ao abrir documento:', err);
+        this.showNotification('❌ Erro ao abrir documento!', 'error');
+      }
+    }
+  }
+  
+  async createFolder() {
+    if (!this.workingDirectory) {
+      this.showNotification('❌ Selecione a pasta "Arquivos" primeiro!', 'error');
+      return;
+    }
+    
+    const folderName = prompt('Nome da pasta:', 'nova_pasta');
+    if (!folderName) return;
+    
+    try {
+      await this.workingDirectory.getDirectoryHandle(folderName, { create: true });
+      this.showNotification('✓ Pasta criada: ' + folderName, 'success');
+    } catch (err) {
+      console.error('Erro ao criar pasta:', err);
+      this.showNotification('❌ Erro ao criar pasta!', 'error');
+    }
+  }
+  
+  // ============================================================================
+  // GERENCIAMENTO DE IMAGENS
+  // ============================================================================
+  
+  setupImageDragDrop() {
+    const imagesList = document.getElementById('imagesList');
+    const editor = this.editor;
+    
+    if (!imagesList) return;
+    
+    // Drag and drop na lista de imagens
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      imagesList.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+      imagesList.addEventListener(eventName, () => {
+        imagesList.classList.add('drag-over');
+      });
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+      imagesList.addEventListener(eventName, () => {
+        imagesList.classList.remove('drag-over');
+      });
+    });
+    
+    imagesList.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      this.handleImageFiles(files);
+    });
+    
+    // Drag and drop no editor
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      editor.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+    
+    editor.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      const imageFiles = Array.from(files).filter(file => 
+        file.type.startsWith('image/') || file.name.endsWith('.pdf')
+      );
+      
+      if (imageFiles.length > 0) {
+        this.handleImageFiles(imageFiles);
+      }
+    });
+  }
+  
+  async uploadImage() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/png,image/jpeg,image/jpg,image/svg+xml,application/pdf';
+    input.multiple = true;
+    
+    input.onchange = async (e) => {
+      const files = e.target.files;
+      if (files.length > 0) {
+        await this.handleImageFiles(files);
+      }
+    };
+    
+    input.click();
+  }
+  
+  async handleImageFiles(files) {
+    if (!this.workingDirectory) {
+      this.showNotification('❌ Selecione a pasta de trabalho primeiro!', 'error');
+      return;
+    }
+    
+    try {
+      // Obter ou criar diretório "imagens"
+      let imagesDir;
+      try {
+        imagesDir = await this.workingDirectory.getDirectoryHandle('imagens', { create: true });
+      } catch (err) {
+        console.error('Erro ao criar diretório de imagens:', err);
+        this.showNotification('❌ Erro ao acessar pasta de imagens!', 'error');
+        return;
+      }
+      
+      this.imagesDirectory = imagesDir;
+      
+      // Processar cada arquivo
+      for (const file of files) {
+        // Validar tipo de arquivo
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'application/pdf'];
+        if (!validTypes.includes(file.type) && !file.name.match(/\.(png|jpe?g|svg|pdf)$/i)) {
+          this.showNotification(`⚠️ Tipo de arquivo não suportado: ${file.name}`, 'warning');
+          continue;
+        }
+        
+        try {
+          // Criar arquivo no diretório de imagens
+          const fileHandle = await imagesDir.getFileHandle(file.name, { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(file);
+          await writable.close();
+          
+          this.showNotification(`✓ Imagem salva: ${file.name}`, 'success');
+        } catch (err) {
+          console.error('Erro ao salvar imagem:', err);
+          this.showNotification(`❌ Erro ao salvar: ${file.name}`, 'error');
+        }
+      }
+      
+      // Atualizar lista de imagens
+      await this.updateImagesList();
+      
+    } catch (err) {
+      console.error('Erro ao processar imagens:', err);
+      this.showNotification('❌ Erro ao processar imagens!', 'error');
+    }
+  }
+  
+  async updateImagesList() {
+    const imagesList = document.getElementById('imagesList');
+    if (!imagesList) return;
+    
+    if (!this.workingDirectory) {
+      imagesList.innerHTML = `
+        <div class="images-empty">
+          <i class="fas fa-image"></i>
+          <p>Nenhuma pasta selecionada</p>
+          <small>Selecione a pasta de trabalho primeiro</small>
+        </div>
+      `;
+      return;
+    }
+    
+    try {
+      // Obter diretório de imagens
+      let imagesDir;
+      try {
+        imagesDir = await this.workingDirectory.getDirectoryHandle('imagens');
+      } catch (err) {
+        // Diretório não existe ainda
+        imagesList.innerHTML = `
+          <div class="images-empty">
+            <i class="fas fa-image"></i>
+            <p>Nenhuma imagem ainda</p>
+            <small>Clique em <i class="fas fa-upload"></i> ou arraste aqui</small>
+          </div>
+        `;
+        return;
+      }
+      
+      this.imagesDirectory = imagesDir;
+      
+      // Listar imagens
+      const images = [];
+      for await (const entry of imagesDir.values()) {
+        if (entry.kind === 'file') {
+          const name = entry.name.toLowerCase();
+          if (name.match(/\.(png|jpe?g|svg|pdf)$/)) {
+            images.push(entry);
+          }
+        }
+      }
+      
+      if (images.length === 0) {
+        imagesList.innerHTML = `
+          <div class="images-empty">
+            <i class="fas fa-image"></i>
+            <p>Nenhuma imagem encontrada</p>
+            <small>Faça upload de imagens!</small>
+          </div>
+        `;
+        return;
+      }
+      
+      // Ordenar por nome
+      images.sort((a, b) => a.name.localeCompare(b.name));
+      
+      // Renderizar lista com preview
+      const imageItems = await Promise.all(images.map(async (fileHandle) => {
+        const file = await fileHandle.getFile();
+        const url = URL.createObjectURL(file);
+        const ext = file.name.split('.').pop().toLowerCase();
+        
+        // Determinar ícone
+        let icon = 'fa-file-image';
+        if (ext === 'pdf') icon = 'fa-file-pdf';
+        else if (ext === 'svg') icon = 'fa-file-code';
+        
+        // Preview apenas para imagens (não PDF)
+        const preview = ext !== 'pdf' ? 
+          `<img src="${url}" class="image-preview" alt="${file.name}">` :
+          `<div class="image-preview" style="display:flex;align-items:center;justify-content:center;"><i class="fas fa-file-pdf" style="font-size:2rem;color:#dc3545;"></i></div>`;
+        
+        return `
+          <div class="image-item">
+            ${preview}
+            <div class="image-info">
+              <i class="fas ${icon}"></i>
+              <span class="image-name" title="${file.name}">${file.name}</span>
+            </div>
+            <div class="image-actions">
+              <button class="image-action-btn insert" onclick="window.latexEditor.insertImageCode('${file.name}')" title="Inserir no documento">
+                <i class="fas fa-plus"></i> Inserir
+              </button>
+              <button class="image-action-btn delete" onclick="window.latexEditor.deleteImage('${file.name}')" title="Excluir imagem">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }));
+      
+      imagesList.innerHTML = imageItems.join('');
+      
+    } catch (err) {
+      console.error('Erro ao listar imagens:', err);
+      imagesList.innerHTML = `
+        <div class="images-empty">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Erro ao listar imagens</p>
+          <small>${err.message}</small>
+        </div>
+      `;
+    }
+  }
+  
+  insertImageCode(imageName) {
+    const start = this.editor.selectionStart;
+    const end = this.editor.selectionEnd;
+    const value = this.editor.value;
+    
+    // Gerar código LaTeX para a imagem
+    const imageCode = `
+\\begin{figure}[h]
+  \\centering
+  \\includegraphics[width=0.8\\textwidth]{imagens/${imageName}}
+  \\caption{Legenda da imagem}
+  \\label{fig:${imageName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9]/g, '_')}}
+\\end{figure}
+`;
+    
+    // Inserir no editor
+    this.editor.value = value.substring(0, start) + imageCode + value.substring(end);
+    
+    // Posicionar cursor na legenda
+    const captionPos = start + imageCode.indexOf('Legenda da imagem');
+    this.editor.selectionStart = captionPos;
+    this.editor.selectionEnd = captionPos + 'Legenda da imagem'.length;
+    
+    this.editor.focus();
+    this.updateLineNumbers();
+    this.updateStatus();
+    this.isModified = true;
+    this.fileStatus.textContent = '●';
+    this.fileStatus.style.color = '#f56565';
+    
+    this.showNotification(`✓ Imagem inserida: ${imageName}`, 'success');
+  }
+  
+  async deleteImage(imageName) {
+    if (!confirm(`Deseja realmente excluir a imagem "${imageName}"?`)) {
+      return;
+    }
+    
+    if (!this.imagesDirectory) {
+      this.showNotification('❌ Diretório de imagens não encontrado!', 'error');
+      return;
+    }
+    
+    try {
+      await this.imagesDirectory.removeEntry(imageName);
+      this.showNotification(`✓ Imagem excluída: ${imageName}`, 'success');
+      await this.updateImagesList();
+    } catch (err) {
+      console.error('Erro ao excluir imagem:', err);
+      this.showNotification('❌ Erro ao excluir imagem!', 'error');
+    }
   }
   
   setupEventListeners() {
@@ -734,6 +1325,20 @@ class LaTeXEditor {
       this.updateStatus();
       this.updateFileStatus();
       this.saveToHistory();
+    });
+    
+    // Adicionar evento para detectar paste (colar)
+    this.editor.addEventListener('paste', () => {
+      setTimeout(() => {
+        this.updateLineNumbers();
+        this.updateStatus();
+      }, 10);
+    });
+    
+    // Adicionar evento para detectar mudanças no valor
+    this.editor.addEventListener('change', () => {
+      this.updateLineNumbers();
+      this.updateStatus();
     });
     
     this.editor.addEventListener('keydown', (e) => {
@@ -838,6 +1443,9 @@ class LaTeXEditor {
       `<div class="line-number">${index + 1}</div>`
     ).join('');
     this.lineNumbers.innerHTML = lineNumbersHtml;
+    
+    // Debug: mostrar quantas linhas foram geradas
+    console.log(`[Editor] Linhas atualizadas: ${lines.length}`);
   }
   
   syncLineNumbers() {
@@ -881,37 +1489,103 @@ class LaTeXEditor {
   }
   
   // Funções dos botões
-  saveDocument() {
+  async saveDocument() {
     const content = this.editor.value;
     const fileName = this.fileName.textContent;
     
-    fetch('/api/save-latex', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: fileName, content: content })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
+    // Se temos um fileHandle (File System Access API), salvar diretamente no arquivo
+    if (this.currentFileHandle && window.showSaveFilePicker) {
+      try {
+        const writable = await this.currentFileHandle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        
         this.fileStatus.textContent = '●';
         this.fileStatus.style.color = '#68d391';
         this.isModified = false;
-        this.showNotification('Documento salvo com sucesso!', 'success');
-      } else {
-        this.showNotification('Erro ao salvar documento!', 'error');
+        this.showNotification('✓ Documento salvo com sucesso!', 'success');
+        
+        // Atualizar lista de arquivos
+        this.updateFilesList();
+        return;
+      } catch (err) {
+        console.error('Erro ao salvar arquivo:', err);
+        this.showNotification('❌ Erro ao salvar documento!', 'error');
+        return;
       }
-    })
-    .catch(() => {
-      this.showNotification('Documento salvo localmente!', 'info');
+    }
+    
+    // Se não temos fileHandle, pedir ao usuário onde salvar (abrindo na pasta Arquivos)
+    if (window.showSaveFilePicker) {
+      try {
+        // Tentar obter o diretório "Arquivos" como startIn
+        let options = {
+          suggestedName: fileName,
+          types: [{
+            description: 'LaTeX Document',
+            accept: {'text/plain': ['.tex']}
+          }]
+        };
+        
+        // Se temos um diretório de trabalho, usar ele
+        if (this.workingDirectory) {
+          options.startIn = this.workingDirectory;
+        }
+        
+        const fileHandle = await window.showSaveFilePicker(options);
+        
+        this.currentFileHandle = fileHandle;
+        this.fileName.textContent = fileHandle.name;
+        
+        const writable = await fileHandle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        
+        this.fileStatus.textContent = '●';
+        this.fileStatus.style.color = '#68d391';
+        this.isModified = false;
+        this.showNotification('✓ Documento salvo com sucesso!', 'success');
+        
+        // Atualizar lista de arquivos
+        this.updateFilesList();
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Erro ao salvar arquivo:', err);
+          this.showNotification('❌ Erro ao salvar documento!', 'error');
+        }
+      }
+    } else {
+      // Fallback: download do arquivo
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      
       this.fileStatus.textContent = '●';
       this.fileStatus.style.color = '#68d391';
       this.isModified = false;
-    });
+      this.showNotification('✓ Documento baixado!', 'info');
+    }
   }
   
   newDocument() {
-    if (this.isModified && !confirm('Documento não salvo. Deseja continuar?')) return;
+    // Só avisar se realmente houver modificações não salvas
+    if (this.isModified && this.editor.value.trim() !== '' && !confirm('Documento não salvo. Deseja continuar?')) {
+      return;
+    }
     
+    // SEMPRE solicitar o nome do arquivo
+    const fileName = prompt('📄 Digite o nome do arquivo (com extensão .tex):', 'documento.tex');
+    if (!fileName) return;
+    
+    // Garantir que tem extensão .tex
+    const finalFileName = fileName.endsWith('.tex') ? fileName : fileName + '.tex';
+    this.fileName.textContent = finalFileName;
+    
+    // Criar o conteúdo do documento
     this.editor.value = `% Novo Documento LaTeX
 \\documentclass[12pt,a4paper]{article}
 
@@ -942,29 +1616,77 @@ class LaTeXEditor {
     this.fileStatus.style.color = '#f56565';
     this.isModified = true;
     this.editor.focus();
+    
+    // Limpar fileHandle para forçar "Salvar Como" na primeira vez
+    this.currentFileHandle = null;
+    
+    this.showNotification('✓ Novo documento criado! Use Ctrl+S para escolher onde salvar.', 'success');
   }
   
-  openDocument() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.tex';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.editor.value = e.target.result;
-          this.fileName.textContent = file.name;
-          this.updateLineNumbers();
-          this.updateStatus();
-          this.fileStatus.textContent = '●';
-          this.fileStatus.style.color = '#68d391';
-          this.isModified = false;
+  async openDocument() {
+    // Usar File System Access API se disponível
+    if (window.showOpenFilePicker) {
+      try {
+        let options = {
+          types: [{
+            description: 'LaTeX Document',
+            accept: {'text/plain': ['.tex']}
+          }],
+          multiple: false
         };
-        reader.readAsText(file);
+        
+        // Se temos um diretório de trabalho, usar ele
+        if (this.workingDirectory) {
+          options.startIn = this.workingDirectory;
+        }
+        
+        const [fileHandle] = await window.showOpenFilePicker(options);
+        
+        this.currentFileHandle = fileHandle;
+        const file = await fileHandle.getFile();
+        const content = await file.text();
+        
+        this.editor.value = content;
+        this.fileName.textContent = fileHandle.name;
+        this.updateLineNumbers();
+        this.updateStatus();
+        this.fileStatus.textContent = '●';
+        this.fileStatus.style.color = '#68d391';
+        this.isModified = false;
+        this.showNotification('✓ Documento carregado com sucesso!', 'success');
+        
+        // Atualizar lista de arquivos
+        this.updateFilesList();
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Erro ao abrir arquivo:', err);
+          this.showNotification('❌ Erro ao abrir documento!', 'error');
+        }
       }
-    };
-    input.click();
+    } else {
+      // Fallback para navegadores antigos
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.tex';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.editor.value = e.target.result;
+            this.fileName.textContent = file.name;
+            this.updateLineNumbers();
+            this.updateStatus();
+            this.fileStatus.textContent = '●';
+            this.fileStatus.style.color = '#68d391';
+            this.isModified = false;
+            this.showNotification('✓ Documento carregado!', 'success');
+          };
+          reader.readAsText(file);
+        }
+      };
+      input.click();
+    }
   }
   
   undoAction() {
@@ -1065,29 +1787,67 @@ class LaTeXEditor {
     
     this.showNotification('Compilando com pdflatex...', 'info');
     
+    console.log('Enviando para compilação:', { filename: fileName, contentLength: content.length });
+    
+    // Enviar conteúdo sem escape duplo de barras invertidas
+    const payload = JSON.stringify({ 
+      filename: fileName, 
+      content: content 
+    });
+    
     fetch('/api/compile-latex', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: fileName, content: content })
+      body: payload
     })
     .then(response => {
+      console.log('Resposta da compilação:', response.status, response.statusText);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       return response.json();
     })
     .then(data => {
+      console.log('Dados recebidos:', data);
       if (data.success) {
-        this.showNotification('Compilação bem-sucedida! Abrindo PDF...', 'success');
+        console.log('PDF URL:', data.pdf_url);
+        
         if (data.pdf_url) {
-          const pdfWindow = window.open(data.pdf_url, '_blank');
-          if (pdfWindow) {
-            pdfWindow.focus();
-          } else {
-            window.location.href = data.pdf_url;
-          }
+          // Extrair o nome do arquivo do PDF
+          const pdfFilename = data.pdf_url.split('/').pop();
+          const viewerUrl = `/view_pdf/${pdfFilename}`;
+          
+          // Criar link de download
+          const downloadLink = document.createElement('a');
+          downloadLink.href = viewerUrl;
+          downloadLink.target = '_blank';
+          downloadLink.textContent = '📄 Clique para abrir o PDF';
+          downloadLink.style.cssText = 'color: white; font-weight: bold; text-decoration: underline; cursor: pointer; display: block; margin-top: 8px;';
+          
+          downloadLink.onclick = (e) => {
+            e.stopPropagation();
+          };
+          
+          this.showNotification('✓ Compilação bem-sucedida! ', 'success', downloadLink);
+          
+          // Abrir automaticamente na página de visualização
+          setTimeout(() => {
+            const pdfWindow = window.open(viewerUrl, '_blank');
+            if (pdfWindow) {
+              pdfWindow.focus();
+            }
+          }, 300);
+        } else {
+          this.showNotification('✓ Compilação bem-sucedida!', 'success');
         }
       } else {
         this.showNotification('Erro na compilação: ' + (data.error || 'Erro desconhecido'), 'error');
-        this.showExamplePDF();
+        if (data.log) {
+          console.error('Log COMPLETO de compilação:');
+          console.error(data.log);
+          // Mostrar as últimas 50 linhas do log
+          const logLines = data.log.split('\n');
+          const lastLines = logLines.slice(-50).join('\n');
+          console.error('Últimas 50 linhas do log:', lastLines);
+        }
       }
     })
     .catch(error => {
@@ -1134,22 +1894,38 @@ class LaTeXEditor {
     this.showNotification('Aba fechada!', 'info');
   }
   
-  showNotification(message, type) {
+  showNotification(message, type, extraElement = null) {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
-    notification.textContent = message;
+    
+    // Se for string, usar textContent; senão criar um span
+    if (typeof message === 'string') {
+      const messageSpan = document.createElement('span');
+      messageSpan.textContent = message;
+      notification.appendChild(messageSpan);
+    } else {
+      notification.appendChild(message);
+    }
+    
+    // Adicionar elemento extra se fornecido (como link de download)
+    if (extraElement) {
+      notification.appendChild(extraElement);
+    }
+    
     notification.style.cssText = `
       position: fixed;
       top: 20px;
       right: 20px;
       padding: 1rem 1.5rem;
-      border-radius: 4px;
+      border-radius: 8px;
       color: white;
       font-weight: 500;
       z-index: 1000;
       animation: slideIn 0.3s ease;
-      max-width: 300px;
+      max-width: 350px;
       word-wrap: break-word;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      cursor: pointer;
     `;
     
     const colors = {
@@ -1160,10 +1936,92 @@ class LaTeXEditor {
     };
     
     notification.style.backgroundColor = colors[type] || colors.info;
+    
+    // Fechar ao clicar
+    notification.addEventListener('click', () => notification.remove());
+    
     document.body.appendChild(notification);
     
-    const displayTime = type === 'error' ? 5000 : 3000;
+    const displayTime = type === 'error' ? 8000 : 5000;
     setTimeout(() => notification.remove(), displayTime);
+  }
+  
+  goToLine(lineNumber) {
+    // Ir para a linha especificada
+    const lines = this.editor.value.split('\n');
+    
+    if (lineNumber < 1 || lineNumber > lines.length) {
+      this.showNotification(`Linha ${lineNumber} não existe no documento`, 'warning');
+      return;
+    }
+    
+    console.log(`[goToLine] Indo para linha ${lineNumber} de ${lines.length}`);
+    
+    // Calcular a posição do cursor (início da linha)
+    let position = 0;
+    for (let i = 0; i < lineNumber - 1; i++) {
+      position += lines[i].length + 1; // +1 para o \n
+    }
+    
+    // Mover cursor para a linha
+    this.editor.focus();
+    
+    // Scroll para tornar a linha visível
+    const lineHeight = parseFloat(window.getComputedStyle(this.editor).lineHeight) || 21;
+    const scrollTop = (lineNumber - 1) * lineHeight;
+    this.editor.scrollTop = scrollTop - (this.editor.clientHeight / 3); // Centralizar aproximadamente
+    
+    // Destacar a linha temporariamente com seleção
+    const lineEnd = position + lines[lineNumber - 1].length;
+    this.editor.setSelectionRange(position, lineEnd);
+    
+    // Criar destaque visual SIMPLES e DIRETO
+    const highlightBg = document.getElementById('lineHighlightBg');
+    if (highlightBg) {
+      console.log('[goToLine] Criando destaque visual');
+      
+      // Calcular a posição exata da linha
+      const topPosition = (lineNumber - 1) * lineHeight;
+      
+      // Criar apenas UMA div com o destaque
+      highlightBg.innerHTML = `
+        <div style="
+          position: absolute;
+          top: ${topPosition}px;
+          left: 0;
+          right: 0;
+          height: ${lineHeight}px;
+          background: rgba(255, 193, 7, 0.5) !important;
+          border-left: 5px solid #ff5722 !important;
+          box-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+          animation: highlightPulse 2s ease-in-out;
+          z-index: 10;
+        ">&nbsp;</div>
+      `;
+      
+      // Sincronizar scroll do fundo com o editor
+      const syncScroll = () => {
+        highlightBg.style.transform = `translateY(-${this.editor.scrollTop}px)`;
+      };
+      
+      // Aplicar scroll inicial
+      syncScroll();
+      
+      // Adicionar listener de scroll
+      this.editor.addEventListener('scroll', syncScroll);
+      
+      // Remover destaque após 3 segundos
+      setTimeout(() => {
+        highlightBg.innerHTML = '';
+        this.editor.setSelectionRange(position, position);
+        this.editor.removeEventListener('scroll', syncScroll);
+        console.log('[goToLine] Destaque removido');
+      }, 3000);
+    } else {
+      console.error('[goToLine] Elemento lineHighlightBg não encontrado!');
+    }
+    
+    this.showNotification(`✓ Navegado para linha ${lineNumber}`, 'success');
   }
 }
 
@@ -1173,26 +2031,1767 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Funções globais para os botões
-function saveDocument() { window.latexEditor.saveDocument(); }
-function newDocument() { window.latexEditor.newDocument(); }
+function saveDocument() { 
+  window.latexEditor.saveDocument(); 
+  openFileManager(); // Abrir gerenciador após salvar
+}
+function newDocument() { 
+  window.latexEditor.newDocument(); 
+  openFileManager(); // Abrir gerenciador após criar novo
+}
+function createNewFile() { 
+  window.latexEditor.newDocument(); 
+  openFileManager(); // Abrir gerenciador após criar novo
+}
 function openDocument() { window.latexEditor.openDocument(); }
+function uploadImage() { window.latexEditor.uploadImage(); }
 function undoAction() { window.latexEditor.undoAction(); }
 function redoAction() { window.latexEditor.redoAction(); }
 function formatText(type) { window.latexEditor.formatText(type); }
+function createFolder() { window.latexEditor.createFolder(); }
 function insertSnippet(type) { window.latexEditor.insertSnippet(type); }
 function compileDocument() { window.latexEditor.compileDocument(); }
 function previewDocument() { window.latexEditor.previewDocument(); }
 function closeTab(fileName) { window.latexEditor.closeTab(fileName); }
 
-// Adicionar CSS para animação
+// Função para abrir o gerenciador de arquivos na pasta root do sistema
+function openFileManager() {
+  // Caminho para a pasta root do sistema (onde está o DocCollab)
+  const rootPath = window.location.origin.replace('http://localhost:5000', 'D:\\OurDocs\\DocCollab');
+  
+  // Tentar abrir o gerenciador de arquivos diretamente
+  try {
+    // Para Windows - usar comando direto
+    if (navigator.platform.indexOf('Win') !== -1) {
+      // Usar fetch para chamar a API do backend
+      fetch('/api/open-file-manager', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ path: '.' }) // Pasta atual (root do sistema)
+      }).then(response => {
+        if (response.ok) {
+          console.log('Gerenciador de arquivos aberto com sucesso');
+        } else {
+          throw new Error('Erro na API');
+        }
+      }).catch(err => {
+        console.log('Erro ao abrir gerenciador via API:', err);
+        // Fallback: mostrar instruções para o usuário
+        alert('Abra manualmente o gerenciador de arquivos na pasta:\nD:\\OurDocs\\DocCollab');
+      });
+    } else {
+      // Para outros sistemas, mostrar caminho
+      alert(`Abra manualmente a pasta: ${rootPath}`);
+    }
+  } catch (error) {
+    console.error('Erro ao abrir gerenciador:', error);
+    alert('Abra manualmente o gerenciador de arquivos na pasta:\nD:\\OurDocs\\DocCollab');
+  }
+}
+
+// Adicionar CSS para animações
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
   }
+  
+  @keyframes highlightPulse {
+    0% { 
+      opacity: 0;
+      transform: scaleX(0.95);
+    }
+    10% { 
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    90% { 
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    100% { 
+      opacity: 0;
+      transform: scaleX(0.95);
+    }
+  }
+  
+  .line-highlight-overlay {
+    transform-origin: left center;
+  }
 `;
 document.head.appendChild(style);
+
+// Adicionar CSS para o botão voltar
+const backButtonStyle = document.createElement('style');
+backButtonStyle.textContent = `
+  .btn-back {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-weight: 600 !important;
+  }
+  
+  .btn-back:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+  }
+  
+  .btn-back i {
+    font-size: 14px !important;
+  }
+`;
+document.head.appendChild(backButtonStyle);
+</script>
+
+<!-- ============================================================================ -->
+<!-- ASSISTENTE VIRTUAL - UI MINIMAL -->
+<!-- ============================================================================ -->
+
+<!-- Botão para abrir/fechar chat -->
+<button id="assistantToggle" class="assistant-toggle" title="Assistente Virtual LaTeX">
+  <i class="fas fa-robot"></i>
+</button>
+
+<!-- Painel do assistente -->
+<div id="assistantPanel" class="assistant-panel">
+  <div class="assistant-header">
+    <h3><i class="fas fa-robot"></i> Assistente LaTeX</h3>
+    <button class="assistant-close" onclick="toggleAssistant()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  
+  <div class="assistant-messages" id="assistantMessages">
+    <div class="assistant-message system">
+      <div class="message-content">
+        <p>👋 Olá! Sou seu assistente LaTeX.</p>
+        <p>Posso ajudar com snippets, correções, formatação e compilação.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="assistant-input-wrapper">
+    <input 
+      type="text" 
+      id="assistantInput" 
+      class="assistant-input" 
+      placeholder="Digite sua mensagem ou comando..."
+      onkeypress="if(event.key === 'Enter') sendAssistantMessage()"
+    />
+    <button class="assistant-send" onclick="sendAssistantMessage()">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================================ -->
+<!-- SOCKET.IO CLIENT -->
+<!-- ============================================================================ -->
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+// Gerenciador do Assistente Virtual com Socket.IO
+class AssistantManager {
+  constructor() {
+    this.socket = null;
+    this.actions = new Map(); // Map<action_id, action_data>
+    this.init();
+  }
+  
+  init() {
+    // Conectar ao Socket.IO
+    this.socket = io({
+      transports: ['websocket', 'polling']
+    });
+    
+    // Event listeners
+    this.socket.on('connect', () => {
+      console.log('[Assistant] Conectado ao servidor', this.socket.id);
+      this.addSystemMessage('✅ Conectado ao servidor');
+    });
+    
+    this.socket.on('disconnect', () => {
+      console.log('[Assistant] Desconectado do servidor');
+      this.addSystemMessage('⚠️ Desconectado. Reconectando...');
+    });
+    
+    this.socket.on('connection_status', (data) => {
+      console.log('[Assistant] Status:', data);
+    });
+    
+    this.socket.on('assistant_response', (data) => {
+      this.addAssistantMessage(data.content);
+    });
+    
+    this.socket.on('assistant_action_confirmed', (data) => {
+      this.updateActionState(data.action_id, 'confirmed', data.message);
+    });
+    
+    this.socket.on('assistant_action_reverted', (data) => {
+      this.updateActionState(data.action_id, 'reverted', data.message);
+    });
+    
+    this.socket.on('assistant_error', (data) => {
+      this.addSystemMessage(`❌ Erro: ${data.message}`, 'error');
+    });
+  }
+  
+  // Enviar mensagem de chat
+  sendMessage(content) {
+    const message_id = this.generateId();
+    
+    // Adicionar mensagem do usuário
+    this.addUserMessage(content);
+    
+    // Enviar para servidor com callback (ack)
+    this.socket.emit('assistant_message', 
+      { message_id, content },
+      (response) => {
+        console.log('[Assistant] Mensagem confirmada:', response);
+      }
+    );
+  }
+  
+  // Enviar ação (com Optimistic UI)
+  sendAction(action_type, payload) {
+    const action_id = this.generateId();
+    
+    // Aplicar localmente PRIMEIRO (Optimistic UI)
+    this.applyActionLocally(action_id, action_type, payload);
+    
+    // Criar objeto de ação
+    const action = {
+      action_id,
+      action_type,
+      payload,
+      state: 'applied_local'
+    };
+    
+    // Armazenar ação
+    this.actions.set(action_id, action);
+    
+    // Mostrar badge de estado
+    this.addActionMessage(action_id, action_type, 'applied_local');
+    
+    // Enviar para servidor com callback e timeout
+    let responseReceived = false;
+    
+    this.socket.emit('assistant_action', action, (response) => {
+      responseReceived = true;
+      console.log('[Assistant] Ação processada:', response);
+      if (response && response.state) {
+        this.updateActionState(action_id, response.state, response.message);
+      } else {
+        console.error('[Assistant] Resposta inválida:', response);
+        this.updateActionState(action_id, 'error', 'Resposta inválida do servidor');
+      }
+    });
+    
+    // Timeout de 5 segundos
+    setTimeout(() => {
+      if (!responseReceived) {
+        console.warn('[Assistant] Timeout esperando resposta para ação:', action_id);
+        this.updateActionState(action_id, 'error', 'Timeout - servidor não respondeu');
+      }
+    }, 5000);
+  }
+  
+  // Aplicar ação localmente (Optimistic UI)
+  applyActionLocally(action_id, action_type, payload) {
+    console.log('[Assistant] Aplicando localmente:', action_type, payload);
+    
+    // Exemplo: inserir snippet
+    if (action_type === 'insert_snippet' && window.latexEditor) {
+      const editor = window.latexEditor.editor;
+      const snippet = payload.snippet || '';
+      
+      const pos = editor.selectionStart;
+      const value = editor.value;
+      editor.value = value.substring(0, pos) + snippet + value.substring(pos);
+      editor.selectionStart = editor.selectionEnd = pos + snippet.length;
+      
+      window.latexEditor.updateLineNumbers();
+      window.latexEditor.updateStatus();
+    }
+  }
+  
+  // Atualizar estado da ação
+  updateActionState(action_id, new_state, message) {
+    const action = this.actions.get(action_id);
+    if (!action) return;
+    
+    action.state = new_state;
+    
+    // Atualizar badge visual
+    const badge = document.querySelector(`[data-action-id="${action_id}"]`);
+    if (badge) {
+      badge.className = `action-badge state-${new_state}`;
+      badge.textContent = this.getStateBadgeText(new_state);
+      badge.title = message || new_state;
+    }
+    
+    // Se revertido, desfazer ação local
+    if (new_state === 'reverted') {
+      this.revertActionLocally(action_id);
+      this.addSystemMessage(`⚠️ Ação revertida: ${message}`, 'warning');
+    }
+  }
+  
+  // Reverter ação localmente
+  revertActionLocally(action_id) {
+    // TODO: Implementar undo real
+    console.log('[Assistant] Revertendo ação:', action_id);
+  }
+  
+  // Adicionar mensagem do usuário
+  addUserMessage(content) {
+    const messagesDiv = document.getElementById('assistantMessages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'assistant-message user';
+    msgDiv.innerHTML = `
+      <div class="message-content">
+        <p>${this.escapeHtml(content)}</p>
+      </div>
+    `;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+  
+  // Adicionar mensagem do assistente
+  addAssistantMessage(content) {
+    const messagesDiv = document.getElementById('assistantMessages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'assistant-message assistant';
+    msgDiv.innerHTML = `
+      <div class="message-content">
+        <p>${this.escapeHtml(content)}</p>
+      </div>
+    `;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+  
+  // Adicionar mensagem de sistema
+  addSystemMessage(content, type = 'info') {
+    const messagesDiv = document.getElementById('assistantMessages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `assistant-message system ${type}`;
+    msgDiv.innerHTML = `
+      <div class="message-content">
+        <p>${this.escapeHtml(content)}</p>
+      </div>
+    `;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+  
+  // Adicionar mensagem de ação com badge de estado
+  addActionMessage(action_id, action_type, state) {
+    const messagesDiv = document.getElementById('assistantMessages');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'assistant-message action';
+    msgDiv.innerHTML = `
+      <div class="message-content">
+        <p>🔧 Ação: ${action_type}</p>
+        <span class="action-badge state-${state}" data-action-id="${action_id}" title="${state}">
+          ${this.getStateBadgeText(state)}
+        </span>
+      </div>
+    `;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+  
+  // Texto do badge por estado
+  getStateBadgeText(state) {
+    const badges = {
+      'pending': '⏳ Pendente',
+      'applied_local': '📝 Aplicado',
+      'confirmed': '✅ Confirmado',
+      'reverted': '❌ Revertido',
+      'error': '⚠️ Erro'
+    };
+    return badges[state] || state;
+  }
+  
+  // Gerar ID único
+  generateId() {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+  
+  // Escapar HTML
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+}
+
+// Instanciar assistente
+const assistant = new AssistantManager();
+
+// Funções globais
+function toggleAssistant() {
+  const panel = document.getElementById('assistantPanel');
+  const toggle = document.getElementById('assistantToggle');
+  panel.classList.toggle('open');
+  toggle.classList.toggle('active');
+}
+
+function sendAssistantMessage() {
+  const input = document.getElementById('assistantInput');
+  const content = input.value.trim();
+  
+  if (!content) return;
+  
+  assistant.sendMessage(content);
+  input.value = '';
+}
+
+// Exemplo de comando: inserir snippet
+function insertSnippetViaAssistant(snippet) {
+  assistant.sendAction('insert_snippet', { snippet });
+}
+
+// Função global para gerar BibTeX
+async function generateBibTeX(description) {
+  if (!description) {
+    description = prompt('Digite a descrição da referência:\n\nFormato: "Título, Autor, Ano, Editora"\nExemplo: "Deep Learning, Ian Goodfellow, 2016, MIT Press"');
+    if (!description) return;
+  }
+  
+  try {
+    // Obter .bib existente
+    const bibResponse = await fetch('/api/bib-file');
+    const bibData = await bibResponse.json();
+    const existingBib = bibData.content || '';
+    
+    // Gerar BibTeX
+    const response = await fetch('/api/generate-bibtex', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        description: description,
+        existing_bib: existingBib
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      // Mostrar diálogo de confirmação
+      showBibTeXConfirmDialog(data);
+    } else {
+      alert('Erro ao gerar BibTeX: ' + (data.error || 'Erro desconhecido'));
+    }
+  } catch (error) {
+    alert('Erro ao gerar BibTeX: ' + error.message);
+  }
+}
+
+// Mostrar diálogo de confirmação BibTeX
+function showBibTeXConfirmDialog(data) {
+  const dialog = document.createElement('div');
+  dialog.className = 'bibtex-dialog-overlay';
+  dialog.innerHTML = `
+    <div class="bibtex-dialog">
+      <div class="bibtex-dialog-header">
+        <h3>✅ BibTeX Gerado</h3>
+        <button class="bibtex-dialog-close" onclick="this.closest('.bibtex-dialog-overlay').remove()">×</button>
+      </div>
+      
+      <div class="bibtex-dialog-body">
+        <div class="bibtex-info">
+          <p><strong>Key:</strong> <code>${data.key}</code></p>
+          <p><strong>Tipo:</strong> ${data.entry_type}</p>
+          ${data.has_conflict ? '<p class="bibtex-warning">⚠️ Key já existe no .bib!</p>' : ''}
+        </div>
+        
+        <div class="bibtex-preview">
+          <pre><code>${data.bibtex}</code></pre>
+        </div>
+        
+        <div class="bibtex-actions">
+          <button class="btn btn-primary" onclick="insertCitation('${data.key}')">
+            📝 Inserir \\cite{${data.key}}
+          </button>
+          <button class="btn btn-success" onclick="saveToBib(\`${data.bibtex.replace(/`/g, '\\`')}\`)">
+            💾 Salvar no .bib
+          </button>
+          <button class="btn btn-secondary" onclick="this.closest('.bibtex-dialog-overlay').remove()">
+            ❌ Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(dialog);
+}
+
+// Inserir \cite{} no editor
+function insertCitation(key) {
+  const editor = window.latexEditor.editor;
+  const citation = `\\cite{${key}}`;
+  const pos = editor.selectionStart;
+  const value = editor.value;
+  editor.value = value.substring(0, pos) + citation + value.substring(pos);
+  editor.selectionStart = editor.selectionEnd = pos + citation.length;
+  window.latexEditor.updateLineNumbers();
+  window.latexEditor.updateStatus();
+  
+  // Fechar diálogo
+  document.querySelector('.bibtex-dialog-overlay')?.remove();
+}
+
+// Salvar no .bib
+async function saveToBib(bibtexEntry) {
+  try {
+    const response = await fetch('/api/bib-file', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        bibtex_entry: bibtexEntry,
+        mode: 'append'
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      alert('✅ Entrada adicionada ao .bib com sucesso!');
+      // Fechar diálogo
+      document.querySelector('.bibtex-dialog-overlay')?.remove();
+    } else {
+      alert('Erro ao salvar: ' + (data.error || 'Erro desconhecido'));
+    }
+  } catch (error) {
+    alert('Erro ao salvar no .bib: ' + error.message);
+  }
+}
+
+// Adicionar botão ao documento
+document.getElementById('assistantToggle').addEventListener('click', toggleAssistant);
+</script>
+
+<!-- ============================================================================ -->
+<!-- ESTILOS DO ASSISTENTE -->
+<!-- ============================================================================ -->
+
+<style>
+/* Botão flutuante */
+.assistant-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 100px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.assistant-toggle:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.assistant-toggle.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Painel do assistente */
+.assistant-panel {
+  position: fixed;
+  right: -400px;
+  top: 0;
+  width: 400px;
+  height: 100vh;
+  background: white;
+  box-shadow: -2px 0 20px rgba(0,0,0,0.1);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.assistant-panel.open {
+  right: 0;
+}
+
+/* Header */
+.assistant-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.assistant-header h3 {
+  margin: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.assistant-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.assistant-close:hover {
+  opacity: 1;
+}
+
+/* Mensagens */
+.assistant-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.assistant-message {
+  margin-bottom: 15px;
+  animation: slideInMessage 0.3s ease;
+}
+
+@keyframes slideInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 85%;
+}
+
+.assistant-message.user .message-content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.assistant-message.assistant .message-content {
+  background: white;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  border-bottom-left-radius: 4px;
+}
+
+.assistant-message.system .message-content {
+  background: #e3f2fd;
+  color: #1976d2;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 13px;
+}
+
+.assistant-message.system.error .message-content {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.assistant-message.system.warning .message-content {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.assistant-message.action .message-content {
+  background: #f3e5f5;
+  color: #6a1b9a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-content p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Badges de estado */
+.action-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.action-badge.state-pending {
+  background: #fff9c4;
+  color: #f57f17;
+}
+
+.action-badge.state-applied_local {
+  background: #e1f5fe;
+  color: #0277bd;
+  animation: pulse 1.5s infinite;
+}
+
+.action-badge.state-confirmed {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.action-badge.state-reverted {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.action-badge.state-error {
+  background: #ffccbc;
+  color: #bf360c;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Input */
+.assistant-input-wrapper {
+  padding: 15px;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 10px;
+}
+
+.assistant-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 24px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.assistant-input:focus {
+  border-color: #667eea;
+}
+
+.assistant-send {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.assistant-send:hover {
+  transform: scale(1.1);
+}
+
+/* ============================================================================ */
+/* PAINEL DE LINT */
+/* ============================================================================ */
+
+.lint-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+  font-size: 24px;
+  z-index: 999;
+  transition: all 0.3s;
+}
+
+.lint-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+}
+
+.lint-panel {
+  position: fixed;
+  right: -450px;
+  top: 80px;
+  bottom: 20px;
+  width: 420px;
+  background: white;
+  box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+  border-radius: 15px 0 0 15px;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lint-panel.open {
+  right: 0;
+}
+
+.lint-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border-radius: 15px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lint-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.lint-close {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lint-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.lint-summary {
+  padding: 15px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.lint-stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.lint-stat {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.lint-stat-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.lint-stat.errors .lint-stat-value {
+  color: #d32f2f;
+}
+
+.lint-stat.warnings .lint-stat-value {
+  color: #f57c00;
+}
+
+.lint-stat.suggestions .lint-stat-value {
+  color: #1976d2;
+}
+
+.lint-issues {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 20px;
+}
+
+.lint-issue {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid #bdbdbd;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lint-issue:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateX(-2px);
+}
+
+.lint-issue.severity-error {
+  border-left-color: #d32f2f;
+}
+
+.lint-issue.severity-warning {
+  border-left-color: #f57c00;
+}
+
+.lint-issue.severity-suggestion {
+  border-left-color: #1976d2;
+}
+
+.lint-issue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+.lint-issue-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.lint-issue-location {
+  font-size: 11px;
+  color: #757575;
+  background: #f5f5f5;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.lint-issue-message {
+  font-size: 13px;
+  color: #616161;
+  margin-bottom: 8px;
+}
+
+.lint-issue-suggestion {
+  font-size: 12px;
+  color: #1976d2;
+  background: #e3f2fd;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.lint-issue-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lint-fix-btn {
+  flex: 1;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lint-fix-btn.auto-fix {
+  background: #4caf50;
+  color: white;
+}
+
+.lint-fix-btn.auto-fix:hover {
+  background: #388e3c;
+}
+
+.lint-fix-btn.go-to-line {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.lint-fix-btn.go-to-line:hover {
+  background: #bdbdbd;
+}
+
+.lint-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #e0e0e0;
+  background: white;
+}
+
+.lint-run-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lint-run-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+}
+
+.lint-fix-all-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+}
+
+.lint-fix-all-btn:hover {
+  background: #388e3c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.lint-fix-all-btn:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================================================ */
+/* DIÁLOGO BIBTEX */
+/* ============================================================================ */
+
+.bibtex-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.bibtex-dialog {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow: hidden;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.bibtex-dialog-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bibtex-dialog-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.bibtex-dialog-close {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.bibtex-dialog-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.bibtex-dialog-body {
+  padding: 24px;
+  max-height: calc(80vh - 80px);
+  overflow-y: auto;
+}
+
+.bibtex-info {
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.bibtex-info p {
+  margin: 8px 0;
+}
+
+.bibtex-info code {
+  background: #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.bibtex-warning {
+  color: #f57c00;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+.bibtex-preview {
+  background: #263238;
+  color: #aed581;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.bibtex-preview pre {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.bibtex-preview code {
+  color: #aed581;
+}
+
+.bibtex-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bibtex-actions .btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bibtex-actions .btn-primary {
+  background: #2196f3;
+  color: white;
+}
+
+.bibtex-actions .btn-primary:hover {
+  background: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.bibtex-actions .btn-success {
+  background: #4caf50;
+  color: white;
+}
+
+.bibtex-actions .btn-success:hover {
+  background: #388e3c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.bibtex-actions .btn-secondary {
+  background: #757575;
+  color: white;
+}
+
+.bibtex-actions .btn-secondary:hover {
+  background: #616161;
+}
+</style>
+
+<!-- ============================================================================ -->
+<!-- PAINEL DE LINT -->
+<!-- ============================================================================ -->
+
+<!-- Botão para abrir/fechar lint -->
+<button id="lintToggle" class="lint-toggle" title="LaTeX Linter">
+  <i class="fas fa-check-circle"></i>
+</button>
+
+<!-- Painel do linter -->
+<div id="lintPanel" class="lint-panel">
+  <div class="lint-header">
+    <h3><i class="fas fa-check-circle"></i> LaTeX Linter</h3>
+    <button class="lint-close" onclick="toggleLint()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  
+  <div class="lint-summary">
+    <div>Status: <span id="lintStatus">Pronto</span></div>
+    <div id="lintOutdatedWarning" style="display: none; color: #ff9800; font-size: 0.9rem; margin-top: 0.5rem;">
+      ⚠️ Documento modificado. Clique em "Re-analisar" para atualizar.
+    </div>
+    <div class="lint-stats">
+      <div class="lint-stat errors">
+        <div class="lint-stat-value" id="lintErrors">0</div>
+        <div>Erros</div>
+      </div>
+      <div class="lint-stat warnings">
+        <div class="lint-stat-value" id="lintWarnings">0</div>
+        <div>Avisos</div>
+      </div>
+      <div class="lint-stat suggestions">
+        <div class="lint-stat-value" id="lintSuggestions">0</div>
+        <div>Sugestões</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="lint-issues" id="lintIssues">
+    <p style="text-align: center; color: #757575; margin-top: 50px;">
+      Clique em "Executar Lint" para analisar o documento
+    </p>
+  </div>
+  
+  <div class="lint-footer">
+    <button class="lint-run-btn" onclick="runLint()">
+      <i class="fas fa-sync-alt"></i> Re-analisar Documento
+    </button>
+    <button class="lint-fix-all-btn" id="lintFixAllBtn" onclick="applyAllFixes()" disabled>
+      <i class="fas fa-magic"></i> Aplicar Todas as Correções
+    </button>
+  </div>
+</div>
+
+<script>
+// Gerenciador de Lint
+class LintManager {
+  constructor() {
+    this.currentIssues = [];
+    this.currentFixes = [];
+    this.lastLintedContent = '';
+    this.setupDocumentChangeDetection();
+  }
+  
+  setupDocumentChangeDetection() {
+    // Detectar mudanças no documento
+    if (window.latexEditor && window.latexEditor.editor) {
+      window.latexEditor.editor.addEventListener('input', () => {
+        if (this.lastLintedContent && this.lastLintedContent !== window.latexEditor.editor.value) {
+          document.getElementById('lintOutdatedWarning').style.display = 'block';
+        }
+      });
+    }
+  }
+  
+  async runLint(content) {
+    try {
+      document.getElementById('lintStatus').textContent = 'Analisando...';
+      document.getElementById('lintOutdatedWarning').style.display = 'none';
+      
+      const response = await fetch('/api/lint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: content,
+          filename: fileName || 'main.tex'
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        this.currentIssues = data.issues;
+        this.currentFixes = data.fixes;
+        this.lastLintedContent = content;
+        this.displayResults(data);
+        document.getElementById('lintStatus').textContent = `Completo: ${data.summary.total} issues`;
+      } else {
+        document.getElementById('lintStatus').textContent = 'Erro';
+        console.error('Erro no lint:', data.error);
+      }
+    } catch (error) {
+      document.getElementById('lintStatus').textContent = 'Erro';
+      console.error('Erro ao executar lint:', error);
+    }
+  }
+  
+  displayResults(data) {
+    const { summary, issues } = data;
+    
+    // Atualizar estatísticas
+    document.getElementById('lintErrors').textContent = summary.errors;
+    document.getElementById('lintWarnings').textContent = summary.warnings;
+    document.getElementById('lintSuggestions').textContent = summary.suggestions;
+    
+    // Exibir issues
+    const issuesContainer = document.getElementById('lintIssues');
+    issuesContainer.innerHTML = '';
+    
+    if (issues.length === 0) {
+      issuesContainer.innerHTML = '<p style="text-align: center; color: #4caf50; margin-top: 50px;"><i class="fas fa-check-circle"></i> Nenhum problema encontrado!</p>';
+      document.getElementById('lintFixAllBtn').disabled = true;
+      return;
+    }
+    
+    issues.forEach(issue => {
+      const issueEl = this.createIssueElement(issue);
+      issuesContainer.appendChild(issueEl);
+    });
+    
+    // Habilitar botão de fix all se houver fixes disponíveis
+    document.getElementById('lintFixAllBtn').disabled = summary.auto_fixable === 0;
+  }
+  
+  createIssueElement(issue) {
+    const div = document.createElement('div');
+    div.className = `lint-issue severity-${issue.severity}`;
+    
+    const header = `
+      <div class="lint-issue-header">
+        <div class="lint-issue-title">${issue.message}</div>
+        <div class="lint-issue-location">Linha ${issue.line}</div>
+      </div>
+    `;
+    
+    const suggestion = issue.suggestion ? `
+      <div class="lint-issue-suggestion">
+        💡 ${issue.suggestion}
+      </div>
+    ` : '';
+    
+    const actions = `
+      <div class="lint-issue-actions">
+        ${issue.auto_fix ? '<button class="lint-fix-btn auto-fix" onclick="lintManager.applyFix(\'' + issue.rule_id + '_' + issue.line + '\')"><i class="fas fa-magic"></i> Corrigir</button>' : ''}
+        <button class="lint-fix-btn go-to-line" onclick="lintManager.goToLine(${issue.line})"><i class="fas fa-arrow-right"></i> Ir para linha</button>
+      </div>
+    `;
+    
+    div.innerHTML = header + suggestion + actions;
+    return div;
+  }
+  
+  goToLine(lineNumber) {
+    if (window.latexEditor && window.latexEditor.goToLine) {
+      window.latexEditor.goToLine(lineNumber);
+      // Fechar painel de lint
+      toggleLint();
+    }
+  }
+  
+  async applyFix(fixId) {
+    const fix = this.currentFixes.find(f => f.issue_id === fixId);
+    if (!fix) {
+      console.error('Fix não encontrado:', fixId);
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/lint/auto-fix', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: window.latexEditor.editor.value,
+          fix_ids: [fixId]
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        window.latexEditor.editor.value = data.modified_content;
+        window.latexEditor.updateLineNumbers();
+        window.latexEditor.updateStatus();
+        // Re-executar lint
+        await this.runLint(data.modified_content);
+      } else {
+        console.error('Erro ao aplicar fix:', data.error);
+      }
+    } catch (error) {
+      console.error('Erro ao aplicar fix:', error);
+    }
+  }
+  
+  async applyAllFixes() {
+    const autoFixableIds = this.currentFixes.map(f => f.issue_id);
+    
+    if (autoFixableIds.length === 0) {
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/lint/auto-fix', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: window.latexEditor.editor.value,
+          fix_ids: autoFixableIds
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        window.latexEditor.editor.value = data.modified_content;
+        window.latexEditor.updateLineNumbers();
+        window.latexEditor.updateStatus();
+        // Re-executar lint
+        await this.runLint(data.modified_content);
+      } else {
+        console.error('Erro ao aplicar fixes:', data.error);
+      }
+    } catch (error) {
+      console.error('Erro ao aplicar fixes:', error);
+    }
+  }
+}
+
+const lintManager = new LintManager();
+
+function toggleLint() {
+  const panel = document.getElementById('lintPanel');
+  const toggle = document.getElementById('lintToggle');
+  panel.classList.toggle('open');
+  toggle.classList.toggle('active');
+}
+
+function runLint() {
+  const content = window.latexEditor.editor.value;
+  lintManager.runLint(content);
+}
+
+function applyAllFixes() {
+  lintManager.applyAllFixes();
+}
+
+// Adicionar botão ao documento
+document.getElementById('lintToggle').addEventListener('click', toggleLint);
+
+// ============================================================================
+// FUNÇÕES DO MENU WINDOWS
+// ============================================================================
+
+// Menu Arquivo
+function menuNewFile() {
+  if (window.fileTree) {
+    window.fileTree.showNewFileDialog();
+  } else {
+    newDocument();
+  }
+}
+
+function menuNewFolder() {
+  if (window.fileTree) {
+    window.fileTree.showNewFolderDialog();
+  } else {
+    alert('Sistema de arquivos não disponível. Abra um projeto primeiro.');
+  }
+}
+
+function menuOpenFile() {
+  openDocument();
+}
+
+function menuSaveFile() {
+  saveDocument();
+}
+
+function menuSaveAs() {
+  // TODO: Implementar salvar como
+  alert('Funcionalidade "Salvar Como" em desenvolvimento');
+}
+
+function menuUpload() {
+  if (window.fileTree) {
+    window.fileTree.showUploadDialog();
+  } else {
+    alert('Sistema de arquivos não disponível. Abra um projeto primeiro.');
+  }
+}
+
+function menuDownloadZip() {
+  if (window.fileTree) {
+    window.fileTree.downloadProject();
+  } else {
+    alert('Sistema de arquivos não disponível. Abra um projeto primeiro.');
+  }
+}
+
+// Menu Editar
+function menuUndo() {
+  undoAction();
+}
+
+function menuRedo() {
+  redoAction();
+}
+
+function menuCut() {
+  document.execCommand('cut');
+}
+
+function menuCopy() {
+  document.execCommand('copy');
+}
+
+function menuPaste() {
+  document.execCommand('paste');
+}
+
+function menuFind() {
+  // Ctrl+F nativo do navegador
+  const editor = document.getElementById('latexEditor');
+  editor.focus();
+  // Simular Ctrl+F
+  alert('Use Ctrl+F para localizar no documento');
+}
+
+function menuReplace() {
+  // Ctrl+H nativo do navegador
+  alert('Use Ctrl+H para substituir no documento');
+}
+
+// Menu Ver
+function menuToggleFileTree() {
+  const sidebar = document.getElementById('fileTreeSidebar');
+  sidebar.classList.toggle('collapsed');
+}
+
+function menuToggleSnippets() {
+  const sidebar = document.getElementById('snippetsSidebar');
+  sidebar.classList.toggle('collapsed');
+}
+
+function menuZoomIn() {
+  const editor = document.getElementById('latexEditor');
+  const currentSize = parseFloat(window.getComputedStyle(editor).fontSize);
+  editor.style.fontSize = (currentSize + 1) + 'px';
+}
+
+function menuZoomOut() {
+  const editor = document.getElementById('latexEditor');
+  const currentSize = parseFloat(window.getComputedStyle(editor).fontSize);
+  editor.style.fontSize = Math.max(10, currentSize - 1) + 'px';
+}
+
+function menuZoomReset() {
+  const editor = document.getElementById('latexEditor');
+  editor.style.fontSize = '14px';
+}
+
+// Menu Inserir
+function menuInsertImage() {
+  if (window.fileTree) {
+    // Listar imagens do projeto
+    const images = window.fileTree.files.filter(f => 
+      ['png', 'jpg', 'jpeg', 'pdf', 'eps'].includes(f.type)
+    );
+    
+    if (images.length === 0) {
+      alert('Nenhuma imagem encontrada no projeto. Faça upload primeiro.');
+      return;
+    }
+    
+    // Criar seletor de imagens
+    const imageName = prompt('Digite o nome da imagem:\n\n' + 
+      images.map(img => `- ${img.name}`).join('\n'));
+    
+    if (imageName) {
+      const snippet = `\\begin{figure}[h]\n  \\centering\n  \\includegraphics[width=0.8\\textwidth]{${imageName}}\n  \\caption{Legenda}\n  \\label{fig:${imageName.split('.')[0]}}\n\\end{figure}`;
+      insertSnippet('custom', snippet);
+    }
+  } else {
+    alert('Sistema de arquivos não disponível. Abra um projeto primeiro.');
+  }
+}
+
+// Menu Ajuda
+function menuShowHelp() {
+  window.open('https://www.latex-project.org/help/documentation/', '_blank');
+}
+
+function menuShowShortcuts() {
+  alert(`Atalhos de Teclado:
+
+Arquivo:
+  Ctrl+N - Novo Arquivo
+  Ctrl+O - Abrir
+  Ctrl+S - Salvar
+
+Editar:
+  Ctrl+Z - Desfazer
+  Ctrl+Y - Refazer
+  Ctrl+X - Recortar
+  Ctrl+C - Copiar
+  Ctrl+V - Colar
+  Ctrl+F - Localizar
+  Ctrl+H - Substituir
+
+Ver:
+  Ctrl+B - Árvore de Arquivos
+  Ctrl++ - Aumentar Zoom
+  Ctrl+- - Diminuir Zoom
+  Ctrl+0 - Zoom Padrão
+
+Ferramentas:
+  F5 - Compilar
+  F6 - Visualizar PDF
+
+Ajuda:
+  F1 - Ajuda do LaTeX`);
+}
+
+function menuAbout() {
+  alert(`DocCollab - Editor LaTeX Colaborativo
+Versão 1.0
+
+Desenvolvido com:
+- Flask (Backend)
+- JavaScript (Frontend)
+- LaTeX (Compilação)
+
+© 2025 DocCollab`);
+}
+
+// Função auxiliar para inserir snippet customizado
+function insertCustomSnippet(text) {
+  const editor = window.latexEditor.editor;
+  const start = editor.selectionStart;
+  const end = editor.selectionEnd;
+  const before = editor.value.substring(0, start);
+  const after = editor.value.substring(end);
+  editor.value = before + text + after;
+  editor.selectionStart = editor.selectionEnd = start + text.length;
+  editor.focus();
+  window.latexEditor.updateLineNumbers();
+  window.latexEditor.updateStatus();
+}
+
+</script>
+
+<!-- ============================================================================ -->
+<!-- GERENCIADOR DE ARQUIVOS -->
+<!-- ============================================================================ -->
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/file_tree.css') }}">
+<script src="{{ url_for('static', filename='js/file_tree.js') }}"></script>
+
+<script>
+// Inicializar gerenciador de arquivos
+const projectId = {{ project.id if project else 0 }};
+
+if (projectId > 0) {
+  const fileTree = new FileTreeManager(projectId, 'fileTreeSidebar');
+  
+  // Callback quando arquivo é selecionado
+  fileTree.onFileSelect = async (file) => {
+    console.log('Arquivo selecionado:', file);
+    
+    // Carregar conteúdo do arquivo no editor
+    try {
+      const response = await fetch(`/api/project/${projectId}/file/${file.id}`);
+      const data = await response.json();
+      
+      if (data.success && data.file.content) {
+        window.latexEditor.editor.value = data.file.content;
+        window.latexEditor.updateLineNumbers();
+        window.latexEditor.updateStatus();
+        
+        // Atualizar nome do arquivo na toolbar
+        document.getElementById('fileName').textContent = file.name;
+      }
+    } catch (error) {
+      console.error('Erro ao carregar arquivo:', error);
+    }
+  };
+  
+  // Callback quando arquivo é criado
+  fileTree.onFileCreate = (file) => {
+    console.log('Arquivo criado:', file);
+    // Selecionar o novo arquivo
+    fileTree.selectFile(file.id);
+  };
+  
+  // Callback quando pasta é criada
+  fileTree.onFolderCreate = (folder) => {
+    console.log('Pasta criada:', folder);
+  };
+  
+  // Expor globalmente para uso em outras funções
+  window.fileTree = fileTree;
+}
 </script>
 
 {% endblock %}

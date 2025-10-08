@@ -8,6 +8,92 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="{{ url_for('static', filename='css/light-theme.css') }}" rel="stylesheet" />
+  <style>
+    /* Global Body Style */
+    body {
+      background-color: #f5f5f5 !important;
+      min-height: 100vh;
+    }
+    
+    /* Language Dropdown Styles */
+    .nav-dropdown {
+      position: relative;
+    }
+    
+    .nav-dropdown .nav-link {
+      cursor: pointer;
+    }
+    
+    .nav-dropdown .fa-chevron-down {
+      font-size: 0.7rem;
+      margin-left: 5px;
+      transition: transform 0.3s;
+    }
+    
+    .nav-dropdown.active .fa-chevron-down {
+      transform: rotate(180deg);
+    }
+    
+    .dropdown-menu {
+      display: none !important;
+      position: absolute !important;
+      top: 100% !important;
+      right: 0 !important;
+      background: white !important;
+      border-radius: 8px !important;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+      min-width: 180px !important;
+      padding: 8px 0 !important;
+      margin-top: 10px !important;
+      z-index: 9999 !important;
+      list-style: none !important;
+    }
+    
+    .dropdown-menu.show {
+      display: block !important;
+      animation: fadeIn 0.2s ease !important;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .dropdown-item {
+      display: flex !important;
+      align-items: center !important;
+      padding: 10px 20px !important;
+      color: #333 !important;
+      text-decoration: none !important;
+      transition: background 0.2s !important;
+      cursor: pointer !important;
+    }
+    
+    .dropdown-item:hover {
+      background: #f7fafc !important;
+      color: #333 !important;
+    }
+    
+    .dropdown-item .flag {
+      font-size: 1.2rem;
+      margin-right: 10px;
+    }
+    
+    /* Forçar visibilidade quando o menu tem inline styles */
+    #languageMenu[style*="display: block"] {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateY(0) !important;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dropdown-menu {
+        right: auto;
+        left: 0;
+      }
+    }
+  </style>
   {% block head %}{% endblock %}
 </head>
 <body>
@@ -26,47 +112,53 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('index') }}">
               <i class="fas fa-home"></i>
-              Home
+              {{ _('Home') }}
             </a>
           </li>
           {% if current_user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('dashboard') }}">
                 <i class="fas fa-tachometer-alt"></i>
-                Dashboard
+                {{ _('Dashboard') }}
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ url_for('pricing') }}">
                 <i class="fas fa-crown"></i>
-                Preços
+                {{ _('Preços') }}
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('logout') }}">
                 <i class="fas fa-sign-out-alt"></i>
-                Sign out
+                {{ _('Sign out') }}
               </a>
             </li>
           {% else %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('login') }}">
                 <i class="fas fa-sign-in-alt"></i>
-                Sign in
+                {{ _('Sign in') }}
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('register') }}">
                 <i class="fas fa-user-plus"></i>
-                Sign up
+                {{ _('Sign up') }}
               </a>
             </li>
           {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="#">
+          <li class="nav-item nav-dropdown" id="navDropdownLang">
+            <a class="nav-link" href="javascript:void(0)" id="languageDropdown" onclick="toggleLanguageDropdown(event)">
               <i class="fas fa-globe"></i>
-              Language
+              {{ _('Language') }}
+              <i class="fas fa-chevron-down"></i>
             </a>
+            <ul class="dropdown-menu" id="languageMenu">
+              <li><a href="{{ url_for('set_language', lang_code='pt') }}" class="dropdown-item"><span class="flag">🇧🇷</span> {{ _('Português') }}</a></li>
+              <li><a href="{{ url_for('set_language', lang_code='en') }}" class="dropdown-item"><span class="flag">🇺🇸</span> {{ _('English') }}</a></li>
+              <li><a href="{{ url_for('set_language', lang_code='es') }}" class="dropdown-item"><span class="flag">🇪🇸</span> {{ _('Español') }}</a></li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -90,5 +182,58 @@
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script src="{{ url_for('static', filename='js/responsive.js') }}"></script>
+  <script>
+    // Language Dropdown - Função Global
+    function toggleLanguageDropdown(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('toggleLanguageDropdown chamado!');
+      
+      const languageMenu = document.getElementById('languageMenu');
+      const navDropdown = document.getElementById('navDropdownLang');
+      
+      if (languageMenu && navDropdown) {
+        const isVisible = languageMenu.style.display === 'block';
+        
+        if (isVisible) {
+          languageMenu.style.display = 'none';
+          languageMenu.style.opacity = '0';
+          languageMenu.style.visibility = 'hidden';
+          navDropdown.classList.remove('active');
+        } else {
+          languageMenu.style.display = 'block';
+          languageMenu.style.opacity = '1';
+          languageMenu.style.visibility = 'visible';
+          languageMenu.style.transform = 'translateY(0)';
+          languageMenu.style.position = 'absolute';
+          languageMenu.style.top = '100%';
+          languageMenu.style.right = '0';
+          languageMenu.style.background = 'white';
+          languageMenu.style.borderRadius = '8px';
+          languageMenu.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+          languageMenu.style.minWidth = '180px';
+          languageMenu.style.padding = '8px 0';
+          languageMenu.style.marginTop = '10px';
+          languageMenu.style.zIndex = '9999';
+          navDropdown.classList.add('active');
+        }
+        
+        console.log('Menu display:', languageMenu.style.display);
+      }
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      const navDropdown = document.getElementById('navDropdownLang');
+      const languageMenu = document.getElementById('languageMenu');
+      
+      if (navDropdown && !navDropdown.contains(e.target)) {
+        if (languageMenu) {
+          languageMenu.style.display = 'none';
+          navDropdown.classList.remove('active');
+        }
+      }
+    });
+  </script>
 </body>
 </html>
