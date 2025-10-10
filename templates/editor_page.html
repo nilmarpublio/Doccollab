@@ -2314,16 +2314,23 @@ class LaTeXLinterUI {
   }
 }
 
+// Função para inicializar o Linter UI
+function initializeLinterUI() {
+  const editorElement = document.getElementById('latexEditor');
+  if (editorElement && !window.linterUI) {
+    window.linterUI = new LaTeXLinterUI(editorElement);
+    console.log('[Linter] Integração visual ativada');
+    return true;
+  }
+  return false;
+}
+
 // Inicializar editor quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
   window.latexEditor = new LaTeXEditor();
   
   // Inicializar Linter UI
-  const editorElement = document.getElementById('latexEditor');
-  if (editorElement) {
-    window.linterUI = new LaTeXLinterUI(editorElement);
-    console.log('[Linter] Integração visual ativada');
-  }
+  initializeLinterUI();
 });
 
 // Funções globais para os botões
@@ -3825,12 +3832,19 @@ function toggleLint() {
 }
 
 function runLint() {
-  // Usar o novo LaTeXLinterUI
-  if (window.linterUI) {
-    window.linterUI.runLint();
-  } else {
-    console.error('LaTeXLinterUI não inicializado');
+  // Tentar inicializar se ainda não foi
+  if (!window.linterUI) {
+    console.log('[Linter] Tentando inicializar...');
+    if (!initializeLinterUI()) {
+      console.error('LaTeXLinterUI não pode ser inicializado');
+      alert('Erro: Editor não encontrado. Recarregue a página.');
+      return;
+    }
   }
+  
+  // Executar lint
+  console.log('[Linter] Executando runLint...');
+  window.linterUI.runLint();
 }
 
 function applyAllFixes() {
