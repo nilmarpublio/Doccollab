@@ -45,6 +45,10 @@ class LaTeXLinter:
     def _check_line(self, line: str, line_num: int, all_lines: List[str]):
         """Check a single line for issues"""
         
+        # Skip empty lines
+        if not line.strip():
+            return
+        
         # Skip comments
         if line.strip().startswith('%'):
             return
