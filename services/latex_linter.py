@@ -81,6 +81,50 @@ class LaTeXLinter:
     def _check_global(self, content: str):
         """Check global document issues"""
         
+        # Check for multiple \documentclass
+        documentclass_matches = list(re.finditer(r'\\documentclass', content))
+        if len(documentclass_matches) > 1:
+            self.errors.append({
+                'line': None,
+                'message': f'Multiple \\documentclass found ({len(documentclass_matches)} times). Only one is allowed per document.',
+                'type': 'multiple_documentclass'
+            })
+        
+        # Check for multiple \begin{document}
+        begin_doc_matches = list(re.finditer(r'\\begin\{document\}', content))
+        if len(begin_doc_matches) > 1:
+            self.errors.append({
+                'line': None,
+                'message': f'Multiple \\begin{{document}} found ({len(begin_doc_matches)} times). Only one is allowed.',
+                'type': 'multiple_begin_document'
+            })
+        
+        # Check for multiple \end{document}
+        end_doc_matches = list(re.finditer(r'\\end\{document\}', content))
+        if len(end_doc_matches) > 1:
+            self.errors.append({
+                'line': None,
+                'message': f'Multiple \\end{{document}} found ({len(end_doc_matches)} times). Only one is allowed.',
+                'type': 'multiple_end_document'
+            })
+        
+        # Check for content after \end{document}
+        if end_doc_matches:
+            last_end_doc = end_doc_matches[-1]
+            content_after = content[last_end_doc.end():].strip()
+            # Remove comments
+            content_after_no_comments = re.sub(r'%.*', '', content_after).strip()
+            if content_after_no_comments:
+                # Get first 50 chars of content after
+                preview = content_after_no_comments[:50]
+                if len(content_after_no_comments) > 50:
+                    preview += '...'
+                self.errors.append({
+                    'line': None,
+                    'message': f'Content found after \\end{{document}}: "{preview}"',
+                    'type': 'content_after_end_document'
+                })
+        
         # Check for duplicate labels
         labels = re.findall(r'\\label\{([^}]+)\}', content)
         label_counts = {}
