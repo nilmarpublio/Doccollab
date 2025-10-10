@@ -2190,6 +2190,65 @@ class LaTeXLinterUI {
     const errorCount = errors.length;
     const warningCount = warnings.length;
     console.log(`[Linter] ${errorCount} erros, ${warningCount} avisos`);
+    
+    // Atualizar o card do Linter
+    this.updateLintCard(errors, warnings);
+  }
+  
+  updateLintCard(errors, warnings) {
+    // Atualizar status
+    const statusEl = document.getElementById('lintStatus');
+    if (statusEl) {
+      const total = errors.length + warnings.length;
+      statusEl.textContent = `Completo: ${total} problemas encontrados`;
+    }
+    
+    // Atualizar lista de erros
+    const errorsListEl = document.getElementById('lintErrorsList');
+    if (errorsListEl) {
+      errorsListEl.innerHTML = '';
+      
+      if (errors.length === 0 && warnings.length === 0) {
+        errorsListEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #2ecc71;">✅ Nenhum problema encontrado!</div>';
+        return;
+      }
+      
+      // Adicionar erros
+      errors.forEach(err => {
+        const item = document.createElement('div');
+        item.className = 'lint-issue-item error';
+        item.innerHTML = `
+          <div class="lint-issue-header">
+            <span class="lint-issue-icon">❌</span>
+            <span class="lint-issue-title">${err.message}</span>
+            ${err.line ? `<span class="lint-issue-line">Linha ${err.line}</span>` : '<span class="lint-issue-line">Global</span>'}
+          </div>
+          ${err.suggestion ? `<div class="lint-issue-suggestion">💡 ${err.suggestion}</div>` : ''}
+        `;
+        errorsListEl.appendChild(item);
+      });
+      
+      // Adicionar avisos
+      warnings.forEach(warn => {
+        const item = document.createElement('div');
+        item.className = 'lint-issue-item warning';
+        item.innerHTML = `
+          <div class="lint-issue-header">
+            <span class="lint-issue-icon">⚠️</span>
+            <span class="lint-issue-title">${warn.message}</span>
+            ${warn.line ? `<span class="lint-issue-line">Linha ${warn.line}</span>` : '<span class="lint-issue-line">Global</span>'}
+          </div>
+          ${warn.suggestion ? `<div class="lint-issue-suggestion">💡 ${warn.suggestion}</div>` : ''}
+        `;
+        errorsListEl.appendChild(item);
+      });
+    }
+    
+    // Esconder aviso de "documento desatualizado"
+    const outdatedWarning = document.getElementById('lintOutdatedWarning');
+    if (outdatedWarning) {
+      outdatedWarning.style.display = 'none';
+    }
   }
   
   createLineMarker(lineNum, issues, type) {
