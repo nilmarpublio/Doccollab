@@ -1,0 +1,216 @@
+/**
+ * Estilos para Árvore de Arquivos - DocCollab
+ */
+
+.file-tree {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+}
+
+.file-tree-header {
+    padding: 1rem;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.file-tree-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.file-tree-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #666;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.btn-icon-small {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: #666;
+    border-radius: 3px;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-icon-small:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.file-tree-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.file-tree-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-tree-item {
+    position: relative;
+    user-select: none;
+}
+
+.file-tree-item-content {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 0.5rem;
+}
+
+.file-tree-item-content:hover {
+    background: #e9ecef;
+}
+
+.file-tree-item.file.selected > .file-tree-item-content {
+    background: #007bff;
+    color: white;
+}
+
+.file-tree-item.file.selected > .file-tree-item-content .file-icon,
+.file-tree-item.file.selected > .file-tree-item-content .file-tree-item-meta {
+    color: white;
+}
+
+.file-tree-item.folder.collapsed > .file-tree-list {
+    display: none;
+}
+
+.file-tree-item.folder > .file-tree-item-content .folder-icon::before {
+    content: "\f07c"; /* fa-folder */
+}
+
+.file-tree-item.folder.collapsed > .file-tree-item-content .folder-icon::before {
+    content: "\f07b"; /* fa-folder (closed) */
+}
+
+.file-icon {
+    width: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.folder-icon {
+    width: 20px;
+    text-align: center;
+    color: #ffc107;
+}
+
+.file-tree-item-name {
+    flex: 1;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-tree-item-meta {
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: auto;
+}
+
+.file-tree-item-actions {
+    display: none;
+    gap: 0.25rem;
+    margin-left: 0.5rem;
+}
+
+.file-tree-item-content:hover .file-tree-item-actions {
+    display: flex;
+}
+
+.file-tree-item.file.selected .file-tree-item-actions {
+    display: flex;
+}
+
+.file-tree-item.file.selected .btn-icon-small {
+    color: white;
+}
+
+.file-tree-item.file.selected .btn-icon-small:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar customizada */
+.file-tree-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.file-tree-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.file-tree-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.file-tree-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-tree-item {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .file-tree-header {
+        padding: 0.75rem;
+    }
+    
+    .file-tree-header h3 {
+        font-size: 1rem;
+    }
+    
+    .file-tree-item-content {
+        padding: 0.4rem 0.75rem;
+    }
+    
+    .file-tree-item-name {
+        font-size: 0.85rem;
+    }
+}

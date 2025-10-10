@@ -1,0 +1,107 @@
+% Artigo Científico - Modelo
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{hyperref}
+
+\graphicspath{{imagens/}}
+
+% Título e autores
+\title{Título do Artigo Científico}
+\author{Autor 1\thanks{Instituição 1} \and Autor 2\thanks{Instituição 2}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este é o resumo do artigo científico. Deve conter uma breve descrição do problema, metodologia, resultados e conclusões. Recomenda-se entre 150 e 250 palavras.
+
+\textbf{Palavras-chave:} LaTeX, Artigo Científico, Pesquisa, Metodologia
+\end{abstract}
+
+\section{Introdução}
+
+A introdução apresenta o contexto do trabalho, a motivação da pesquisa e os objetivos do estudo.
+
+\subsection{Motivação}
+
+Descreva aqui a motivação para realizar esta pesquisa.
+
+\subsection{Objetivos}
+
+\begin{itemize}
+  \item Objetivo geral
+  \item Objetivos específicos
+\end{itemize}
+
+\section{Revisão da Literatura}
+
+Apresente aqui a revisão bibliográfica sobre o tema.
+
+\section{Metodologia}
+
+Descreva os métodos utilizados na pesquisa.
+
+\subsection{Materiais}
+
+Liste os materiais utilizados.
+
+\subsection{Procedimentos}
+
+Descreva os procedimentos experimentais.
+
+\section{Resultados}
+
+Apresente os resultados obtidos.
+
+\subsection{Análise Estatística}
+
+Resultados da análise estatística podem ser apresentados em tabelas:
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Variável} & \textbf{Média} & \textbf{Desvio Padrão} & \textbf{p-valor} \\
+    \hline
+    Grupo A & 25.3 & 4.2 & 0.032 \\
+    Grupo B & 28.7 & 3.8 & 0.018 \\
+    \hline
+  \end{tabular}
+  \caption{Resultados estatísticos}
+  \label{tab:resultados}
+\end{table}
+
+\section{Discussão}
+
+Discuta os resultados obtidos e compare com a literatura.
+
+\section{Conclusão}
+
+Apresente as conclusões do trabalho e sugestões para trabalhos futuros.
+
+\section{Agradecimentos}
+
+Agradecimentos às instituições e pessoas que contribuíram para o trabalho.
+
+\begin{thebibliography}{9}
+
+\bibitem{exemplo1}
+Autor, A. (2024). \textit{Título do Livro}. Editora.
+
+\bibitem{exemplo2}
+Autor, B. e Autor, C. (2023). Título do Artigo. \textit{Nome da Revista}, 10(2), 123-145.
+
+\end{thebibliography}
+
+\end{document}
+
+

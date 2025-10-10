@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}DocCollab - Sign in{% endblock %}
+{% block title %}{{ _('DocCollab - Sign in') }}{% endblock %}
 {% block content %}
 <div class="auth-container">
   <div class="auth-card">
     <div class="auth-header">
       <div class="auth-logo">
         <h1>DocCollab</h1>
-        <p>Welcome back!</p>
+        <p>{{ _('Welcome back!') }}</p>
       </div>
     </div>
     
@@ -15,26 +15,26 @@
         <div class="form-group">
           <label for="email" class="form-label">
             <i class="fas fa-at"></i>
-            Email Address
+            {{ _('Email Address') }}
           </label>
           <div class="input-group">
             <div class="input-icon">
               <i class="fas fa-envelope-open-text"></i>
             </div>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+            <input type="email" class="form-control" id="email" name="email" placeholder="{{ _('Enter your email address') }}" required>
           </div>
         </div>
         
         <div class="form-group">
           <label for="password" class="form-label">
             <i class="fas fa-key"></i>
-            Password
+            {{ _('Password') }}
           </label>
           <div class="input-group">
             <div class="input-icon">
               <i class="fas fa-lock"></i>
             </div>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="{{ _('Enter your password') }}" required>
             <button type="button" class="input-toggle" onclick="togglePassword('password')">
               <i class="fas fa-eye" id="password-eye"></i>
             </button>
@@ -48,22 +48,22 @@
               <i class="fas fa-check"></i>
             </span>
             <i class="fas fa-user-clock"></i>
-            Remember me
+            {{ _('Remember me') }}
           </label>
         </div>
         
         <button type="submit" class="btn btn-primary btn-auth">
           <i class="fas fa-sign-in-alt"></i>
-          <span>Sign in to your account</span>
+          <span>{{ _('Sign in to your account') }}</span>
         </button>
       </form>
       
       <div class="auth-divider">
-        <span>or</span>
+        <span>{{ _('or') }}</span>
       </div>
       
       <div class="auth-footer">
-        <p>No account? <a href="{{ url_for('register') }}" class="auth-link">Sign up</a></p>
+        <p>{{ _('No account?') }} <a href="{{ url_for('register') }}" class="auth-link">{{ _('Sign up') }}</a></p>
       </div>
     </div>
   </div>
@@ -85,7 +85,7 @@
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 480px;
   overflow: hidden;
   animation: slideUp 0.6s ease;
 }

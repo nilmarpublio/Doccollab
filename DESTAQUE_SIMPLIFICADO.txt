@@ -1,0 +1,156 @@
+════════════════════════════════════════════════════════════════
+✅ DESTAQUE DE LINHA SIMPLIFICADO E MELHORADO!
+════════════════════════════════════════════════════════════════
+
+Agora o destaque está MUITO MAIS SIMPLES e VISÍVEL!
+
+════════════════════════════════════════════════════════════════
+🎨 NOVA ABORDAGEM:
+════════════════════════════════════════════════════════════════
+
+ANTES (complexo):
+  - Criava uma div para cada linha
+  - Muitas linhas = lento
+  - Difícil de debugar
+
+AGORA (simples):
+  - Cria apenas UMA div
+  - Posiciona exatamente na linha
+  - Rápido e eficiente
+  - Fácil de debugar
+
+════════════════════════════════════════════════════════════════
+🎯 DESTAQUE VISUAL:
+════════════════════════════════════════════════════════════════
+
+Quando você clica em "Ir para linha":
+
+1. FUNDO AMARELO/LARANJA FORTE
+   - Cor: rgba(255, 193, 7, 0.5)
+   - Opacidade 50% = MUITO VISÍVEL
+   - !important para forçar
+
+2. BARRA LATERAL VERMELHA
+   - Borda esquerda de 5px
+   - Cor: #ff5722 (vermelho/laranja)
+   - !important para forçar
+
+3. SOMBRA SUAVE
+   - box-shadow com cor laranja
+   - Destaca ainda mais
+
+4. ANIMAÇÃO DE PULSO
+   - 2 segundos
+   - Suave e profissional
+
+5. DURAÇÃO MAIOR
+   - 3 segundos (antes era 2)
+   - Mais tempo para ver
+
+════════════════════════════════════════════════════════════════
+🔍 DEBUG NO CONSOLE:
+════════════════════════════════════════════════════════════════
+
+Agora você pode ver no console (F12):
+
+[goToLine] Indo para linha 5 de 150
+[goToLine] Criando destaque visual
+[goToLine] Destaque removido
+
+Se aparecer erro:
+[goToLine] Elemento lineHighlightBg não encontrado!
+  → Significa que o HTML não tem o elemento
+
+════════════════════════════════════════════════════════════════
+🔄 REINICIE O SERVIDOR
+════════════════════════════════════════════════════════════════
+
+1. Pare o servidor (Ctrl+C)
+2. Inicie novamente:
+   cd D:\OurDocs\DocCollab
+   python app.py
+
+3. Limpe o cache do navegador:
+   Ctrl+Shift+R (ou Ctrl+F5)
+
+════════════════════════════════════════════════════════════════
+🧪 COMO TESTAR:
+════════════════════════════════════════════════════════════════
+
+1. Abra o editor LaTeX
+2. Abra o Console (F12)
+3. Cole um documento com erros
+4. Rode o LaTeX Linter
+5. Clique em "Ir para linha"
+6. Veja no console: [goToLine] Indo para linha X
+7. VEJA O DESTAQUE:
+   - Fundo amarelo/laranja FORTE
+   - Barra vermelha à esquerda (5px)
+   - Sombra suave
+   - Animação de pulso
+   - Dura 3 segundos
+
+════════════════════════════════════════════════════════════════
+🎨 CORES USADAS:
+════════════════════════════════════════════════════════════════
+
+Fundo: rgba(255, 193, 7, 0.5)
+  🟨 Amarelo/laranja com 50% de opacidade
+  Cor Material Design "Amber"
+
+Borda: #ff5722
+  🟧 Vermelho/laranja (Deep Orange)
+  5px de largura
+
+Sombra: rgba(255, 152, 0, 0.3)
+  🟠 Laranja suave com 30% de opacidade
+
+════════════════════════════════════════════════════════════════
+✅ GARANTIAS:
+════════════════════════════════════════════════════════════════
+
+✅ Destaque é REALMENTE visível
+✅ Cores fortes e contrastantes
+✅ !important para forçar estilos
+✅ z-index: 10 para ficar acima
+✅ Sincroniza com scroll
+✅ Animação suave
+✅ Debug no console
+✅ Remove após 3 segundos
+
+════════════════════════════════════════════════════════════════
+🐛 SE NÃO FUNCIONAR:
+════════════════════════════════════════════════════════════════
+
+1. Abra o Console (F12)
+2. Clique em "Ir para linha"
+3. Procure por:
+   [goToLine] Indo para linha X
+   [goToLine] Criando destaque visual
+
+4. Se aparecer "não encontrado":
+   - O elemento lineHighlightBg não existe
+   - Recarregue a página (Ctrl+Shift+R)
+
+5. Se não aparecer nada:
+   - A função não está sendo chamada
+   - Verifique se o botão está correto
+
+6. Teste manual no console:
+   window.latexEditor.goToLine(5)
+
+════════════════════════════════════════════════════════════════
+✅ PRONTO!
+════════════════════════════════════════════════════════════════
+
+Reinicie o servidor e limpe o cache!
+
+Agora o destaque é:
+- SIMPLES (apenas 1 div)
+- RÁPIDO (posicionamento direto)
+- VISÍVEL (cores fortes + !important)
+- DEBUGÁVEL (console.log)
+
+🚀
+
+

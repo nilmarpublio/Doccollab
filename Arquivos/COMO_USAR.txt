@@ -1,0 +1,222 @@
+================================================================
+           COMO USAR O SISTEMA DE ARQUIVOS - DocCollab
+================================================================
+
+IMPORTANTE: O sistema usa o File System Access API do navegador!
+
+================================================================
+PASSO A PASSO:
+================================================================
+
+1. ABRIR O EDITOR
+   - Acesse: http://localhost:5000
+   - Faça login
+   - Clique em "Abrir Editor" em um projeto
+
+2. SELECIONAR A PASTA DE TRABALHO
+   - Ao abrir o editor, aparecerá um prompt:
+     "📁 Deseja selecionar a pasta 'Arquivos' para salvar seus documentos?"
+   
+   - Clique em "OK"
+   
+   - Uma janela do explorador de arquivos será aberta
+   
+   - Navegue até: D:\OurDocs\DocCollab\Arquivos
+   
+   - Clique em "Selecionar pasta"
+   
+   - IMPORTANTE: O navegador pedirá permissão para acessar a pasta
+     Clique em "Permitir" ou "Allow"
+
+3. AGORA A SIDEBAR MOSTRARÁ:
+   
+   📝 Snippets
+   ├─ Seção
+   ├─ Equação
+   ├─ Tabela
+   ├─ Lista
+   └─ Figura
+   
+   📁 Arquivos
+   ├─ 📄 exemplo_documento.tex
+   ├─ 📄 artigo_cientifico.tex
+   └─ 📄 relatorio_tecnico.tex
+   
+   🖼️ Imagens [↑]
+   └─ (vazia - faça upload de imagens)
+
+================================================================
+TRABALHANDO COM ARQUIVOS:
+================================================================
+
+ABRIR ARQUIVO:
+- Clique no arquivo na lista da sidebar
+- OU clique em "Abrir" na toolbar
+
+CRIAR NOVO ARQUIVO:
+- Clique em "Novo" na toolbar
+- Digite o nome (ex: meu_documento.tex)
+- Use Ctrl+S para salvar
+
+SALVAR ARQUIVO:
+- Ctrl+S ou clique em "Salvar"
+- Primeira vez: escolhe onde salvar
+- Próximas vezes: salva automaticamente
+
+================================================================
+TRABALHANDO COM IMAGENS:
+================================================================
+
+FAZER UPLOAD:
+- Clique no botão verde "Imagem" na toolbar
+- OU clique no ícone ↑ na seção "Imagens"
+- OU arraste imagens para a sidebar/editor
+
+INSERIR NO DOCUMENTO:
+- Clique em "Inserir" na imagem
+- Código LaTeX gerado automaticamente
+- Edite a legenda
+
+EXCLUIR IMAGEM:
+- Passe o mouse sobre a imagem
+- Clique no botão vermelho "Excluir"
+
+================================================================
+ATALHOS DE TECLADO:
+================================================================
+
+Ctrl+S  - Salvar documento
+Ctrl+N  - Novo documento
+Ctrl+O  - Abrir documento
+Ctrl+Z  - Desfazer
+Ctrl+Y  - Refazer
+Ctrl+B  - Negrito (\textbf{})
+Ctrl+I  - Itálico (\textit{})
+Ctrl+U  - Sublinhado (\underline{})
+F5      - Compilar documento
+F6      - Visualizar PDF
+
+================================================================
+COMPILAÇÃO:
+================================================================
+
+COMPILAR DOCUMENTO:
+- Clique em "Compilar" (ou F5)
+- Aguarde a compilação
+- Se houver erros, eles serão exibidos
+
+VISUALIZAR PDF:
+- Clique em "Visualizar" (ou F6)
+- O PDF será aberto em nova aba
+
+LINTER LATEX:
+- Clique no botão "LaTeX Linter"
+- Veja os problemas detectados
+- Clique em "Ir para linha" para corrigir
+
+================================================================
+ASSISTENTE VIRTUAL:
+================================================================
+
+ABRIR CHAT:
+- Clique no botão "Chat" (ícone de robô)
+
+COMANDOS:
+- "Olá" - Saudação
+- "Ajuda" - Comandos disponíveis
+- "Como inserir uma equação?" - Ajuda sobre LaTeX
+- "Compile o documento" - Compilar via chat
+
+================================================================
+SNIPPETS DISPONÍVEIS:
+================================================================
+
+Clique nos snippets da sidebar para inserir:
+
+- Seção: \section{Título}
+- Equação: \begin{equation}...\end{equation}
+- Tabela: \begin{table}...\end{table}
+- Lista: \begin{itemize}...\end{itemize}
+- Figura: \begin{figure}...\end{figure}
+
+================================================================
+TROUBLESHOOTING:
+================================================================
+
+PROBLEMA: "Pasta de trabalho não configurada"
+SOLUÇÃO: Selecione a pasta "Arquivos" novamente
+
+PROBLEMA: "Nenhum arquivo na lista"
+SOLUÇÃO: Verifique se selecionou a pasta correta
+          D:\OurDocs\DocCollab\Arquivos
+
+PROBLEMA: "Erro ao salvar arquivo"
+SOLUÇÃO: Verifique as permissões do navegador
+          Tente selecionar a pasta novamente
+
+PROBLEMA: "Imagens não aparecem"
+SOLUÇÃO: Verifique se a pasta "imagens" existe
+          Faça upload de imagens primeiro
+
+PROBLEMA: "Compilação falhou"
+SOLUÇÃO: Verifique erros de sintaxe LaTeX
+          Use o LaTeX Linter para detectar problemas
+
+================================================================
+COMPATIBILIDADE:
+================================================================
+
+✓ Chrome/Edge: Suporte completo
+✓ Opera: Suporte completo
+⚠ Firefox: Suporte parcial (File System Access em desenvolvimento)
+⚠ Safari: Suporte limitado
+
+Recomendado: Chrome ou Edge para melhor experiência
+
+================================================================
+DICAS:
+================================================================
+
+1. Sempre selecione a pasta "Arquivos" ao abrir o editor
+2. Use nomes descritivos para arquivos e imagens
+3. Salve frequentemente (Ctrl+S)
+4. Use o Linter para detectar problemas
+5. Compile frequentemente para ver o resultado
+6. Organize imagens na subpasta "imagens/"
+7. Use snippets para agilizar a escrita
+8. Consulte o assistente virtual em caso de dúvidas
+
+================================================================
+ARQUIVOS DE EXEMPLO INCLUÍDOS:
+================================================================
+
+1. exemplo_documento.tex
+   - Documento básico com exemplos de formatação
+   - Listas, tabelas, equações
+   - Referências cruzadas
+
+2. artigo_cientifico.tex
+   - Modelo de artigo científico
+   - Abstract, seções, bibliografia
+   - Tabelas de resultados
+
+3. relatorio_tecnico.tex
+   - Modelo de relatório técnico
+   - Sumário, código-fonte
+   - Requisitos e testes
+
+================================================================
+SUPORTE:
+================================================================
+
+Em caso de problemas:
+1. Verifique o console do navegador (F12)
+2. Consulte a documentação em docs/
+3. Abra uma issue no GitHub
+4. Entre em contato com o suporte
+
+================================================================
+BOM TRABALHO! 🚀
+================================================================
+
+

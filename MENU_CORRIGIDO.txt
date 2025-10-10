@@ -1,0 +1,58 @@
+================================================================
+              MENU E EDITOR CORRIGIDOS!
+================================================================
+
+ALTERACOES APLICADAS:
+
+1. MENU "INSERIR" REMOVIDO
+   - O menu "Inserir" foi completamente removido da barra de menus
+
+2. BOTOES DE INSERCAO NA BARRA DE FERRAMENTAS
+   - Todos os itens de insercao agora estao na barra de ferramentas
+   - Botoes adicionados:
+     * Secao (heading icon)
+     * Equacao (square-root icon)
+     * Tabela (table icon)
+     * Figura (image icon)
+     * Lista (list icon)
+
+3. FOCO DO EDITOR CORRIGIDO
+   - Removido max-width: 1200px
+   - Removido border-radius e box-shadow desnecessarios
+   - Editor agora ocupa 100% da largura disponivel
+   - Altura ajustada para calc(100vh - 90px)
+
+================================================================
+ESTRUTURA DA BARRA DE FERRAMENTAS:
+================================================================
+
+[Salvar] [Desfazer] [Refazer] | [B] [I] [U] | [H] [√] [#] [img] [•] | [▶ Compilar] [👁]
+
+Onde:
+  H = Secao
+  √ = Equacao
+  # = Tabela
+  img = Figura
+  • = Lista
+
+================================================================
+MENU HORIZONTAL ATUALIZADO:
+================================================================
+
+Arquivo  Editar  Ver  Ferramentas  Ajuda     [documento.tex ●]
+
+(Menu "Inserir" removido)
+
+================================================================
+PROXIMO PASSO:
+================================================================
+
+Reinicie o servidor e teste!
+
+  python app.py
+
+================================================================
+STATUS: CORRIGIDO
+================================================================
+
+

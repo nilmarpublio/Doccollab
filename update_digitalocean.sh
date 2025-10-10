@@ -51,3 +51,5 @@ echo "7. Verifique os logs se houver problemas:"
 echo "   sudo journalctl -u doccollab -f"
 echo ""
 echo "🎉 Atualização concluída!"
+
+

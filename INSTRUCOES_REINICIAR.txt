@@ -1,0 +1,33 @@
+========================================
+INSTRUÇÕES PARA VER O CARD CENTRALIZADO
+========================================
+
+1. PARE O SERVIDOR:
+   No terminal onde está rodando, pressione: Ctrl+C
+
+2. INICIE NOVAMENTE:
+   python app.py
+
+3. ACESSE NO NAVEGADOR:
+   http://localhost:5000
+
+4. FAÇA LOGIN
+
+5. FORCE RELOAD DO CACHE:
+   Pressione: Ctrl+Shift+R (Chrome/Edge)
+   ou: Ctrl+F5 (Firefox)
+
+AGORA VOCÊ DEVE VER:
+✅ Background cinza claro (#f5f5f5)
+✅ Card branco centralizado com sombra
+✅ Bordas arredondadas
+✅ Tudo dentro do card elegante
+
+Se ainda não aparecer:
+- Abra o DevTools (F12)
+- Vá em "Network" tab
+- Recarregue a página
+- Verifique se o dashboard_simple.html foi carregado
+
+
+

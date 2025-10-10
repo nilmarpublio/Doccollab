@@ -341,8 +341,8 @@ function showAlert(message, type = 'info') {
 }
 
 // ===== CSS ANIMATIONS =====
-const style = document.createElement('style');
-style.textContent = `
+const responsiveStyle = document.createElement('style');
+responsiveStyle.textContent = `
     @keyframes slideOut {
         from {
             opacity: 1;
@@ -359,4 +359,4 @@ style.textContent = `
         box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
 `;
-document.head.appendChild(style);
+document.head.appendChild(responsiveStyle);

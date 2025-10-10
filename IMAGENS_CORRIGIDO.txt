@@ -1,0 +1,224 @@
+================================================================
+        PROBLEMA DE IMAGENS RESOLVIDO!
+================================================================
+
+PROBLEMA REPORTADO:
+"Tem uma imagem em D:\OurDocs\DocCollab\Arquivos\imagens\frog.png
+mas está dando erro de compilação"
+
+================================================================
+CAUSA DO PROBLEMA:
+================================================================
+
+A pasta D:\OurDocs\DocCollab\Arquivos\ foi criada para o antigo
+sistema (File System Access API), mas o NOVO sistema usa:
+
+uploads/project_X/
+
+Quando o LaTeX compila, ele procura arquivos RELATIVOS à pasta
+do projeto:
+
+uploads/project_1/
+├── main.tex
+└── imagens/
+    └── frog.png  ← AQUI!
+
+Não em:
+D:\OurDocs\DocCollab\Arquivos\imagens\frog.png  ← NÃO AQUI!
+
+================================================================
+SOLUÇÃO APLICADA:
+================================================================
+
+1. COPIADA a imagem para a pasta correta:
+   DE:   D:\OurDocs\DocCollab\Arquivos\imagens\frog.png
+   PARA: D:\OurDocs\DocCollab\uploads\project_1\imagens\frog.png
+
+2. REGISTRADA a imagem no banco de dados:
+   - ProjectFile criado
+   - Tipo: image
+   - Caminho: /imagens/frog.png
+   - Tamanho: 74447 bytes
+
+================================================================
+COMO USAR NO LATEX:
+================================================================
+
+No seu documento .tex, use o caminho RELATIVO:
+
+\documentclass{article}
+\usepackage{graphicx}
+
+\begin{document}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{imagens/frog.png}
+  \caption{Um sapo}
+  \label{fig:frog}
+\end{figure}
+
+\end{document}
+
+IMPORTANTE:
+- Use "imagens/frog.png" (caminho relativo)
+- NÃO use "D:\OurDocs\..." (caminho absoluto)
+- NÃO use "\imagens\frog.png" (barra invertida)
+
+================================================================
+ESTRUTURA CORRETA DO PROJETO:
+================================================================
+
+uploads/
+└── project_1/
+    ├── main.tex              ← Seu documento principal
+    ├── chapter1.tex          ← Outros arquivos .tex
+    ├── references.bib        ← Bibliografia
+    └── imagens/              ← Pasta de imagens
+        ├── frog.png          ← Suas imagens
+        ├── logo.png
+        └── diagram.pdf
+
+================================================================
+COMO ADICIONAR MAIS IMAGENS:
+================================================================
+
+OPÇÃO 1: Via Interface (FUTURO - ainda não implementado)
+- Arraste imagem para área de upload
+- Sistema copia automaticamente
+- Registra no banco de dados
+
+OPÇÃO 2: Manualmente (ATUAL)
+1. Copie a imagem para: uploads/project_X/imagens/
+2. Execute o script:
+   python add_image_to_project.py
+   (modifique o script para sua imagem)
+
+OPÇÃO 3: Via API (AVANÇADO)
+POST /api/project/<id>/file
+Content-Type: multipart/form-data
+- file: [arquivo binário]
+- folder_id: [id da pasta imagens]
+
+================================================================
+VERIFICAÇÃO:
+================================================================
+
+Para verificar se a imagem está no lugar certo:
+
+1. Verifique o arquivo físico:
+   dir uploads\project_1\imagens\frog.png
+
+2. Verifique no banco de dados:
+   python
+   >>> from app import app, db, ProjectFile
+   >>> with app.app_context():
+   ...     img = ProjectFile.query.filter_by(name='frog.png').first()
+   ...     print(f"ID: {img.id}, Path: {img.path}")
+
+3. Compile o documento:
+   - Abra o editor
+   - Clique em "Compilar"
+   - Deve funcionar!
+
+================================================================
+EXEMPLO COMPLETO DE DOCUMENTO:
+================================================================
+
+% main.tex
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{graphicx}
+
+% Informações
+\title{Meu Documento com Imagens}
+\author{Seu Nome}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+
+Este documento contém uma imagem.
+
+\section{Imagem}
+
+A Figura \ref{fig:frog} mostra um sapo.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{imagens/frog.png}
+  \caption{Um sapo verde}
+  \label{fig:frog}
+\end{figure}
+
+Como podemos ver na Figura \ref{fig:frog}, o sapo é verde.
+
+\section{Conclusão}
+
+As imagens funcionam perfeitamente!
+
+\end{document}
+
+================================================================
+ERROS COMUNS E SOLUÇÕES:
+================================================================
+
+ERRO: "File `imagens/frog.png' not found"
+CAUSA: Imagem não está em uploads/project_X/imagens/
+SOLUÇÃO: Copie a imagem para o local correto
+
+ERRO: "Cannot determine size of graphic"
+CAUSA: Arquivo corrompido ou formato não suportado
+SOLUÇÃO: Verifique se o arquivo é PNG/JPG/PDF válido
+
+ERRO: "Package pdftex.def Error: File `D:\...' not found"
+CAUSA: Usando caminho absoluto no \includegraphics
+SOLUÇÃO: Use caminho relativo: imagens/frog.png
+
+ERRO: "LaTeX Error: Unknown graphics extension: .PNG"
+CAUSA: Extensão em maiúsculas
+SOLUÇÃO: Renomeie para .png (minúsculas)
+
+================================================================
+TESTE AGORA:
+================================================================
+
+1. Abra o servidor:
+   python app.py
+
+2. Acesse http://localhost:5000
+
+3. Faça login (admin@doccollab.com / admin123)
+
+4. Abra o projeto "Prefeitura de Santa Maria"
+
+5. Clique em "Abrir Editor"
+
+6. No documento, adicione:
+   \includegraphics[width=0.5\textwidth]{imagens/frog.png}
+
+7. Clique em "Compilar"
+
+8. Deve funcionar! ✓
+
+================================================================
+RESUMO:
+================================================================
+
+✓ Imagem copiada para uploads/project_1/imagens/frog.png
+✓ Imagem registrada no banco de dados
+✓ Caminho relativo: imagens/frog.png
+✓ Pronto para compilar!
+
+Use no LaTeX:
+\includegraphics{imagens/frog.png}
+
+================================================================
+
+

@@ -1,0 +1,118 @@
+════════════════════════════════════════════════════════════════
+✅ CONTADOR DE LINHAS CORRIGIDO!
+════════════════════════════════════════════════════════════════
+
+O problema do contador de linhas parando na linha 25 foi corrigido!
+
+════════════════════════════════════════════════════════════════
+🐛 PROBLEMA IDENTIFICADO:
+════════════════════════════════════════════════════════════════
+
+SINTOMA:
+  - Scroll do editor vai até o fim do documento
+  - Contador de linhas para na linha 25
+  - Não mostra todas as linhas
+
+CAUSA:
+  - updateLineNumbers() não era chamado ao colar texto
+  - Faltavam eventos para detectar mudanças grandes
+  - CSS não estava otimizado
+
+════════════════════════════════════════════════════════════════
+✅ CORREÇÕES IMPLEMENTADAS:
+════════════════════════════════════════════════════════════════
+
+1. EVENTO DE PASTE (COLAR)
+   - Detecta quando você cola texto (Ctrl+V)
+   - Chama updateLineNumbers() após 10ms
+   - Garante que linhas sejam atualizadas
+
+2. EVENTO DE CHANGE
+   - Detecta mudanças no valor do textarea
+   - Chama updateLineNumbers() automaticamente
+   - Backup para o evento 'input'
+
+3. CSS MELHORADO
+   - Adicionado overflow-y: hidden
+   - Adicionado overflow-x: hidden
+   - Classe .line-number com height e line-height
+
+4. DEBUG CONSOLE
+   - Mostra no console: "[Editor] Linhas atualizadas: X"
+   - Ajuda a verificar se está funcionando
+   - Pressione F12 para ver
+
+════════════════════════════════════════════════════════════════
+🔄 REINICIE O SERVIDOR
+════════════════════════════════════════════════════════════════
+
+1. Pare o servidor (Ctrl+C)
+2. Inicie novamente:
+   cd D:\OurDocs\DocCollab
+   python app.py
+
+════════════════════════════════════════════════════════════════
+🧪 COMO TESTAR:
+════════════════════════════════════════════════════════════════
+
+TESTE 1 - Colar texto grande:
+  1. Abra o editor
+  2. Abra o Console (F12)
+  3. Cole um documento com 100+ linhas (Ctrl+V)
+  4. Veja no console: "[Editor] Linhas atualizadas: 100+"
+  5. Veja o contador à esquerda: 1, 2, 3, ... 100+
+
+TESTE 2 - Digitar linha por linha:
+  1. Abra o editor
+  2. Digite várias linhas (pressione Enter)
+  3. Veja o contador aumentando: 1, 2, 3, 4...
+  4. Scroll acompanha as linhas
+
+TESTE 3 - Scroll sincronizado:
+  1. Cole documento grande
+  2. Faça scroll no editor
+  3. Contador de linhas acompanha o scroll
+  4. Sempre mostra as linhas visíveis
+
+════════════════════════════════════════════════════════════════
+🎯 EVENTOS QUE ATUALIZAM AS LINHAS:
+════════════════════════════════════════════════════════════════
+
+✅ input - Quando você digita
+✅ paste - Quando você cola (Ctrl+V)
+✅ change - Quando o valor muda
+✅ Ao abrir documento
+✅ Ao criar novo documento
+✅ Ao aplicar correções do linter
+
+════════════════════════════════════════════════════════════════
+🔍 DEBUG:
+════════════════════════════════════════════════════════════════
+
+Se ainda não funcionar:
+
+1. Abra o Console (F12)
+2. Cole um documento
+3. Procure por: "[Editor] Linhas atualizadas: X"
+4. Se aparecer, o código está funcionando
+5. Se não aparecer, o evento não está sendo disparado
+
+Teste manual no console:
+  window.latexEditor.updateLineNumbers()
+
+════════════════════════════════════════════════════════════════
+✅ PRONTO!
+════════════════════════════════════════════════════════════════
+
+Reinicie o servidor e teste!
+
+Agora o contador de linhas:
+- Atualiza ao colar texto
+- Atualiza ao digitar
+- Atualiza ao mudar o documento
+- Mostra TODAS as linhas
+- Sincroniza com o scroll
+
+🚀
+
+

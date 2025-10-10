@@ -1,0 +1,100 @@
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% Configurações
+\title{Documento de Exemplo - DocCollab}
+\author{Seu Nome}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este é um documento de exemplo para o editor LaTeX DocCollab. 
+Aqui você encontrará exemplos básicos de formatação e estrutura de documentos LaTeX.
+\end{abstract}
+
+\section{Introdução}
+
+Bem-vindo ao DocCollab! Este é um editor LaTeX colaborativo que permite criar documentos profissionais de forma simples e organizada.
+
+\subsection{Características}
+
+O DocCollab oferece:
+\begin{itemize}
+    \item Edição em tempo real
+    \item Compilação automática
+    \item Gerenciamento de arquivos
+    \item Versionamento
+    \item Upload de imagens
+\end{itemize}
+
+\section{Formatação de Texto}
+
+Você pode usar \textbf{negrito}, \textit{itálico}, \underline{sublinhado} e \texttt{monoespaçado}.
+
+\subsection{Listas Numeradas}
+
+\begin{enumerate}
+    \item Primeiro item
+    \item Segundo item
+    \item Terceiro item
+\end{enumerate}
+
+\section{Equações Matemáticas}
+
+Equações inline: $E = mc^2$
+
+Equações em destaque:
+\begin{equation}
+    \int_{a}^{b} f(x) \, dx = F(b) - F(a)
+\end{equation}
+
+\section{Tabelas}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Coluna 1} & \textbf{Coluna 2} & \textbf{Coluna 3} \\
+\hline
+Dado 1 & Dado 2 & Dado 3 \\
+Dado 4 & Dado 5 & Dado 6 \\
+\hline
+\end{tabular}
+\caption{Exemplo de tabela}
+\label{tab:exemplo}
+\end{table}
+
+\section{Figuras}
+
+Para incluir figuras, use o comando includegraphics:
+
+\begin{figure}[h]
+\centering
+% \includegraphics[width=0.5\textwidth]{sua_imagem.png}
+\caption{Legenda da figura}
+\label{fig:exemplo}
+\end{figure}
+
+\section{Referências}
+
+Você pode fazer referências cruzadas para tabelas (Tabela~\ref{tab:exemplo}) 
+e figuras (Figura~\ref{fig:exemplo}).
+
+\section{Conclusão}
+
+O DocCollab facilita a criação de documentos LaTeX profissionais. 
+Explore os recursos e crie documentos incríveis!
+
+\end{document}
+
+

@@ -1,0 +1,61 @@
+════════════════════════════════════════════════════════════════
+🔄 REINICIAR O SERVIDOR PARA APLICAR AS NOVAS REGRAS DO LINTER
+════════════════════════════════════════════════════════════════
+
+As novas regras do LaTeX Linter foram adicionadas!
+
+Para aplicar as mudanças:
+
+1. PARE o servidor Flask:
+   - Pressione Ctrl+C no terminal onde o servidor está rodando
+
+2. INICIE novamente:
+   cd D:\OurDocs\DocCollab
+   python app.py
+
+3. TESTE o linter:
+   - Abra o editor LaTeX
+   - Cole o conteúdo do arquivo: TESTE_ERROS_BASICOS.txt
+   - Clique no botão "LaTeX Linter" (canto inferior direito)
+
+════════════════════════════════════════════════════════════════
+📋 NOVAS REGRAS ADICIONADAS:
+════════════════════════════════════════════════════════════════
+
+✅ Detecta documento sem \documentclass
+✅ Detecta documento sem \begin{document}
+✅ Detecta documento sem \end{document}
+✅ Detecta 'begin' sem barra invertida
+✅ Detecta 'end' sem barra invertida
+✅ Detecta comandos (section, author, etc.) sem barra invertida
+✅ Detecta \autor (erro comum - deveria ser \author)
+✅ Detecta \titulo (erro comum - deveria ser \title)
+✅ Detecta $ não fechado
+✅ Detecta chaves { não fechadas
+✅ Detecta ambientes não fechados
+✅ Detecta \ref{} vazio
+✅ Detecta \cite{} vazio
+
+════════════════════════════════════════════════════════════════
+🧪 COMO TESTAR:
+════════════════════════════════════════════════════════════════
+
+1. Abra: http://localhost:5000
+2. Faça login
+3. Clique em "Abrir Editor"
+4. Cole o conteúdo de: TESTE_ERROS_BASICOS.txt
+5. Clique no botão "LaTeX Linter" (ícone de check no canto inferior direito)
+6. Veja os erros detectados!
+
+════════════════════════════════════════════════════════════════
+✨ PRONTO!
+════════════════════════════════════════════════════════════════
+
+Agora o linter detectará os erros que você mencionou:
+- Documento sem \documentclass
+- begin sem \
+- author como "autor"
+
+E muito mais! 🎉
+
+

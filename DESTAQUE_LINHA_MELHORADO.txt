@@ -1,0 +1,99 @@
+════════════════════════════════════════════════════════════════
+✨ DESTAQUE DE LINHA COM EFEITO VISUAL MELHORADO!
+════════════════════════════════════════════════════════════════
+
+Agora quando você clica em "Ir para linha", a linha é destacada
+com um efeito visual MUITO MAIS VISÍVEL!
+
+════════════════════════════════════════════════════════════════
+🎨 EFEITOS VISUAIS IMPLEMENTADOS:
+════════════════════════════════════════════════════════════════
+
+1. ✅ FUNDO AMARELO TRANSLÚCIDO
+   - Cor: rgba(255, 235, 59, 0.3)
+   - Cobre toda a linha com destaque suave
+
+2. ✅ BARRA LATERAL LARANJA
+   - Borda esquerda de 4px
+   - Cor: #ffc107 (laranja/amarelo)
+   - Marca visualmente a linha com erro
+
+3. ✅ ANIMAÇÃO DE PULSO
+   - Aparece suavemente (fade in)
+   - Fica visível por 2 segundos
+   - Desaparece suavemente (fade out)
+   - Efeito de "respiração" sutil
+
+4. ✅ SELEÇÃO DE TEXTO
+   - Texto da linha fica selecionado
+   - Facilita copiar/editar
+   - Remove após 2 segundos
+
+5. ✅ SCROLL AUTOMÁTICO
+   - Centraliza a linha na tela
+   - Garante que você vê a linha completa
+
+6. ✅ NOTIFICAÇÃO
+   - Mostra "✓ Navegado para linha X"
+   - Confirma a ação
+
+════════════════════════════════════════════════════════════════
+🔄 REINICIE O SERVIDOR
+════════════════════════════════════════════════════════════════
+
+1. Pare o servidor (Ctrl+C)
+2. Inicie novamente:
+   cd D:\OurDocs\DocCollab
+   python app.py
+
+════════════════════════════════════════════════════════════════
+🧪 COMO TESTAR:
+════════════════════════════════════════════════════════════════
+
+1. Abra o editor LaTeX
+2. Cole um documento com erros
+3. Clique no botão "LaTeX Linter"
+4. Clique em "Ir para linha" em qualquer erro
+5. Observe o efeito visual:
+   - Fundo amarelo translúcido
+   - Barra laranja à esquerda
+   - Animação suave de pulso
+   - Texto selecionado
+
+════════════════════════════════════════════════════════════════
+🎯 EXEMPLO VISUAL:
+════════════════════════════════════════════════════════════════
+
+ANTES:
+  Linha 10: Texto normal
+  Linha 11: Texto normal
+  Linha 12: Texto normal  <-- Apenas seleção de texto
+
+AGORA:
+  Linha 10: Texto normal
+  ║ Linha 11: Texto com erro  <-- FUNDO AMARELO + BARRA LARANJA
+  Linha 12: Texto normal
+
+════════════════════════════════════════════════════════════════
+⏱️ DURAÇÃO:
+════════════════════════════════════════════════════════════════
+
+- Destaque visual: 2 segundos
+- Seleção de texto: 2 segundos
+- Notificação: 5 segundos
+
+════════════════════════════════════════════════════════════════
+🎨 CORES USADAS:
+════════════════════════════════════════════════════════════════
+
+- Fundo: Amarelo translúcido (rgba(255, 235, 59, 0.3))
+- Borda: Laranja (#ffc107)
+- Notificação: Verde (#38a169)
+
+════════════════════════════════════════════════════════════════
+✅ PRONTO!
+════════════════════════════════════════════════════════════════
+
+Reinicie o servidor e veja o efeito visual melhorado! 🎨✨
+
+

@@ -84,3 +84,5 @@ DocCollab/
 - **Não há mais sistema de tradução** - todos os textos estão em inglês/português direto
 - **Todas as funções de tradução `_()` foram removidas**
 - **Aplicação está estável e funcionando corretamente**
+
+

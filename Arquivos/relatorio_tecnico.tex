@@ -1,0 +1,169 @@
+% Relatório Técnico
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\graphicspath{{imagens/}}
+
+% Configuração de código
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny,
+  frame=single,
+  breaklines=true
+}
+
+% Informações
+\title{Relatório Técnico}
+\author{Equipe de Desenvolvimento}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Sumário Executivo}
+
+Este relatório técnico apresenta os resultados do projeto desenvolvido.
+
+\section{Introdução}
+
+\subsection{Contexto}
+
+Descreva o contexto do projeto.
+
+\subsection{Escopo}
+
+Defina o escopo do trabalho.
+
+\section{Análise de Requisitos}
+
+\subsection{Requisitos Funcionais}
+
+\begin{enumerate}
+  \item RF01 - Descrição do requisito funcional 1
+  \item RF02 - Descrição do requisito funcional 2
+  \item RF03 - Descrição do requisito funcional 3
+\end{enumerate}
+
+\subsection{Requisitos Não-Funcionais}
+
+\begin{enumerate}
+  \item RNF01 - Desempenho
+  \item RNF02 - Segurança
+  \item RNF03 - Usabilidade
+\end{enumerate}
+
+\section{Arquitetura do Sistema}
+
+Descreva a arquitetura do sistema desenvolvido.
+
+\subsection{Componentes}
+
+\begin{itemize}
+  \item \textbf{Frontend:} Interface do usuário
+  \item \textbf{Backend:} Lógica de negócio
+  \item \textbf{Banco de Dados:} Armazenamento de dados
+\end{itemize}
+
+\section{Implementação}
+
+\subsection{Tecnologias Utilizadas}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Componente} & \textbf{Tecnologia} \\
+    \hline
+    Frontend & React.js \\
+    Backend & Python/Flask \\
+    Banco de Dados & PostgreSQL \\
+    \hline
+  \end{tabular}
+  \caption{Stack tecnológico}
+  \label{tab:tecnologias}
+\end{table}
+
+\subsection{Exemplo de Código}
+
+\begin{lstlisting}[caption=Exemplo de função em Python]
+def calcular_media(valores):
+    """
+    Calcula a média de uma lista de valores.
+    """
+    if not valores:
+        return 0
+    return sum(valores) / len(valores)
+
+# Exemplo de uso
+notas = [8.5, 9.0, 7.5, 8.0]
+media = calcular_media(notas)
+print(f"Média: {media}")
+\end{lstlisting}
+
+\section{Testes}
+
+\subsection{Testes Unitários}
+
+Descreva os testes unitários realizados.
+
+\subsection{Testes de Integração}
+
+Descreva os testes de integração.
+
+\subsection{Resultados dos Testes}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Tipo de Teste} & \textbf{Total} & \textbf{Aprovados} \\
+    \hline
+    Unitários & 150 & 148 \\
+    Integração & 45 & 44 \\
+    Sistema & 20 & 20 \\
+    \hline
+  \end{tabular}
+  \caption{Resultados dos testes}
+  \label{tab:testes}
+\end{table}
+
+\section{Conclusões}
+
+Apresente as conclusões do projeto.
+
+\subsection{Objetivos Alcançados}
+
+Liste os objetivos alcançados.
+
+\subsection{Trabalhos Futuros}
+
+Sugira melhorias e trabalhos futuros.
+
+\section{Referências}
+
+\begin{itemize}
+  \item Documentação oficial das tecnologias utilizadas
+  \item Artigos e tutoriais consultados
+  \item Normas e padrões seguidos
+\end{itemize}
+
+\end{document}
+
+

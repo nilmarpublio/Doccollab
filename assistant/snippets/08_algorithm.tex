@@ -1,0 +1,32 @@
+% Snippet: Algoritmo
+% Categoria: Algorithms
+% Descrição: Ambiente para pseudocódigo de algoritmos
+
+% No preâmbulo, adicione:
+% \usepackage{algorithm}
+% \usepackage{algpseudocode}
+
+\begin{algorithm}
+\caption{Algoritmo de Exemplo}
+\label{alg:exemplo}
+\begin{algorithmic}[1]
+\Procedure{BuscaBinaria}{$A, n, x$}
+    \State $low \gets 0$
+    \State $high \gets n - 1$
+    \While{$low \leq high$}
+        \State $mid \gets \lfloor (low + high) / 2 \rfloor$
+        \If{$A[mid] = x$}
+            \State \Return $mid$
+        \ElsIf{$A[mid] < x$}
+            \State $low \gets mid + 1$
+        \Else
+            \State $high \gets mid - 1$
+        \EndIf
+    \EndWhile
+    \State \Return $-1$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+

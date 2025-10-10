@@ -1,841 +1,49 @@
-# English translations for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
-#
+# English translations
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-30 11:04-0300\n"
-"PO-Revision-Date: 2025-09-30 09:19-0300\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: en <LL@li.org>\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Generated-By: Babel 2.17.0\n"
 
-#: DocCollab/app.py:61 DocCollab/templates/base.html:19
 msgid "Home"
 msgstr "Home"
-
-#: DocCollab/templates/base.html:6
-msgid "DocCollab"
-msgstr "DocCollab"
-
-#: DocCollab/templates/auth/login.html:8
-#: DocCollab/templates/auth/login.html:19
-#: DocCollab/templates/auth/register.html:42 DocCollab/templates/base.html:20
-#: DocCollab/templates/index.html:8
-msgid "Sign in"
-msgstr "Sign in"
-
-#: DocCollab/templates/auth/login.html:23
-#: DocCollab/templates/auth/register.html:8 DocCollab/templates/base.html:21
-#: DocCollab/templates/index.html:9
-msgid "Sign up"
-msgstr "Sign up"
-
-#: DocCollab/templates/base.html:24
-msgid "Language"
-msgstr "Language"
-
-#: DocCollab/templates/dashboard.html:2
-msgid "DocCollab - Dashboard"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:5
-msgid "My Projects"
-msgstr "My Projects"
-
-#: DocCollab/templates/dashboard.html:6 DocCollab/templates/dashboard.html:66
-msgid "New Project"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:16
-msgid "No description"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:18
-msgid "Updated:"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:20
-msgid "Open Editor"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:21 DocCollab/templates/dashboard.html:48
-msgid "Rename"
-msgstr "Rename"
-
-#: DocCollab/templates/dashboard.html:23
-msgid "Delete"
-msgstr "Delete"
-
-#: DocCollab/templates/dashboard.html:37
-msgid "Rename Project"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:42
-msgid "New Name"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:47 DocCollab/templates/dashboard.html:80
-msgid "Cancel"
-msgstr "Cancel"
-
-#: DocCollab/templates/dashboard.html:57
-msgid "No projects yet. Create the first one!"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:71
-msgid "Name"
-msgstr ""
-
-#: DocCollab/templates/dashboard.html:75
-msgid "Description"
-msgstr "Description"
-
-#: DocCollab/templates/dashboard.html:81
-msgid "Create"
-msgstr "Create"
-
-#: DocCollab/templates/editor.html:2
-msgid "Editor"
-msgstr ""
-
-#: DocCollab/templates/editor.html:7
-msgid "Compilar PDF"
-msgstr ""
-
-#: DocCollab/templates/editor.html:8
-msgid "Abrir PDF"
-msgstr ""
-
-#: DocCollab/templates/editor.html:12
-msgid "Pronto"
-msgstr ""
-
-#: DocCollab/templates/editor.html:41
-msgid "Salvando..."
-msgstr ""
-
-#: DocCollab/templates/editor.html:51
-msgid "Salvo"
-msgstr ""
-
-#: DocCollab/templates/editor.html:53 DocCollab/templates/editor.html:56
-msgid "Erro ao salvar"
-msgstr ""
-
-#: DocCollab/templates/editor.html:65
-msgid "Compilando..."
-msgstr ""
-
-#: DocCollab/templates/editor.html:71
-msgid "Compilado"
-msgstr ""
-
-#: DocCollab/templates/editor.html:73 DocCollab/templates/editor.html:77
-msgid "Falha na compilação"
-msgstr ""
-
-#: DocCollab/templates/index.html:2
-msgid "DocCollab - Home"
-msgstr ""
-
-#: DocCollab/templates/index.html:5
-msgid "Welcome to DocCollab"
-msgstr ""
-
-#: DocCollab/templates/index.html:6
-msgid "Create and collaborate on documents easily."
-msgstr ""
-
-#: DocCollab/templates/auth/login.html:2
-msgid "DocCollab - Sign in"
-msgstr ""
-
-#: DocCollab/templates/auth/login.html:11
-#: DocCollab/templates/auth/register.html:15
-msgid "Email"
-msgstr "Email"
-
-#: DocCollab/templates/auth/login.html:15
-#: DocCollab/templates/auth/register.html:19
-msgid "Password"
-msgstr "Password"
-
-#: DocCollab/templates/auth/login.html:23
-msgid "No account?"
-msgstr "No account?"
-
-#: DocCollab/templates/auth/register.html:2
-msgid "DocCollab - Sign up"
-msgstr ""
-
-#: DocCollab/templates/auth/register.html:11
-msgid "Full name"
-msgstr "Full name"
-
-#: DocCollab/templates/auth/register.html:23
-msgid "Confirm password"
-msgstr "Confirm password"
-
-#: DocCollab/templates/auth/register.html:27
-msgid "Plan"
-msgstr ""
-
-#: DocCollab/templates/auth/register.html:30
-msgid "Free (1 project)"
-msgstr "Free (1 project)"
-
-#: DocCollab/templates/auth/register.html:34
-msgid "Paid (unlimited)"
-msgstr "Paid (unlimited)"
-
-#: DocCollab/templates/auth/register.html:38
-msgid "Create account"
-msgstr "Create account"
-
-#: DocCollab/templates/auth/register.html:42
-msgid "Already have an account?"
-msgstr "Already have an account?"
-
-#: DocCollab/venv/Lib/site-packages/click/_termui_impl.py:608
-#, python-brace-format
-msgid "{editor}: Editing failed"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/_termui_impl.py:612
-#, python-brace-format
-msgid "{editor}: Editing failed: {e}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1104
-#: DocCollab/venv/Lib/site-packages/click/core.py:1141
-#, python-brace-format
-msgid "{text} {deprecated_message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1160
-msgid "Options"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1222
-#, python-brace-format
-msgid "Got unexpected extra argument ({args})"
-msgid_plural "Got unexpected extra arguments ({args})"
-msgstr[0] ""
-msgstr[1] ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1241
-#, python-brace-format
-msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1425
-msgid "Aborted!"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1799
-msgid "Commands"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1830
-msgid "Missing command."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:1908
-#, python-brace-format
-msgid "No such command {name!r}."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:2332
-msgid "Value must be an iterable."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:2355
-#, python-brace-format
-msgid "Takes {nargs} values but 1 was given."
-msgid_plural "Takes {nargs} values but {len} were given."
-msgstr[0] ""
-msgstr[1] ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:2505
-#, python-brace-format
-msgid ""
-"DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:2956
-#, python-brace-format
-msgid "env var: {var}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:2959
-#, python-brace-format
-msgid "default: {default}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:2963
-msgid "required"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/core.py:3023
-msgid "(dynamic)"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/decorators.py:465
-#, python-format
-msgid "%(prog)s, version %(version)s"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/decorators.py:522
-msgid "Show the version and exit."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/decorators.py:548
-msgid "Show this message and exit."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:50
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:89
-#, python-brace-format
-msgid "Error: {message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:81
-#, python-brace-format
-msgid "Try '{command} {option}' for help."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:130
-#, python-brace-format
-msgid "Invalid value: {message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:132
-#, python-brace-format
-msgid "Invalid value for {param_hint}: {message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:190
-msgid "Missing argument"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:192
-msgid "Missing option"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:194
-msgid "Missing parameter"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:196
-#, python-brace-format
-msgid "Missing {param_type}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:203
-#, python-brace-format
-msgid "Missing parameter: {param_name}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:223
-#, python-brace-format
-msgid "No such option: {name}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:235
-#, python-brace-format
-msgid "Did you mean {possibility}?"
-msgid_plural "(Possible options: {possibilities})"
-msgstr[0] ""
-msgstr[1] ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:282
-msgid "unknown error"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/exceptions.py:289
-#, python-brace-format
-msgid "Could not open file {filename!r}: {message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/formatting.py:156
-msgid "Usage:"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/parser.py:199
-#, python-brace-format
-msgid "Argument {name!r} takes {nargs} values."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/parser.py:381
-#, python-brace-format
-msgid "Option {name!r} does not take a value."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/parser.py:444
-#, python-brace-format
-msgid "Option {name!r} requires an argument."
-msgid_plural "Option {name!r} requires {nargs} arguments."
-msgstr[0] ""
-msgstr[1] ""
-
-#: DocCollab/venv/Lib/site-packages/click/shell_completion.py:332
-msgid "Shell completion is not supported for Bash versions older than 4.4."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/shell_completion.py:339
-msgid "Couldn't detect Bash version, shell completion is not supported."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/termui.py:162
-msgid "Repeat for confirmation"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/termui.py:178
-msgid "Error: The value you entered was invalid."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/termui.py:180
-#, python-brace-format
-msgid "Error: {e.message}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/termui.py:191
-msgid "Error: The two entered values do not match."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/termui.py:247
-msgid "Error: invalid input"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/termui.py:866
-msgid "Press any key to continue..."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:332
-#, python-brace-format
-msgid ""
-"Choose from:\n"
-"\t{choices}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:369
-#, python-brace-format
-msgid "{value!r} is not {choice}."
-msgid_plural "{value!r} is not one of {choices}."
-msgstr[0] ""
-msgstr[1] ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:460
-#, python-brace-format
-msgid "{value!r} does not match the format {format}."
-msgid_plural "{value!r} does not match the formats {formats}."
-msgstr[0] ""
-msgstr[1] ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:482
-#, python-brace-format
-msgid "{value!r} is not a valid {number_type}."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:538
-#, python-brace-format
-msgid "{value} is not in the range {range}."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:719
-#, python-brace-format
-msgid "{value!r} is not a valid boolean. Recognized values: {states}"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:747
-#, python-brace-format
-msgid "{value!r} is not a valid UUID."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:937
-msgid "file"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:939
-msgid "directory"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:941
-msgid "path"
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:988
-#, python-brace-format
-msgid "{name} {filename!r} does not exist."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:997
-#, python-brace-format
-msgid "{name} {filename!r} is a file."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:1005
-#, python-brace-format
-msgid "{name} {filename!r} is a directory."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:1014
-#, python-brace-format
-msgid "{name} {filename!r} is not readable."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:1023
-#, python-brace-format
-msgid "{name} {filename!r} is not writable."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:1032
-#, python-brace-format
-msgid "{name} {filename!r} is not executable."
-msgstr ""
-
-#: DocCollab/venv/Lib/site-packages/click/types.py:1099
-#, python-brace-format
-msgid "{len_type} values are required, but {len_value} was given."
-msgid_plural "{len_type} values are required, but {len_value} were given."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Sign out"
-msgstr "Sign out"
 
 msgid "Dashboard"
 msgstr "Dashboard"
 
-msgid "Upgrade Plan"
-msgstr "Upgrade Plan"
+msgid "Preços"
+msgstr "Pricing"
 
-msgid "Create New Project"
-msgstr "Create New Project"
+msgid "Sign out"
+msgstr "Sign Out"
 
-msgid "Project Name"
-msgstr "Project Name"
+msgid "Sign in"
+msgstr "Sign In"
 
-msgid "Edit"
-msgstr "Edit"
+msgid "Sign up"
+msgstr "Sign Up"
 
-msgid "Open"
-msgstr "Open"
+msgid "Language"
+msgstr "Language"
 
-msgid "Free Plan"
-msgstr "Free Plan"
+msgid "Português"
+msgstr "Portuguese"
 
-msgid "Paid Plan"
-msgstr "Paid Plan"
+msgid "English"
+msgstr "English"
 
-msgid "Files"
-msgstr "Files"
+msgid "Español"
+msgstr "Spanish"
 
-msgid "Save"
-msgstr "Save"
+msgid "DocCollab - Home"
+msgstr "DocCollab - Home"
 
-msgid "Compile PDF"
-msgstr "Compile PDF"
+msgid "Welcome to DocCollab"
+msgstr "Welcome to DocCollab"
 
-msgid "Auto-save:"
-msgstr "Auto-save:"
-
-msgid "Enabled"
-msgstr "Enabled"
-
-msgid "Disabled"
-msgstr "Disabled"
-
-msgid "Project saved successfully!"
-msgstr "Project saved successfully!"
-
-msgid "Error saving project"
-msgstr "Error saving project"
-
-msgid "PDF compiled successfully!"
-msgstr "PDF compiled successfully!"
-
-msgid "Error compiling PDF"
-msgstr "Error compiling PDF"
-
-msgid "Compiling PDF..."
-msgstr "Compiling PDF..."
-
-msgid "PDF Preview"
-msgstr "PDF Preview"
-
-msgid "Back to Editor"
-msgstr "Back to Editor"
-
-msgid "Close"
-msgstr "Close"
-
-msgid "Refresh"
-msgstr "Refresh"
-
-msgid "Download"
-msgstr "Download"
-
-msgid "Fit"
-msgstr "Fit"
-
-msgid "Create New File"
-msgstr "Create New File"
-
-msgid "Filename"
-msgstr "Filename"
-
-msgid "File Type"
-msgstr "File Type"
-
-msgid "LaTeX Document (.tex)"
-msgstr "LaTeX Document (.tex)"
-
-msgid "Bibliography (.bib)"
-msgstr "Bibliography (.bib)"
-
-msgid "Other"
-msgstr "Other"
-
-msgid "Select File"
-msgstr "Select File"
-
-msgid "Upload"
-msgstr "Upload"
-
-msgid "Enter new filename:"
-msgstr "Enter new filename:"
-
-msgid "Are you sure you want to delete this file?"
-msgstr "Are you sure you want to delete this file?"
-
-msgid "File created successfully"
-msgstr "File created successfully"
-
-msgid "Error creating file"
-msgstr "Error creating file"
-
-msgid "File uploaded successfully"
-msgstr "File uploaded successfully"
-
-msgid "Error uploading file"
-msgstr "Error uploading file"
-
-msgid "File renamed successfully"
-msgstr "File renamed successfully"
-
-msgid "Error renaming file"
-msgstr "Error renaming file"
-
-msgid "File deleted successfully"
-msgstr "File deleted successfully"
-
-msgid "Error deleting file"
-msgstr "Error deleting file"
-
-msgid "Error loading files"
-msgstr "Error loading files"
-
-msgid "Only .tex files can be edited"
-msgstr "Only .tex files can be edited"
-
-msgid "Error loading file"
-msgstr "Error loading file"
-
-msgid "Main file updated"
-msgstr "Main file updated"
-
-msgid "Error updating main file"
-msgstr "Error updating main file"
-
-msgid "Upgrade to Paid Plan"
-msgstr "Upgrade to Paid Plan"
-
-msgid "1 projeto"
-msgstr "1 project"
-
-msgid "1 arquivo (.tex)"
-msgstr "1 file (.tex)"
-
-msgid "Upload de imagens"
-msgstr "Image uploads"
-
-msgid "Múltiplos arquivos"
-msgstr "Multiple files"
-
-msgid "Colaboração"
-msgstr "Collaboration"
-
-msgid "Projetos ilimitados"
-msgstr "Unlimited projects"
-
-msgid "Arquivos ilimitados"
-msgstr "Unlimited files"
-
-msgid "Colaboração em tempo real"
-msgstr "Real-time collaboration"
-
-msgid "Suporte prioritário"
-msgstr "Priority support"
-
-msgid "Recursos avançados"
-msgstr "Advanced features"
-
-msgid "Cancel anytime. No hidden fees."
-msgstr "Cancel anytime. No hidden fees."
-
-msgid "Maybe Later"
-msgstr "Maybe Later"
-
-msgid "Upgrade Now"
-msgstr "Upgrade Now"
-
-msgid "Payment integration coming soon!"
-msgstr "Payment integration coming soon!"
-
-msgid "All new accounts start with a free plan. You can upgrade anytime!"
-msgstr "All new accounts start with a free plan. You can upgrade anytime!"
-
-msgid "Feature Comparison"
-msgstr "Feature Comparison"
-
-msgid "Feature"
-msgstr "Feature"
-
-msgid "Free"
-msgstr "Free"
-
-msgid "Paid"
-msgstr "Paid"
-
-msgid "Projects"
-msgstr "Projects"
-
-msgid "Files per project"
-msgstr "Files per project"
-
-msgid "Image uploads"
-msgstr "Image uploads"
-
-msgid "Real-time collaboration"
-msgstr "Real-time collaboration"
-
-msgid "Priority support"
-msgstr "Priority support"
-
-msgid "Frequently Asked Questions"
-msgstr "Frequently Asked Questions"
-
-msgid "Can I cancel anytime?"
-msgstr "Can I cancel anytime?"
-
-msgid ""
-"Yes! You can cancel your subscription at any time. You will continue to have"
-" access to paid features until the end of your billing period."
-msgstr ""
-"Yes! You can cancel your subscription at any time. You will continue to have"
-" access to paid features until the end of your billing period."
-
-msgid "What payment methods do you accept?"
-msgstr "What payment methods do you accept?"
-
-msgid ""
-"We accept all major credit cards (Visa, MasterCard, American Express) and "
-"PayPal."
-msgstr ""
-"We accept all major credit cards (Visa, MasterCard, American Express) and "
-"PayPal."
-
-msgid "Is my data secure?"
-msgstr "Is my data secure?"
-
-msgid ""
-"Absolutely! We use industry-standard encryption to protect your data and "
-"never share your information with third parties."
-msgstr ""
-"Absolutely! We use industry-standard encryption to protect your data and "
-"never share your information with third parties."
-
-msgid "Payment Information"
-msgstr "Payment Information"
-
-msgid "Card Number"
-msgstr "Card Number"
-
-msgid "Expiry"
-msgstr "Expiry"
-
-msgid "CVV"
-msgstr "CVV"
-
-msgid "Cardholder Name"
-msgstr "Cardholder Name"
-
-msgid "Complete Payment"
-msgstr "Complete Payment"
-
-msgid "Payment integration coming soon! This is a demo."
-msgstr "Payment integration coming soon! This is a demo."
-
-msgid "Simulate successful payment?"
-msgstr "Simulate successful payment?"
-
-msgid "Unlock unlimited projects, files, and collaboration features"
-msgstr "Unlock unlimited projects, files, and collaboration features"
-
-msgid "1 project, 1 file"
-msgstr "1 project, 1 file"
-
-msgid "Unlimited projects & files"
-msgstr "Unlimited projects & files"
-
-msgid "Upgrade to create more files"
-msgstr "Upgrade to create more files"
-
-msgid "Upgrade to upload files"
-msgstr "Upgrade to upload files"
-
-msgid "Create File"
-msgstr "Create File"
-
-msgid "Upload File"
-msgstr "Upload File"
-
-msgid "Main File:"
-msgstr "Main File:"
-
-msgid "PDF refreshed"
-msgstr "PDF refreshed"
-
-msgid "PDF download started"
-msgstr "PDF download started"
-
-msgid "Current Plan"
-msgstr "Current Plan"
-
-msgid "Please select a file"
-msgstr "Please select a file"
-
-msgid "Plan upgraded successfully!"
-msgstr "Plan upgraded successfully!"
-
-msgid "Error upgrading plan:"
-msgstr "Error upgrading plan:"
-
-msgid "Error upgrading plan. Please try again."
-msgstr "Error upgrading plan. Please try again."
-
-msgid "Sessão encerrada."
-msgstr "Session ended."
+msgid "Create and collaborate on documents easily."
+msgstr "Create and collaborate on documents easily."
 
 msgid "LaTeX Editor"
 msgstr "LaTeX Editor"
@@ -843,47 +51,95 @@ msgstr "LaTeX Editor"
 msgid "Powerful LaTeX editor with syntax highlighting and auto-completion"
 msgstr "Powerful LaTeX editor with syntax highlighting and auto-completion"
 
+msgid "Collaboration"
+msgstr "Collaboration"
+
 msgid "Real-time collaboration on documents with your team"
 msgstr "Real-time collaboration on documents with your team"
+
+msgid "Responsive"
+msgstr "Responsive"
 
 msgid "Works perfectly on desktop, tablet, and mobile devices"
 msgstr "Works perfectly on desktop, tablet, and mobile devices"
 
-msgid "No projects yet"
-msgstr "No projects yet"
-
-msgid "Create your first project to get started!"
-msgstr "Create your first project to get started!"
-
-msgid "Are you sure you want to delete this project?"
-msgstr "Are you sure you want to delete this project?"
+msgid "DocCollab - Sign in"
+msgstr "DocCollab - Sign In"
 
 msgid "Welcome back!"
 msgstr "Welcome back!"
 
-msgid "Create your account"
-msgstr "Create your account"
-
-msgid "Enter your email"
-msgstr "Enter your email"
+msgid "Enter your email address"
+msgstr "Enter your email address"
 
 msgid "Enter your password"
 msgstr "Enter your password"
 
+msgid "Remember me"
+msgstr "Remember me"
+
+msgid "Sign in to your account"
+msgstr "Sign in to your account"
+
+msgid "No account?"
+msgstr "No account?"
+
+msgid "or"
+msgstr "or"
+
+msgid "Email Address"
+msgstr "Email Address"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "DocCollab - Sign up"
+msgstr "DocCollab - Sign Up"
+
+msgid "Create your account"
+msgstr "Create your account"
+
+msgid "Full Name"
+msgstr "Full Name"
+
 msgid "Enter your full name"
 msgstr "Enter your full name"
 
-msgid "Create a password"
-msgstr "Create a password"
+msgid "Create a secure password"
+msgstr "Create a secure password"
+
+msgid "Password strength"
+msgstr "Password strength"
+
+msgid "Confirm Password"
+msgstr "Confirm Password"
 
 msgid "Confirm your password"
 msgstr "Confirm your password"
 
-msgid "Remember me"
-msgstr "Remember me"
+msgid "Free Plan Included!"
+msgstr "Free Plan Included!"
 
-msgid "Password strength"
-msgstr "Password strength"
+msgid "All new accounts start with a free plan. You can upgrade anytime!"
+msgstr "All new accounts start with a free plan. You can upgrade anytime!"
+
+msgid "I agree to the"
+msgstr "I agree to the"
+
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
+msgid "and"
+msgstr "and"
+
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+msgid "Create my account"
+msgstr "Create my account"
+
+msgid "Already have an account?"
+msgstr "Already have an account?"
 
 msgid "Weak"
 msgstr "Weak"
@@ -903,304 +159,62 @@ msgstr "Passwords match"
 msgid "Passwords do not match"
 msgstr "Passwords do not match"
 
-msgid "Free Plan Included!"
-msgstr "Free Plan Included!"
-
-msgid "I agree to the"
-msgstr "I agree to the"
-
-msgid "Terms of Service"
-msgstr "Terms of Service"
-
-msgid "and"
-msgstr "and"
-
-msgid "Privacy Policy"
-msgstr "Privacy Policy"
-
 msgid "Please accept the terms and conditions"
 msgstr "Please accept the terms and conditions"
 
-msgid "Toggle PDF View"
-msgstr "Toggle PDF View"
+msgid "My Projects"
+msgstr "My Projects"
 
-msgid "Show PDF"
-msgstr "Show PDF"
+msgid "New Project"
+msgstr "New Project"
 
-msgid "Hide PDF"
-msgstr "Hide PDF"
+msgid "No description"
+msgstr "No description"
 
-#~ msgid "DocCollab"
-#~ msgstr ""
+msgid "Open Editor"
+msgstr "Open Editor"
 
-#~ msgid "Home"
-#~ msgstr ""
+msgid "Rename"
+msgstr "Rename"
 
-#~ msgid "Sign in"
-#~ msgstr ""
+msgid "Delete"
+msgstr "Delete"
 
-#~ msgid "Sign up"
-#~ msgstr ""
+msgid "Are you sure you want to delete this project?"
+msgstr "Are you sure you want to delete this project?"
 
-#~ msgid "Language"
-#~ msgstr ""
+msgid "Rename Project"
+msgstr "Rename Project"
 
-#~ msgid "DocCollab - Home"
-#~ msgstr ""
+msgid "No projects yet"
+msgstr "No projects yet"
 
-#~ msgid "Welcome to DocCollab"
-#~ msgstr ""
+msgid "Create your first project to get started with document collaboration."
+msgstr "Create your first project to get started with document collaboration."
 
-#~ msgid "Create and collaborate on documents easily."
-#~ msgstr ""
+msgid "Save"
+msgstr "Save"
 
-#~ msgid "DocCollab - Sign in"
-#~ msgstr ""
+msgid "New"
+msgstr "New"
 
-#~ msgid "Email"
-#~ msgstr ""
+msgid "Open"
+msgstr "Open"
 
-#~ msgid "Password"
-#~ msgstr ""
+msgid "Compile"
+msgstr "Compile"
 
-#~ msgid "No account?"
-#~ msgstr ""
+msgid "Section"
+msgstr "Section"
 
-#~ msgid "DocCollab - Sign up"
-#~ msgstr ""
+msgid "Equation"
+msgstr "Equation"
 
-#~ msgid "Full name"
-#~ msgstr ""
+msgid "Table"
+msgstr "Table"
 
-#~ msgid "Confirm password"
-#~ msgstr ""
+msgid "List"
+msgstr "List"
 
-#~ msgid "Plan"
-#~ msgstr ""
-
-#~ msgid "Free (1 project)"
-#~ msgstr ""
-
-#~ msgid "Paid (unlimited)"
-#~ msgstr ""
-
-#~ msgid "Create account"
-#~ msgstr ""
-
-#~ msgid "Already have an account?"
-#~ msgstr ""
-
-#~ msgid "{editor}: Editing failed"
-#~ msgstr ""
-
-#~ msgid "{editor}: Editing failed: {e}"
-#~ msgstr ""
-
-#~ msgid "{text} {deprecated_message}"
-#~ msgstr ""
-
-#~ msgid "Options"
-#~ msgstr ""
-
-#~ msgid "Got unexpected extra argument ({args})"
-#~ msgid_plural "Got unexpected extra arguments ({args})"
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
-#~ msgstr ""
-
-#~ msgid "Aborted!"
-#~ msgstr ""
-
-#~ msgid "Commands"
-#~ msgstr ""
-
-#~ msgid "Missing command."
-#~ msgstr ""
-
-#~ msgid "No such command {name!r}."
-#~ msgstr ""
-
-#~ msgid "Value must be an iterable."
-#~ msgstr ""
-
-#~ msgid "Takes {nargs} values but 1 was given."
-#~ msgid_plural "Takes {nargs} values but {len} were given."
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid ""
-#~ "DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
-#~ msgstr ""
-
-#~ msgid "env var: {var}"
-#~ msgstr ""
-
-#~ msgid "default: {default}"
-#~ msgstr ""
-
-#~ msgid "required"
-#~ msgstr ""
-
-#~ msgid "(dynamic)"
-#~ msgstr ""
-
-#~ msgid "%(prog)s, version %(version)s"
-#~ msgstr ""
-
-#~ msgid "Show the version and exit."
-#~ msgstr ""
-
-#~ msgid "Show this message and exit."
-#~ msgstr ""
-
-#~ msgid "Error: {message}"
-#~ msgstr ""
-
-#~ msgid "Try '{command} {option}' for help."
-#~ msgstr ""
-
-#~ msgid "Invalid value: {message}"
-#~ msgstr ""
-
-#~ msgid "Invalid value for {param_hint}: {message}"
-#~ msgstr ""
-
-#~ msgid "Missing argument"
-#~ msgstr ""
-
-#~ msgid "Missing option"
-#~ msgstr ""
-
-#~ msgid "Missing parameter"
-#~ msgstr ""
-
-#~ msgid "Missing {param_type}"
-#~ msgstr ""
-
-#~ msgid "Missing parameter: {param_name}"
-#~ msgstr ""
-
-#~ msgid "No such option: {name}"
-#~ msgstr ""
-
-#~ msgid "Did you mean {possibility}?"
-#~ msgid_plural "(Possible options: {possibilities})"
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid "unknown error"
-#~ msgstr ""
-
-#~ msgid "Could not open file {filename!r}: {message}"
-#~ msgstr ""
-
-#~ msgid "Usage:"
-#~ msgstr ""
-
-#~ msgid "Argument {name!r} takes {nargs} values."
-#~ msgstr ""
-
-#~ msgid "Option {name!r} does not take a value."
-#~ msgstr ""
-
-#~ msgid "Option {name!r} requires an argument."
-#~ msgid_plural "Option {name!r} requires {nargs} arguments."
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid "Shell completion is not supported for Bash versions older than 4.4."
-#~ msgstr ""
-
-#~ msgid "Couldn't detect Bash version, shell completion is not supported."
-#~ msgstr ""
-
-#~ msgid "Repeat for confirmation"
-#~ msgstr ""
-
-#~ msgid "Error: The value you entered was invalid."
-#~ msgstr ""
-
-#~ msgid "Error: {e.message}"
-#~ msgstr ""
-
-#~ msgid "Error: The two entered values do not match."
-#~ msgstr ""
-
-#~ msgid "Error: invalid input"
-#~ msgstr ""
-
-#~ msgid "Press any key to continue..."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Choose from:\n"
-#~ "\t{choices}"
-#~ msgstr ""
-
-#~ msgid "{value!r} is not {choice}."
-#~ msgid_plural "{value!r} is not one of {choices}."
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid "{value!r} does not match the format {format}."
-#~ msgid_plural "{value!r} does not match the formats {formats}."
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid "{value!r} is not a valid {number_type}."
-#~ msgstr ""
-
-#~ msgid "{value} is not in the range {range}."
-#~ msgstr ""
-
-#~ msgid "{value!r} is not a valid boolean. Recognized values: {states}"
-#~ msgstr ""
-
-#~ msgid "{value!r} is not a valid UUID."
-#~ msgstr ""
-
-#~ msgid "file"
-#~ msgstr ""
-
-#~ msgid "directory"
-#~ msgstr ""
-
-#~ msgid "path"
-#~ msgstr ""
-
-#~ msgid "{name} {filename!r} does not exist."
-#~ msgstr ""
-
-#~ msgid "{name} {filename!r} is a file."
-#~ msgstr ""
-
-#~ msgid "{name} {filename!r} is a directory."
-#~ msgstr ""
-
-#~ msgid "{name} {filename!r} is not readable."
-#~ msgstr ""
-
-#~ msgid "{name} {filename!r} is not writable."
-#~ msgstr ""
-
-#~ msgid "{name} {filename!r} is not executable."
-#~ msgstr ""
-
-#~ msgid "{len_type} values are required, but {len_value} was given."
-#~ msgid_plural "{len_type} values are required, but {len_value} were given."
-#~ msgstr[0] ""
-#~ msgstr[1] ""
-
-#~ msgid "Início"
-#~ msgstr ""
-
-#~ msgid "Entrar"
-#~ msgstr ""
-
-#~ msgid "Cadastrar"
-#~ msgstr ""
-
-#~ msgid "Idioma"
-#~ msgstr ""
+msgid "Figure"
+msgstr "Figure"

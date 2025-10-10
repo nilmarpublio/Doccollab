@@ -1,0 +1,44 @@
+% ============================================
+% TESTE DE ERROS BÁSICOS DO LINTER
+% ============================================
+% Cole este texto no editor e rode o Linter
+% ============================================
+
+% ERRO 1: Sem \documentclass
+% (O documento deveria começar com \documentclass{article})
+
+% ERRO 2: Sem \begin{document}
+% (Falta o comando \begin{document})
+
+% ERRO 3: begin sem barra invertida
+begin{itemize}
+  \item Teste
+\end{itemize}
+
+% ERRO 4: author escrito errado (autor em português)
+\autor{João Silva}
+
+% ERRO 5: title escrito errado (titulo em português)
+\titulo{Meu Documento}
+
+% ERRO 6: section sem barra invertida
+section{Introdução}
+
+Este é um parágrafo de teste.
+
+% ERRO 7: Sem \end{document}
+% (O documento deveria terminar com \end{document})
+
+% ============================================
+% RESULTADO ESPERADO:
+% ============================================
+% ❌ Documento sem \documentclass
+% ❌ Documento sem \begin{document}
+% ❌ Documento sem \end{document}
+% ❌ Comando 'begin' sem barra invertida
+% ❌ Comando incorreto: \autor (use \author)
+% ❌ Comando incorreto: \titulo (use \title)
+% ❌ Comando LaTeX sem barra invertida (section)
+% ============================================
+
+

@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% block title %}Preços - DocCollab{% endblock %}
+{% block content %}
+
+<style>
+.pricing-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.pricing-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.pricing-hero p {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.pricing-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.pricing-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.pricing-card.featured {
+  border: 3px solid #667eea;
+  transform: scale(1.05);
+}
+
+.pricing-card.featured::before {
+  content: "POPULAR";
+  position: absolute;
+  top: -15px;
+  right: 30px;
+  background: #667eea;
+  color: white;
+  padding: 5px 20px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.plan-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #2d3748;
+}
+
+.plan-price {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+.plan-price small {
+  font-size: 1rem;
+  color: #718096;
+  font-weight: 400;
+}
+
+.plan-description {
+  color: #718096;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.plan-features li {
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  color: #4a5568;
+}
+
+.plan-features li:last-child {
+  border-bottom: none;
+}
+
+.plan-features li i {
+  color: #48bb78;
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.plan-features li.disabled {
+  color: #cbd5e0;
+}
+
+.plan-features li.disabled i {
+  color: #cbd5e0;
+}
+
+.plan-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.plan-button.primary {
+  background: #667eea;
+  color: white;
+}
+
+.plan-button.primary:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+}
+
+.plan-button.secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.plan-button.secondary:hover {
+  background: #f7fafc;
+}
+
+.faq-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.faq-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #2d3748;
+}
+
+.faq-item {
+  background: white;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.faq-item h3 {
+  color: #667eea;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.faq-item p {
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+</style>
+
+<div class="pricing-hero">
+  <h1>Planos e Preços</h1>
+  <p>Escolha o plano perfeito para suas necessidades de edição LaTeX colaborativa</p>
+</div>
+
+<div class="pricing-container">
+  <div class="pricing-cards">
+    
+    <!-- Plano Free -->
+    <div class="pricing-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">
+        R$ 0
+        <small>grátis</small>
+      </div>
+      <p class="plan-description">Perfeito para começar e explorar o DocCollab</p>
+      
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> 3 projetos ativos</li>
+        <li><i class="fas fa-check-circle"></i> Editor LaTeX completo</li>
+        <li><i class="fas fa-check-circle"></i> Compilação básica</li>
+        <li><i class="fas fa-check-circle"></i> 100 MB de armazenamento</li>
+        <li class="disabled"><i class="fas fa-times-circle"></i> Colaboração em tempo real</li>
+        <li class="disabled"><i class="fas fa-times-circle"></i> Histórico de versões</li>
+        <li class="disabled"><i class="fas fa-times-circle"></i> Assistente IA</li>
+      </ul>
+      
+      <a href="{{ url_for('register') }}" class="plan-button secondary">Começar Grátis</a>
+    </div>
+    
+    <!-- Plano Mensal -->
+    <div class="pricing-card">
+      <div class="plan-name">Mensal</div>
+      <div class="plan-price">
+        R$ 10
+        <small>/mês</small>
+      </div>
+      <p class="plan-description">Pagamento mensal com flexibilidade</p>
+      
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Projetos ilimitados</li>
+        <li><i class="fas fa-check-circle"></i> Editor LaTeX avançado</li>
+        <li><i class="fas fa-check-circle"></i> Compilação rápida</li>
+        <li><i class="fas fa-check-circle"></i> 5 GB de armazenamento</li>
+        <li><i class="fas fa-check-circle"></i> Colaboração em tempo real</li>
+        <li><i class="fas fa-check-circle"></i> Histórico de versões</li>
+        <li><i class="fas fa-check-circle"></i> Assistente IA básico</li>
+      </ul>
+      
+      <a href="{{ url_for('register') }}" class="plan-button secondary">Assinar Mensal</a>
+    </div>
+    
+    <!-- Plano Trimestral -->
+    <div class="pricing-card featured">
+      <div class="plan-name">Trimestral</div>
+      <div class="plan-price">
+        R$ 25
+        <small>/3 meses</small>
+      </div>
+      <p class="plan-description">Economize R$ 5 com plano trimestral</p>
+      
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Projetos ilimitados</li>
+        <li><i class="fas fa-check-circle"></i> Editor LaTeX avançado</li>
+        <li><i class="fas fa-check-circle"></i> Compilação rápida</li>
+        <li><i class="fas fa-check-circle"></i> 10 GB de armazenamento</li>
+        <li><i class="fas fa-check-circle"></i> Colaboração em tempo real</li>
+        <li><i class="fas fa-check-circle"></i> Histórico ilimitado</li>
+        <li><i class="fas fa-check-circle"></i> Assistente IA avançado</li>
+      </ul>
+      
+      <a href="{{ url_for('register') }}" class="plan-button primary">Assinar Trimestral</a>
+    </div>
+    
+    <!-- Plano Semestral -->
+    <div class="pricing-card">
+      <div class="plan-name">Semestral</div>
+      <div class="plan-price">
+        R$ 50
+        <small>/6 meses</small>
+      </div>
+      <p class="plan-description">Economize R$ 10 com plano semestral</p>
+      
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Tudo do Trimestral</li>
+        <li><i class="fas fa-check-circle"></i> 15 GB de armazenamento</li>
+        <li><i class="fas fa-check-circle"></i> Suporte prioritário</li>
+        <li><i class="fas fa-check-circle"></i> Integração Git</li>
+        <li><i class="fas fa-check-circle"></i> Templates premium</li>
+        <li><i class="fas fa-check-circle"></i> Exportação avançada</li>
+      </ul>
+      
+      <a href="{{ url_for('register') }}" class="plan-button secondary">Assinar Semestral</a>
+    </div>
+    
+    <!-- Plano Anual -->
+    <div class="pricing-card">
+      <div class="plan-name">Anual</div>
+      <div class="plan-price">
+        R$ 100
+        <small>/ano</small>
+      </div>
+      <p class="plan-description">Melhor valor! Economize R$ 20</p>
+      
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Tudo do Semestral</li>
+        <li><i class="fas fa-check-circle"></i> 50 GB de armazenamento</li>
+        <li><i class="fas fa-check-circle"></i> Assistente IA premium</li>
+        <li><i class="fas fa-check-circle"></i> API de integração</li>
+        <li><i class="fas fa-check-circle"></i> Suporte 24/7</li>
+        <li><i class="fas fa-check-circle"></i> Consultoria mensal</li>
+      </ul>
+      
+      <a href="{{ url_for('register') }}" class="plan-button secondary">Assinar Anual</a>
+    </div>
+    
+  </div>
+  
+  <!-- FAQ Section -->
+  <div class="faq-section">
+    <h2>Perguntas Frequentes</h2>
+    
+    <div class="faq-item">
+      <h3><i class="fas fa-question-circle"></i> Como funciona o teste grátis?</h3>
+      <p>Você tem 14 dias para testar o plano Pro gratuitamente, sem precisar de cartão de crédito. Após o período, você pode escolher continuar com o Pro ou voltar ao plano Free.</p>
+    </div>
+    
+    <div class="faq-item">
+      <h3><i class="fas fa-question-circle"></i> Posso cancelar a qualquer momento?</h3>
+      <p>Sim! Não há contratos de longo prazo. Você pode cancelar sua assinatura a qualquer momento e continuará tendo acesso até o final do período pago.</p>
+    </div>
+    
+    <div class="faq-item">
+      <h3><i class="fas fa-question-circle"></i> O que é o Assistente IA?</h3>
+      <p>O Assistente IA é uma funcionalidade exclusiva que ajuda você a escrever código LaTeX, corrigir erros, sugerir melhorias e responder dúvidas sobre sintaxe e formatação.</p>
+    </div>
+    
+    <div class="faq-item">
+      <h3><i class="fas fa-question-circle"></i> Há desconto para estudantes?</h3>
+      <p>Sim! Estudantes e professores têm 50% de desconto em todos os planos pagos. Entre em contato com nosso suporte para verificar sua elegibilidade.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

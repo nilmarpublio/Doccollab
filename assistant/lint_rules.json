@@ -1,0 +1,299 @@
+{
+  "version": "1.0",
+  "description": "Regras de lint para documentos LaTeX",
+  
+  "forbidden_commands": {
+    "enabled": true,
+    "severity": "error",
+    "commands": [
+      {
+        "pattern": "\\\\write18",
+        "message": "Comando \\write18 não permitido (execução de shell)",
+        "suggestion": "Remova o comando \\write18 por questões de segurança"
+      },
+      {
+        "pattern": "\\\\input\\{[/\\\\]",
+        "message": "\\input com caminho absoluto não permitido",
+        "suggestion": "Use caminhos relativos para \\input"
+      },
+      {
+        "pattern": "\\\\include\\{[/\\\\]",
+        "message": "\\include com caminho absoluto não permitido",
+        "suggestion": "Use caminhos relativos para \\include"
+      },
+      {
+        "pattern": "\\\\openin|\\\\openout",
+        "message": "Comandos de I/O de arquivo não permitidos",
+        "suggestion": "Remova comandos de leitura/escrita de arquivos"
+      }
+    ]
+  },
+  
+  "syntax_errors": {
+    "enabled": true,
+    "severity": "error",
+    "check_document_structure": true,
+    "rules": [
+      {
+        "id": "begin_without_backslash",
+        "pattern": "(?<!\\\\)\\bbegin\\{",
+        "message": "Comando 'begin' sem barra invertida",
+        "suggestion": "Use \\begin{...} ao invés de begin{...}",
+        "auto_fix": false
+      },
+      {
+        "id": "end_without_backslash",
+        "pattern": "(?<!\\\\)\\bend\\{",
+        "message": "Comando 'end' sem barra invertida",
+        "suggestion": "Use \\end{...} ao invés de end{...}",
+        "auto_fix": false
+      },
+      {
+        "id": "section_without_backslash",
+        "pattern": "(?<!\\\\)\\b(section|subsection|chapter|title|author|date)\\{",
+        "message": "Comando LaTeX sem barra invertida",
+        "suggestion": "Adicione \\ antes do comando (ex: \\section{...})",
+        "auto_fix": false
+      },
+      {
+        "id": "common_typo_autor",
+        "pattern": "\\\\autor\\{",
+        "message": "Comando incorreto: \\autor",
+        "suggestion": "Use \\author{...} (em inglês)",
+        "auto_fix": false
+      },
+      {
+        "id": "common_typo_titulo",
+        "pattern": "\\\\titulo\\{",
+        "message": "Comando incorreto: \\titulo",
+        "suggestion": "Use \\title{...} (em inglês)",
+        "auto_fix": false
+      },
+      {
+        "id": "unmatched_begin",
+        "pattern": "\\\\begin\\{([^}]+)\\}(?:(?!\\\\end\\{\\1\\}).)*$",
+        "multiline": true,
+        "message": "Ambiente não fechado detectado",
+        "suggestion": "Adicione \\end{...} correspondente",
+        "auto_fix": false
+      },
+      {
+        "id": "unmatched_dollar",
+        "pattern": "(?<!\\$)\\$(?!\\$)[^$]*$",
+        "message": "$ não fechado (modo matemático)",
+        "suggestion": "Adicione $ de fechamento",
+        "auto_fix": false
+      },
+      {
+        "id": "unmatched_brace",
+        "pattern": "\\{[^}]*$",
+        "message": "Chave { não fechada",
+        "suggestion": "Adicione } de fechamento",
+        "auto_fix": false
+      },
+      {
+        "id": "double_backslash_error",
+        "pattern": "\\\\\\\\[^\\s\\[]",
+        "message": "\\\\ deve ser seguido de espaço ou [",
+        "suggestion": "Adicione espaço após \\\\",
+        "auto_fix": false
+      },
+      {
+        "id": "undefined_reference",
+        "pattern": "\\\\ref\\{\\s*\\}",
+        "message": "\\ref vazio",
+        "suggestion": "Adicione uma label válida dentro de \\ref{}",
+        "auto_fix": false
+      },
+      {
+        "id": "undefined_cite",
+        "pattern": "\\\\cite\\{\\s*\\}",
+        "message": "\\cite vazio",
+        "suggestion": "Adicione uma chave de citação válida dentro de \\cite{}",
+        "auto_fix": false
+      }
+    ]
+  },
+  
+  "style_rules": {
+    "enabled": true,
+    "rules": [
+      {
+        "id": "deprecated_eqnarray",
+        "severity": "warning",
+        "pattern": "\\\\begin\\{eqnarray\\*?\\}",
+        "message": "Ambiente eqnarray está obsoleto",
+        "suggestion": "Use \\begin{align} ao invés de \\begin{eqnarray}",
+        "auto_fix": true,
+        "fix_type": "refactor",
+        "fix_action": "eqnarray_to_align"
+      },
+      {
+        "id": "deprecated_dollar_display",
+        "severity": "suggestion",
+        "pattern": "\\$\\$[^$]+\\$\\$",
+        "message": "Use \\[ \\] ao invés de $$ (LaTeX2e)",
+        "suggestion": "Substitua $$ por \\[ e \\]",
+        "auto_fix": true,
+        "fix_type": "refactor",
+        "fix_action": "dollar_to_displaymath"
+      },
+      {
+        "id": "old_font_commands",
+        "severity": "warning",
+        "pattern": "\\\\(bf|it|tt|rm|sf|sc|sl)\\b(?![a-z])",
+        "message": "Comando de fonte obsoleto detectado",
+        "suggestion": "Use \\textbf{}, \\textit{}, etc. ao invés de \\bf, \\it",
+        "auto_fix": false
+      },
+      {
+        "id": "missing_label_in_figure",
+        "severity": "warning",
+        "pattern": "\\\\begin\\{figure\\}(?:(?!\\\\label).)*?\\\\end\\{figure\\}",
+        "multiline": true,
+        "message": "Figura sem \\label para referência",
+        "suggestion": "Adicione \\label{fig:nome} após \\caption",
+        "auto_fix": true,
+        "fix_type": "insert",
+        "fix_template": "\\label{fig:auto_$ID}"
+      },
+      {
+        "id": "missing_label_in_table",
+        "severity": "warning",
+        "pattern": "\\\\begin\\{table\\}(?:(?!\\\\label).)*?\\\\end\\{table\\}",
+        "multiline": true,
+        "message": "Tabela sem \\label para referência",
+        "suggestion": "Adicione \\label{tab:nome} após \\caption",
+        "auto_fix": true,
+        "fix_type": "insert",
+        "fix_template": "\\label{tab:auto_$ID}"
+      },
+      {
+        "id": "missing_label_in_equation",
+        "severity": "suggestion",
+        "pattern": "\\\\begin\\{equation\\}(?:(?!\\\\label).)*?\\\\end\\{equation\\}",
+        "multiline": true,
+        "message": "Equação numerada sem \\label",
+        "suggestion": "Adicione \\label{eq:nome} se precisar referenciar",
+        "auto_fix": true,
+        "fix_type": "insert",
+        "fix_template": "\\label{eq:auto_$ID}"
+      },
+      {
+        "id": "hardcoded_spacing",
+        "severity": "suggestion",
+        "pattern": "\\\\\\\\\\s*\\\\\\\\",
+        "message": "Múltiplos \\\\ para espaçamento",
+        "suggestion": "Use \\vspace{} ou \\bigskip ao invés de múltiplos \\\\",
+        "auto_fix": false
+      }
+    ]
+  },
+  
+  "package_detection": {
+    "enabled": true,
+    "severity": "error",
+    "common_packages": {
+      "\\\\includegraphics": {
+        "package": "graphicx",
+        "message": "Comando \\includegraphics requer pacote graphicx",
+        "suggestion": "Adicione \\usepackage{graphicx} no preâmbulo"
+      },
+      "\\\\begin\\{algorithm\\}": {
+        "package": "algorithm",
+        "message": "Ambiente algorithm requer pacote algorithm",
+        "suggestion": "Adicione \\usepackage{algorithm} no preâmbulo"
+      },
+      "\\\\begin\\{align\\}": {
+        "package": "amsmath",
+        "message": "Ambiente align requer pacote amsmath",
+        "suggestion": "Adicione \\usepackage{amsmath} no preâmbulo"
+      },
+      "\\\\mathbb\\{": {
+        "package": "amssymb",
+        "message": "Comando \\mathbb requer pacote amssymb",
+        "suggestion": "Adicione \\usepackage{amssymb} no preâmbulo"
+      },
+      "\\\\url\\{": {
+        "package": "hyperref",
+        "message": "Comando \\url requer pacote hyperref ou url",
+        "suggestion": "Adicione \\usepackage{hyperref} no preâmbulo"
+      },
+      "\\\\begin\\{lstlisting\\}": {
+        "package": "listings",
+        "message": "Ambiente lstlisting requer pacote listings",
+        "suggestion": "Adicione \\usepackage{listings} no preâmbulo"
+      },
+      "\\\\SI\\{": {
+        "package": "siunitx",
+        "message": "Comando \\SI requer pacote siunitx",
+        "suggestion": "Adicione \\usepackage{siunitx} no preâmbulo"
+      },
+      "\\\\citet|\\\\citep": {
+        "package": "natbib",
+        "message": "Comandos de citação requerem pacote natbib",
+        "suggestion": "Adicione \\usepackage{natbib} no preâmbulo"
+      }
+    }
+  },
+  
+  "best_practices": {
+    "enabled": true,
+    "severity": "suggestion",
+    "rules": [
+      {
+        "id": "non_breaking_space",
+        "pattern": "\\b(Figura|Tabela|Equação|Seção|Capítulo)\\s+\\\\ref",
+        "message": "Use ~ (espaço não quebrável) antes de \\ref",
+        "suggestion": "Substitua ' \\ref' por '~\\ref' após referências",
+        "auto_fix": true,
+        "fix_type": "replace",
+        "fix_pattern": " \\\\ref",
+        "fix_replacement": "~\\\\ref"
+      },
+      {
+        "id": "quote_style",
+        "pattern": "\"([^\"]+)\"",
+        "message": "Use aspas tipográficas LaTeX",
+        "suggestion": "Substitua \"texto\" por ``texto''",
+        "auto_fix": false
+      },
+      {
+        "id": "paragraph_spacing",
+        "pattern": "\\n\\n\\n+",
+        "message": "Múltiplas linhas vazias consecutivas",
+        "suggestion": "Use apenas uma linha vazia entre parágrafos",
+        "auto_fix": true,
+        "fix_type": "replace",
+        "fix_pattern": "\\n\\n\\n+",
+        "fix_replacement": "\\n\\n"
+      }
+    ]
+  },
+  
+  "formatting": {
+    "enabled": true,
+    "severity": "suggestion",
+    "rules": [
+      {
+        "id": "trailing_whitespace",
+        "pattern": "[ \\t]+$",
+        "multiline": false,
+        "message": "Espaços em branco no final da linha",
+        "suggestion": "Remova espaços desnecessários",
+        "auto_fix": true,
+        "fix_type": "replace",
+        "fix_pattern": "[ \\t]+$",
+        "fix_replacement": ""
+      },
+      {
+        "id": "inconsistent_indentation",
+        "pattern": "^[ ]{1,3}(?=\\S)",
+        "message": "Indentação inconsistente (use 2 ou 4 espaços)",
+        "suggestion": "Padronize a indentação do documento",
+        "auto_fix": false
+      }
+    ]
+  }
+}
+

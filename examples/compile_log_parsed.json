@@ -1,0 +1,101 @@
+{
+  "success": false,
+  "errors": [
+    {
+      "type": "error",
+      "filename": "main.tex",
+      "line": 5,
+      "message": "File `graphicx.sty' not found",
+      "suggestion": "Adicione \\usepackage{graphicx} no preâmbulo ou instale o pacote graphicx",
+      "severity": "error"
+    },
+    {
+      "type": "error",
+      "filename": "main.tex",
+      "line": 12,
+      "message": "Undefined control sequence: \\unknowncommand",
+      "suggestion": "Verifique se o comando está correto ou se você esqueceu de carregar algum pacote",
+      "severity": "error"
+    },
+    {
+      "type": "error",
+      "filename": "main.tex",
+      "line": 15,
+      "message": "Missing $ inserted",
+      "suggestion": "Você está usando _ ou ^ fora do modo matemático. Coloque entre $ $",
+      "severity": "error"
+    },
+    {
+      "type": "error",
+      "filename": "main.tex",
+      "line": 40,
+      "message": "Old form `\\eqnarray' used; use `align' or `equation+split' instead",
+      "suggestion": "Substitua \\begin{eqnarray} por \\begin{align} (mais moderno)",
+      "severity": "error"
+    }
+  ],
+  "warnings": [
+    {
+      "type": "warning",
+      "filename": "main.tex",
+      "line": 20,
+      "message": "Overfull \\hbox (15.23456pt too wide) in paragraph at lines 20--25",
+      "suggestion": "Linha muito longa. Considere reformular o texto ou usar \\linebreak",
+      "severity": "warning"
+    },
+    {
+      "type": "warning",
+      "filename": "main.tex",
+      "line": 28,
+      "message": "Reference `fig:nonexistent' undefined",
+      "suggestion": "A referência \\ref{fig:nonexistent} não existe. Verifique o \\label correspondente",
+      "severity": "warning"
+    },
+    {
+      "type": "warning",
+      "filename": "main.tex",
+      "line": 32,
+      "message": "Citation `Smith2023' undefined",
+      "suggestion": "A citação \\cite{Smith2023} não foi encontrada no arquivo .bib",
+      "severity": "warning"
+    },
+    {
+      "type": "warning",
+      "filename": "main.tex",
+      "line": 32,
+      "message": "Citation `Jones2024' undefined",
+      "suggestion": "A citação \\cite{Jones2024} não foi encontrada no arquivo .bib",
+      "severity": "warning"
+    },
+    {
+      "type": "warning",
+      "filename": "main.aux",
+      "line": null,
+      "message": "There were undefined references",
+      "suggestion": "Execute LaTeX novamente para resolver as referências",
+      "severity": "warning"
+    },
+    {
+      "type": "warning",
+      "filename": "main.aux",
+      "line": null,
+      "message": "There were multiply-defined labels",
+      "suggestion": "Você tem \\label duplicados no documento. Renomeie um deles",
+      "severity": "warning"
+    }
+  ],
+  "info": [
+    {
+      "type": "info",
+      "message": "Output written on main.pdf (1 page, 28456 bytes)",
+      "severity": "info"
+    }
+  ],
+  "total_errors": 4,
+  "total_warnings": 6,
+  "pages": 1,
+  "output_file": "main.pdf"
+}
+
+
+

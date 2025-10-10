@@ -1,0 +1,143 @@
+════════════════════════════════════════════════════════════════
+✨ DESTAQUE DE LINHA AGORA ESTÁ VISÍVEL!
+════════════════════════════════════════════════════════════════
+
+Agora quando você clica em "Ir para linha", a linha fica
+REALMENTE DESTACADA com fundo amarelo e barra laranja!
+
+════════════════════════════════════════════════════════════════
+🎨 SOLUÇÃO IMPLEMENTADA:
+════════════════════════════════════════════════════════════════
+
+PROBLEMA ANTERIOR:
+  - Overlay ficava atrás do textarea
+  - Não era visível
+  - Apenas seleção de texto
+
+NOVA SOLUÇÃO:
+  - Elemento de fundo dedicado (lineHighlightBg)
+  - Fica atrás do textarea (z-index: 0)
+  - Textarea fica transparente (z-index: 1)
+  - Destaque é REALMENTE visível!
+
+════════════════════════════════════════════════════════════════
+🎯 EFEITO VISUAL:
+════════════════════════════════════════════════════════════════
+
+Quando você clica em "Ir para linha":
+
+1. FUNDO AMARELO FORTE
+   - Cor: rgba(255, 235, 59, 0.4)
+   - Cobre toda a linha
+   - MUITO VISÍVEL!
+
+2. BARRA LATERAL LARANJA
+   - Borda esquerda de 4px
+   - Cor: #ff9800 (laranja forte)
+   - Marca a linha com erro
+
+3. ANIMAÇÃO DE PULSO
+   - Aparece suavemente
+   - Fica visível por 2 segundos
+   - Desaparece suavemente
+
+4. TEXTO SELECIONADO
+   - Linha fica selecionada
+   - Facilita editar
+
+5. SINCRONIZAÇÃO COM SCROLL
+   - Se você fizer scroll
+   - Destaque acompanha
+   - Sempre visível
+
+════════════════════════════════════════════════════════════════
+🔧 COMO FUNCIONA:
+════════════════════════════════════════════════════════════════
+
+ESTRUTURA HTML:
+  <div class="editor-content">
+    <div id="lineHighlightBg">  <-- FUNDO (z-index: 0)
+      [Linhas com destaque]
+    </div>
+    <textarea>                  <-- EDITOR (z-index: 1, transparente)
+      [Seu código]
+    </textarea>
+  </div>
+
+CAMADAS:
+  - Camada 0: Fundo com destaque (atrás)
+  - Camada 1: Textarea transparente (frente)
+  - Resultado: Você vê o destaque através do textarea!
+
+════════════════════════════════════════════════════════════════
+🔄 REINICIE O SERVIDOR
+════════════════════════════════════════════════════════════════
+
+1. Pare o servidor (Ctrl+C)
+2. Inicie novamente:
+   cd D:\OurDocs\DocCollab
+   python app.py
+
+════════════════════════════════════════════════════════════════
+🧪 COMO TESTAR:
+════════════════════════════════════════════════════════════════
+
+1. Abra o editor LaTeX
+2. Cole um documento com erros
+3. Rode o LaTeX Linter
+4. Clique em "Ir para linha" em qualquer erro
+5. VEJA O DESTAQUE:
+   - Fundo amarelo FORTE
+   - Barra laranja à esquerda
+   - Texto selecionado
+   - Animação suave
+
+════════════════════════════════════════════════════════════════
+🎨 EXEMPLO VISUAL:
+════════════════════════════════════════════════════════════════
+
+ANTES (não visível):
+  Linha 10: Texto normal
+  Linha 11: Texto com erro  <-- apenas seleção
+  Linha 12: Texto normal
+
+AGORA (MUITO VISÍVEL):
+  Linha 10: Texto normal
+  ║ Linha 11: Texto com erro  <-- FUNDO AMARELO + BARRA LARANJA
+  Linha 12: Texto normal
+
+Cores:
+  🟨 Fundo amarelo forte (rgba(255, 235, 59, 0.4))
+  🟧 Barra laranja (4px, #ff9800)
+
+════════════════════════════════════════════════════════════════
+⏱️ DURAÇÃO:
+════════════════════════════════════════════════════════════════
+
+- Destaque visual: 2 segundos
+- Seleção de texto: 2 segundos
+- Animação de pulso: 2 segundos
+- Notificação: 5 segundos
+
+════════════════════════════════════════════════════════════════
+✅ GARANTIAS:
+════════════════════════════════════════════════════════════════
+
+✅ Destaque é REALMENTE visível
+✅ Fundo amarelo forte
+✅ Barra laranja à esquerda
+✅ Sincroniza com scroll
+✅ Animação suave
+✅ Remove após 2 segundos
+✅ Não interfere na edição
+
+════════════════════════════════════════════════════════════════
+✅ PRONTO!
+════════════════════════════════════════════════════════════════
+
+Reinicie o servidor e veja o destaque REALMENTE VISÍVEL! 🎨✨
+
+Agora você VAI VER a linha com erro destacada em amarelo
+com uma barra laranja à esquerda! 🟨🟧
+
+

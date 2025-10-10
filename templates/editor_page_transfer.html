@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block title %}Editor LaTeX - DocCollab{% endblock %}
+{% block content %}
+<!-- Barra de ferramentas do editor -->
+<div class="editor-toolbar">
+  <div class="toolbar-left">
+    <button class="btn-tool" onclick="saveDocument()" title="Salvar (Ctrl+S)">
+      <i class="fas fa-save"></i>
+      <span>Save</span>
+    </button>
+    <button class="btn-tool" onclick="newDocument()" title="Novo Documento (Ctrl+N)">
+      <i class="fas fa-file-plus"></i>
+      <span>New</span>
+    </button>
+    <button class="btn-tool" onclick="openDocument()" title="Abrir Documento (Ctrl+O)">
+      <i class="fas fa-folder-open"></i>
+      <span>Open</span>
+    </button>
+    <div class="divider"></div>
+    <button class="btn-tool" onclick="undoAction()" title="Desfazer (Ctrl+Z)">
+      <i class="fas fa-undo"></i>
+    </button>
+    <button class="btn-tool" onclick="redoAction()" title="Refazer (Ctrl+Y)">
+      <i class="fas fa-redo"></i>
+    </button>
+  </div>
+  
+  <div class="toolbar-center">
+    <div class="file-info">
+      <i class="fas fa-file-alt"></i>
+      <span id="fileName">main.tex</span>
+      <span class="file-status" id="fileStatus">●</span>
+    </div>
+  </div>
+  
+  <div class="toolbar-right">
+    <button class="btn-compile" onclick="compileDocument()" title="Compilar (F5)">
+      <i class="fas fa-play"></i>
+      <span>Compile</span>
+    </button>
+    <button class="btn-tool" onclick="previewDocument()" title="Visualizar (F6)">
+      <i class="fas fa-eye"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Editor principal -->
+<div class="editor-container">
+  <div class="editor-sidebar">
+    <div class="sidebar-section">
+      <h4><i class="fas fa-code"></i> Snippets</h4>
+      <div class="snippet-list">
+        <div class="snippet-item" onclick="insertSnippet('section')">
+          <i class="fas fa-heading"></i>
+          <span>Seção</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('equation')">
+          <i class="fas fa-square-root-alt"></i>
+          <span>Equação</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('table')">
+          <i class="fas fa-table"></i>
+          <span>Tabela</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('list')">
+          <i class="fas fa-list"></i>
+          <span>Lista</span>
+        </div>
+        <div class="snippet-item" onclick="insertSnippet('figure')">
+          <i class="fas fa-image"></i>
+          <span>Figura</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="editor-main">
+    <div class="editor-tabs">
+      <div class="tab active" data-file="main.tex">
+        <i class="fas fa-file-alt"></i>
+        <span>main.tex</span>
+        <button class="tab-close" onclick="closeTab('main.tex')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Barra de formatação ao lado da aba -->
+      <div class="format-toolbar">
+        <button class="format-btn" onclick="formatText('bold')" title="Negrito (Ctrl+B)">
+          <i class="fas fa-bold"></i>
+        </button>
+        <button class="format-btn" onclick="formatText('italic')" title="Itálico (Ctrl+I)">
+          <i class="fas fa-italic"></i>
+        </button>
+        <button class="format-btn" onclick="formatText('underline')" title="Sublinhado (Ctrl+U)">
+          <i class="fas fa-underline"></i>
+        </button>
+        <div class="format-divider"></div>
+        <button class="format-btn" onclick="insertSnippet('section')" title="Inserir Seção">
+          <i class="fas fa-heading"></i>
+        </button>
+        <button class="format-btn" onclick="insertSnippet('equation')" title="Inserir Equação">
+          <i class="fas fa-square-root-alt"></i>
+        </button>
+        <button class="format-btn" onclick="insertSnippet('list')" title="Inserir Lista">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="editor-wrapper">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <div class="editor-content">
+        <textarea 
+          id="latexEditor" 
+          class="latex-editor"
+          autofocus
+          spellcheck="false"
+        >% Documento LaTeX Completo
+% Estrutura básica para editor LaTeX
+
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configurações de página
+\geometry{left=3cm,right=2cm,top=3cm,bottom=2cm}
+
+% Configurações de hyperlinks
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=magenta,      
+  urlcolor=cyan,
+}
+
+% Configurações de código
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green},
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=5pt,
+  backgroundcolor=\color{gray!10},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  tabsize=2,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  escapeinside={\%*}{*)}
+}
+
+\begin{document}
+
+% Título do documento
+\title{Meu Documento LaTeX}
+\author{Seu Nome}
+\date{\today}
+
+\maketitle
+
+% Resumo
+\begin{abstract}
+  Este é um exemplo de documento LaTeX com estrutura completa incluindo seções, equações, listas, tabelas e código.
+\end{abstract}
+
+% Sumário
+\tableofcontents
+\newpage
+
+% Seção 1
+\section{Introdução}
+
+Este é um documento LaTeX completo com todas as funcionalidades básicas de um editor LaTeX profissional.
+
+\subsection{Objetivos}
+
+Os objetivos deste documento são:
+\begin{itemize}
+  \item Demonstrar a estrutura básica do LaTeX
+  \item Mostrar comandos essenciais
+  \item Incluir exemplos práticos
+\end{itemize}
+
+% Seção 2
+\section{Matemática}
+
+\subsection{Equações}
+
+Equação inline: $E = mc^2$
+
+Equação em bloco:
+\begin{equation}
+  \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+\end{equation}
+
+Sistema de equações:
+\begin{align}
+  x + y &= 10 \\
+  2x - y &= 5
+\end{align}
+
+% Seção 3
+\section{Listas e Tabelas}
+
+\subsection{Listas}
+
+Lista numerada:
+\begin{enumerate}
+  \item Primeiro item
+  \item Segundo item
+  \item Terceiro item
+\end{enumerate}
+
+\subsection{Tabelas}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    Nome & Idade & Cidade \\
+    \hline
+    João & 25 & São Paulo \\
+    Maria & 30 & Rio de Janeiro \\
+    Pedro & 28 & Belo Horizonte \\
+    \hline
+  \end{tabular}
+  \caption{Exemplo de tabela}
+  \label{tab:exemplo}
+\end{table}
+
+% Seção 4
+\section{Código}
+
+\subsection{Listagem de Código}
+
+\begin{lstlisting}[caption=Exemplo de código Python]
+def fibonacci(n):
+  if n <= 1:
+    return n
+  else:
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Teste da função
+for i in range(10):
+  print(f"F({i}) = {fibonacci(i)}")
+\end{lstlisting}
+
+% Seção 5
+\section{Referências e Links}
+
+Para mais informações sobre LaTeX, consulte \cite{latex_guide}.
+
+\subsection{Links}
+
+\href{https://www.latex-project.org/}{Site oficial do LaTeX}
+
+% Bibliografia
+\begin{thebibliography}{9}
+  \bibitem{latex_guide}
+  Lamport, Leslie. \textit{LaTeX: A Document Preparation System}. Addison-Wesley, 1994.
+\end{thebibliography}
+
+\end{document}</textarea>
+      </div>
+    </div>
+    
+    <div class="editor-status">
+      <div class="status-left">
+        <span id="cursorPosition">Linha 1, Coluna 1</span>
+        <span class="divider">|</span>
+        <span id="documentLength">0 caracteres</span>
+        <span class="divider">|</span>
+        <span id="wordCount">0 palavras</span>
+      </div>
+      <div class="status-right">
+        <span id="encoding">UTF-8</span>
+        <span class="divider">|</span>
+        <span id="language">LaTeX</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Editor LaTeX Profissional - CONTINUA NO PRÓXIMO ARQUIVO */
+</style>
+
+<script>
+// JavaScript será adicionado no próximo passo
+</script>
+
+{% endblock %}
+
+

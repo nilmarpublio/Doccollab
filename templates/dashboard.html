@@ -3,22 +3,23 @@
 {% block title %}{{ _('DocCollab - Dashboard') }}{% endblock %}
 {% block content %}
 <div class="dashboard-container">
-  <div class="dashboard-header">
-    <div class="header-content">
-      <h1 class="dashboard-title">
-        <i class="fas fa-folder-open"></i>
-        {{ _('My Projects') }}
-      </h1>
-      <p class="dashboard-subtitle">{{ _('Manage and organize your LaTeX documents') }}</p>
+  <div class="dashboard-main-card">
+    <div class="dashboard-header">
+      <div class="header-content">
+        <h1 class="dashboard-title">
+          <i class="fas fa-folder-open"></i>
+          {{ _('My Projects') }}
+        </h1>
+        <p class="dashboard-subtitle">{{ _('Manage and organize your LaTeX documents') }}</p>
+      </div>
+      <button class="btn btn-primary btn-large" onclick="showModal('createProjectModal')" id="newProjectBtn">
+        <i class="fas fa-plus"></i>
+        {{ _('New Project') }}
+      </button>
     </div>
-    <button class="btn btn-primary btn-large" onclick="showModal('createProjectModal')" id="newProjectBtn">
-      <i class="fas fa-plus"></i>
-      {{ _('New Project') }}
-    </button>
-  </div>
 
-  {% if projects %}
-    <div class="projects-grid">
+    {% if projects %}
+      <div class="projects-grid">
       {% for project in projects %}
         <div class="project-card">
           <div class="card-header">
@@ -99,6 +100,7 @@
       <p>{{ _('Create your first project to get started!') }}</p>
     </div>
   {% endif %}
+  </div>
 
   <!-- Modal: New Project -->
   <div class="modal" id="createProjectModal">
@@ -156,23 +158,28 @@
 <style>
 /* Dashboard specific styles */
 .dashboard-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
+}
+
+.dashboard-main-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   flex-wrap: wrap;
   gap: 2rem;
-  padding: 2rem;
-  background: var(--gradient-surface);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px var(--shadow-light);
-  border: 1px solid var(--border-light);
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #f0f0f0;
 }
 
 .header-content {
@@ -214,6 +221,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+  justify-content: center;
 }
 
 .project-card {
@@ -310,10 +318,17 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .dashboard-main-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+  
   .dashboard-header {
     flex-direction: column;
     align-items: stretch;
     text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
   }
   
   .dashboard-title {

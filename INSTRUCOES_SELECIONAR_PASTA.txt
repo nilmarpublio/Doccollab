@@ -1,0 +1,257 @@
+================================================================
+        COMO SELECIONAR A PASTA "ARQUIVOS"
+        Instruções Passo a Passo
+================================================================
+
+PROBLEMA RELATADO:
+"A pasta arquivos aparece em preto e uma mensagem 
+'Nenhum arquivo ainda, Use Novo, Abrir ou Salvar'"
+
+SOLUÇÃO:
+Você precisa SELECIONAR A PASTA MANUALMENTE no navegador!
+
+================================================================
+PASSO A PASSO (ATUALIZADO):
+================================================================
+
+1. INICIE O SERVIDOR
+   
+   cd D:\OurDocs\DocCollab
+   python app.py
+
+2. ABRA O NAVEGADOR
+   
+   Use Chrome ou Edge (recomendado)
+   Acesse: http://localhost:5000
+
+3. FAÇA LOGIN
+   
+   Email: admin@doccollab.com
+   Senha: admin123
+
+4. ABRA O EDITOR
+   
+   Clique em "Abrir Editor" em um projeto
+
+5. AGORA VEJA A SIDEBAR:
+   
+   ┌─────────────────────────────┐
+   │  📝 Snippets                │
+   │                             │
+   │  📁 Arquivos        [📂]    │ ← VEJA ESTE BOTÃO!
+   │  Nenhum arquivo ainda       │
+   │  Clique em 📂 acima         │
+   │                             │
+   │  🖼️ Imagens          [↑]   │
+   └─────────────────────────────┘
+
+6. CLIQUE NO BOTÃO 📂 (PASTA ABERTA)
+   
+   Ao lado do título "Arquivos"
+   É um botão azul claro
+
+7. JANELA DO EXPLORADOR ABRIRÁ
+   
+   Navegue até:
+   D:\OurDocs\DocCollab\Arquivos
+
+8. CLIQUE EM "SELECIONAR PASTA"
+   
+   (ou "Select Folder" se estiver em inglês)
+
+9. PERMITA O ACESSO
+   
+   O navegador perguntará:
+   "Permitir que localhost:5000 acesse esta pasta?"
+   
+   Clique em "Permitir" ou "Allow"
+
+10. PRONTO! ARQUIVOS APARECERÃO!
+    
+    ┌─────────────────────────────┐
+    │  📁 Arquivos        [📂]    │
+    │  ├─ 📄 exemplo_documento.tex│
+    │  ├─ 📄 artigo_cientifico.tex│
+    │  ├─ 📄 relatorio_tecnico.tex│
+    │  └─ 📄 COMO_USAR.txt        │
+    └─────────────────────────────┘
+
+================================================================
+SCREENSHOTS VISUAIS (DESCRIÇÃO):
+================================================================
+
+ANTES DE SELECIONAR:
+┌─────────────────────────────────────┐
+│ 📁 Arquivos              [📂]       │
+│ ┌─────────────────────────────────┐ │
+│ │      📂                          │ │
+│ │ Nenhum arquivo ainda             │ │
+│ │ Clique em 📂 acima para          │ │
+│ │ selecionar a pasta               │ │
+│ └─────────────────────────────────┘ │
+└─────────────────────────────────────┘
+
+DEPOIS DE SELECIONAR:
+┌─────────────────────────────────────┐
+│ 📁 Arquivos              [📂]       │
+│ ┌─────────────────────────────────┐ │
+│ │ 📄 exemplo_documento.tex         │ │
+│ │ 📄 artigo_cientifico.tex         │ │
+│ │ 📄 relatorio_tecnico.tex         │ │
+│ │ 📄 COMO_USAR.txt                 │ │
+│ └─────────────────────────────────┘ │
+└─────────────────────────────────────┘
+
+================================================================
+TROUBLESHOOTING:
+================================================================
+
+PROBLEMA 1: Botão 📂 não aparece
+SOLUÇÃO: Recarregue a página (F5)
+
+PROBLEMA 2: Janela do explorador não abre
+SOLUÇÃO: Verifique se está usando Chrome ou Edge
+         Atualize o navegador
+
+PROBLEMA 3: "Seu navegador não suporta..."
+SOLUÇÃO: Use Chrome 86+ ou Edge 86+
+         Atualize o navegador
+
+PROBLEMA 4: Selecionei mas não aparece nada
+SOLUÇÃO: Verifique se selecionou a pasta correta:
+         D:\OurDocs\DocCollab\Arquivos
+         (não uma subpasta!)
+
+PROBLEMA 5: "Erro ao selecionar pasta"
+SOLUÇÃO: Clique em "Permitir" quando solicitado
+         Verifique permissões do navegador
+
+PROBLEMA 6: Arquivos desaparecem ao recarregar
+SOLUÇÃO: Normal! Permissões são temporárias
+         Clique em 📂 novamente
+
+================================================================
+VERIFICANDO SE OS ARQUIVOS EXISTEM:
+================================================================
+
+Via Windows Explorer:
+1. Abra o explorador de arquivos
+2. Navegue até: D:\OurDocs\DocCollab\Arquivos
+3. Você DEVE ver:
+   - exemplo_documento.tex
+   - artigo_cientifico.tex
+   - relatorio_tecnico.tex
+   - COMO_USAR.txt
+   - Pasta "imagens"
+
+Via PowerShell:
+cd D:\OurDocs\DocCollab\Arquivos
+dir
+
+Você DEVE ver 4 arquivos .tex/.txt e 1 pasta "imagens"
+
+================================================================
+CONSOLE DO NAVEGADOR (DEBUG):
+================================================================
+
+Se ainda não funcionar, abra o console:
+
+1. Pressione F12
+2. Vá para a aba "Console"
+3. Clique no botão 📂
+4. Veja se há erros em vermelho
+
+Erros comuns:
+- "showDirectoryPicker is not defined"
+  → Use Chrome ou Edge
+
+- "User cancelled the picker"
+  → Você cancelou, tente novamente
+
+- "Permission denied"
+  → Clique em "Permitir"
+
+================================================================
+ALTERNATIVA: BOTÕES NOVO/ABRIR/SALVAR
+================================================================
+
+Se o botão 📂 não funcionar, você também pode:
+
+1. NOVO DOCUMENTO:
+   - Clique em "Novo" na toolbar
+   - Digite o nome
+   - Ctrl+S para salvar
+   - Selecione a pasta "Arquivos"
+
+2. ABRIR DOCUMENTO:
+   - Clique em "Abrir" na toolbar
+   - Navegue até a pasta "Arquivos"
+   - Selecione um arquivo
+
+3. SALVAR DOCUMENTO:
+   - Ctrl+S
+   - Selecione a pasta "Arquivos"
+
+Qualquer uma dessas ações também solicitará
+a seleção da pasta!
+
+================================================================
+POR QUE ISSO É NECESSÁRIO?
+================================================================
+
+SEGURANÇA!
+
+Navegadores NÃO permitem que sites acessem
+seu sistema de arquivos automaticamente.
+
+Você DEVE conceder permissão explícita!
+
+Isso protege você de:
+- Sites maliciosos
+- Roubo de dados
+- Modificação não autorizada
+- Malware
+
+É um recurso de segurança, não um bug!
+
+================================================================
+COMPATIBILIDADE:
+================================================================
+
+✓ Chrome 86+ (Outubro 2020)
+✓ Edge 86+ (Outubro 2020)
+✓ Opera 72+ (Novembro 2020)
+
+✗ Firefox (não suportado ainda)
+✗ Safari (não suportado ainda)
+✗ Internet Explorer (nunca será suportado)
+
+RECOMENDADO: Chrome ou Edge
+
+================================================================
+RESUMO RÁPIDO:
+================================================================
+
+1. Abra o editor
+2. Veja a seção "📁 Arquivos"
+3. Clique no botão [📂] ao lado
+4. Selecione: D:\OurDocs\DocCollab\Arquivos
+5. Clique em "Selecionar pasta"
+6. Permita o acesso
+7. Veja os arquivos aparecerem!
+
+================================================================
+PRECISA DE AJUDA?
+================================================================
+
+1. Leia: EXPLICACAO_FILE_SYSTEM_API.txt
+2. Leia: COMO_USAR.txt
+3. Verifique o console (F12)
+4. Abra uma issue no GitHub
+5. Entre em contato com o suporte
+
+================================================================
+BOM TRABALHO! 🚀
+================================================================
+
+

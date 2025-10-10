@@ -1,38 +1,26 @@
-#!/usr/bin/env python3
-"""
-Script para compilar traduções usando Python
-"""
-
+#!/usr/bin/env python
+"""Compile translation files."""
 import os
-import polib
+from babel.messages import pofile, mofile
 
 def compile_translations():
-    """Compila as traduções do projeto"""
+    languages = ['en', 'es', 'pt']
     
-    project_dir = os.path.dirname(os.path.abspath(__file__))
-    translations_dir = os.path.join(project_dir, 'translations')
-    
-    print("Compilando traducoes...")
-    
-    for lang in ['pt', 'en', 'es']:
-        po_file = os.path.join(translations_dir, lang, 'LC_MESSAGES', 'messages.po')
-        mo_file = os.path.join(translations_dir, lang, 'LC_MESSAGES', 'messages.mo')
+    for lang in languages:
+        po_file = f'translations/{lang}/LC_MESSAGES/messages.po'
+        mo_file = f'translations/{lang}/LC_MESSAGES/messages.mo'
         
-        if os.path.exists(po_file):
-            try:
-                # Carregar arquivo .po
-                po = polib.pofile(po_file)
-                
-                # Salvar como .mo
-                po.save_as_mofile(mo_file)
-                
-                print(f"Traducao {lang} compilada com sucesso")
-            except Exception as e:
-                print(f"Erro ao compilar {lang}: {e}")
-        else:
-            print(f"Arquivo {po_file} nao encontrado")
+        print(f'Compilando {lang}...')
+        
+        with open(po_file, 'rb') as f:
+            catalog = pofile.read_po(f, locale=lang)
+        
+        with open(mo_file, 'wb') as f:
+            mofile.write_mo(f, catalog)
+        
+        print(f'✓ {lang} compilado: {mo_file}')
     
-    print("Compilacao concluida!")
+    print('\n✅ Todas as traduções compiladas!')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     compile_translations()

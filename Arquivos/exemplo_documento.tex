@@ -1,0 +1,102 @@
+% Documento de Exemplo - DocCollab
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes essenciais
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+% Configuração de imagens
+\graphicspath{{imagens/}}
+
+% Informações do documento
+\title{Documento de Exemplo}
+\author{DocCollab}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+
+Este é um documento de exemplo criado no \textbf{DocCollab}, um editor LaTeX colaborativo online.
+
+\subsection{Recursos do Sistema}
+
+O DocCollab oferece diversos recursos:
+
+\begin{itemize}
+  \item Editor LaTeX profissional
+  \item Compilação em tempo real
+  \item Gerenciamento de arquivos
+  \item Gerenciamento de imagens
+  \item Snippets prontos
+  \item Linter LaTeX
+  \item Assistente virtual
+\end{itemize}
+
+\section{Formatação de Texto}
+
+Você pode usar \textbf{negrito}, \textit{itálico}, \underline{sublinhado} e \texttt{monoespaçado}.
+
+\subsection{Listas Numeradas}
+
+\begin{enumerate}
+  \item Primeiro item
+  \item Segundo item
+  \item Terceiro item
+\end{enumerate}
+
+\section{Equações Matemáticas}
+
+Equação inline: $E = mc^2$
+
+Equação em destaque:
+\begin{equation}
+  \int_{a}^{b} f(x) \, dx = F(b) - F(a)
+  \label{eq:fundamental}
+\end{equation}
+
+\section{Tabelas}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|c|r|}
+    \hline
+    \textbf{Coluna 1} & \textbf{Coluna 2} & \textbf{Coluna 3} \\
+    \hline
+    Dado 1 & Dado 2 & Dado 3 \\
+    Dado 4 & Dado 5 & Dado 6 \\
+    \hline
+  \end{tabular}
+  \caption{Exemplo de tabela}
+  \label{tab:exemplo}
+\end{table}
+
+\section{Imagens}
+
+Para inserir imagens, use o botão verde "Imagem" na barra de ferramentas ou arraste a imagem para o editor.
+
+% Exemplo de código para imagem (descomente quando tiver uma imagem)
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.8\textwidth]{imagens/exemplo.png}
+%   \caption{Legenda da imagem}
+%   \label{fig:exemplo}
+% \end{figure}
+
+\section{Referências}
+
+Você pode referenciar a equação~\ref{eq:fundamental} e a tabela~\ref{tab:exemplo}.
+
+\section{Conclusão}
+
+Este documento demonstra os recursos básicos do LaTeX. Experimente editar, adicionar imagens e compilar!
+
+\end{document}
+
+

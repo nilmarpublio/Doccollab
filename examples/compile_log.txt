@@ -1,0 +1,90 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2023-06-01> patch level 1
+L3 programming layer <2023-08-29>
+(/usr/local/texlive/2023/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2023/texmf-dist/tex/latex/base/size10.clo))
+(/usr/local/texlive/2023/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2023/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2023/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2023/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2023/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(./main.aux)
+
+! LaTeX Error: File `graphicx.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+Enter file name: 
+! Emergency stop.
+<read *> 
+         
+l.5 \usepackage
+               {graphicx}^^M
+No pages of output.
+Transcript written on main.log.
+
+! Undefined control sequence.
+l.12 \unknowncommand
+                    {test}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.15 x_
+         i = \sum_{j=1}^n a_{ij}
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+Overfull \hbox (15.23456pt too wide) in paragraph at lines 20--25
+[]\OT1/cmr/m/n/10 This is a very long line that ex-ceeds the text width and will cause an over-full hbox warn-ing in LaTeX com-pi-la-tion.
+ []
+
+LaTeX Warning: Reference `fig:nonexistent' on page 1 undefined on input line 28.
+
+LaTeX Warning: Citation `Smith2023' on page 1 undefined on input line 32.
+
+Package natbib Warning: Citation `Jones2024' on page 1 undefined on input line 32.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 35.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 35.
+
+! Package amsmath Error: Old form `\eqnarray' used;
+(amsmath)                use `align' or `equation+split' instead.
+
+See the amsmath package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.40 \begin{eqnarray}
+                     
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[1{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(./main.aux)
+
+LaTeX Warning: There were undefined references.
+
+LaTeX Warning: There were multiply-defined labels.
+ )
+(see the transcript file for additional information)</usr/local/texlive/2023/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on main.pdf (1 page, 28456 bytes).
+Transcript written on main.log.
+
+
+

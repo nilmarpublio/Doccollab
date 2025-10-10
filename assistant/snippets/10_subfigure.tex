@@ -1,0 +1,28 @@
+% Snippet: Subfiguras
+% Categoria: Figures
+% Descrição: Múltiplas figuras lado a lado com legendas individuais
+
+% No preâmbulo, adicione:
+% \usepackage{subcaption}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagem1.png}
+        \caption{Primeira subfigura}
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagem2.png}
+        \caption{Segunda subfigura}
+        \label{fig:sub2}
+    \end{subfigure}
+    \caption{Comparação entre duas imagens}
+    \label{fig:comparacao}
+\end{figure}
+
+
+
