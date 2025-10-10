@@ -756,16 +756,13 @@ class LaTeXEditor {
   // ============================================================================
   
   async requestWorkingDirectory() {
-    if (!window.showDirectoryPicker) {
-      alert('Seu navegador não suporta acesso a arquivos locais.\n\nPor favor, use Chrome ou Edge atualizado.');
-      return;
-    }
+    // Sistema funciona via upload/download - não precisa de permissões especiais
+    console.log('[FileSystem] Usando modo compatível (upload/download)');
+    return;
     
     try {
-      const dirHandle = await window.showDirectoryPicker({
-        mode: 'readwrite',
-        startIn: 'documents'
-      });
+      // Código legado removido
+      const dirHandle = null;
       
       this.workingDirectory = dirHandle;
       this.showNotification('✓ Pasta selecionada: ' + dirHandle.name, 'success');
