@@ -1569,6 +1569,41 @@ Escreva seu conteúdo aqui.
     const content = this.editor.value;
     const fileName = this.fileName.textContent;
     
+    // Verificar se estamos em localhost (File System Access API disponível)
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Se estamos em servidor remoto, usar API do backend
+    if (!isLocalhost) {
+      try {
+        const response = await fetch('/api/save-latex', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            filename: fileName,
+            content: content
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          this.fileStatus.textContent = '●';
+          this.fileStatus.style.color = '#68d391';
+          this.isModified = false;
+          this.showNotification('✓ Documento salvo com sucesso!', 'success');
+        } else {
+          throw new Error(data.error || 'Erro ao salvar');
+        }
+        return;
+      } catch (err) {
+        console.error('Erro ao salvar via API:', err);
+        this.showNotification('❌ Erro ao salvar documento!', 'error');
+        return;
+      }
+    }
+    
     // Se temos um fileHandle (File System Access API), salvar diretamente no arquivo
     if (this.currentFileHandle && window.showSaveFilePicker) {
       try {
