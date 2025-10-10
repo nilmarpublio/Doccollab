@@ -2200,47 +2200,59 @@ class LaTeXLinterUI {
     const statusEl = document.getElementById('lintStatus');
     if (statusEl) {
       const total = errors.length + warnings.length;
-      statusEl.textContent = `Completo: ${total} problemas encontrados`;
+      statusEl.textContent = `Completo: ${total} problemas`;
     }
     
-    // Atualizar lista de erros
-    const errorsListEl = document.getElementById('lintErrorsList');
-    if (errorsListEl) {
-      errorsListEl.innerHTML = '';
+    // Atualizar contadores
+    const errorsCountEl = document.getElementById('lintErrors');
+    const warningsCountEl = document.getElementById('lintWarnings');
+    const suggestionsCountEl = document.getElementById('lintSuggestions');
+    
+    if (errorsCountEl) errorsCountEl.textContent = errors.length;
+    if (warningsCountEl) warningsCountEl.textContent = warnings.length;
+    if (suggestionsCountEl) {
+      const suggestionsCount = [...errors, ...warnings].filter(i => i.suggestion).length;
+      suggestionsCountEl.textContent = suggestionsCount;
+    }
+    
+    // Atualizar lista de problemas
+    const issuesEl = document.getElementById('lintIssues');
+    if (issuesEl) {
+      issuesEl.innerHTML = '';
       
       if (errors.length === 0 && warnings.length === 0) {
-        errorsListEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #2ecc71;">✅ Nenhum problema encontrado!</div>';
+        issuesEl.innerHTML = '<div style="padding: 20px; text-align: center; color: #2ecc71;">✅ Nenhum problema encontrado!</div>';
         return;
       }
       
       // Adicionar erros
       errors.forEach(err => {
         const item = document.createElement('div');
-        item.className = 'lint-issue-item error';
+        item.className = 'lint-issue-item';
+        item.style.cssText = 'padding: 12px; margin-bottom: 8px; background: #ffebee; border-left: 4px solid #f44336; border-radius: 4px;';
         item.innerHTML = `
-          <div class="lint-issue-header">
-            <span class="lint-issue-icon">❌</span>
-            <span class="lint-issue-title">${err.message}</span>
-            ${err.line ? `<span class="lint-issue-line">Linha ${err.line}</span>` : '<span class="lint-issue-line">Global</span>'}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-weight: bold; color: #f44336;">❌ ${err.message}</span>
+            ${err.line ? `<span style="color: #666; font-size: 0.9rem;">Linha ${err.line}</span>` : '<span style="color: #666; font-size: 0.9rem;">Global</span>'}
           </div>
-          ${err.suggestion ? `<div class="lint-issue-suggestion">💡 ${err.suggestion}</div>` : ''}
+          ${err.suggestion ? `<div style="color: #1976d2; font-size: 0.9rem; margin-top: 4px;">💡 ${err.suggestion}</div>` : ''}
         `;
-        errorsListEl.appendChild(item);
+        issuesEl.appendChild(item);
       });
       
       // Adicionar avisos
       warnings.forEach(warn => {
         const item = document.createElement('div');
-        item.className = 'lint-issue-item warning';
+        item.className = 'lint-issue-item';
+        item.style.cssText = 'padding: 12px; margin-bottom: 8px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;';
         item.innerHTML = `
-          <div class="lint-issue-header">
-            <span class="lint-issue-icon">⚠️</span>
-            <span class="lint-issue-title">${warn.message}</span>
-            ${warn.line ? `<span class="lint-issue-line">Linha ${warn.line}</span>` : '<span class="lint-issue-line">Global</span>'}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <span style="font-weight: bold; color: #ff9800;">⚠️ ${warn.message}</span>
+            ${warn.line ? `<span style="color: #666; font-size: 0.9rem;">Linha ${warn.line}</span>` : '<span style="color: #666; font-size: 0.9rem;">Global</span>'}
           </div>
-          ${warn.suggestion ? `<div class="lint-issue-suggestion">💡 ${warn.suggestion}</div>` : ''}
+          ${warn.suggestion ? `<div style="color: #1976d2; font-size: 0.9rem; margin-top: 4px;">💡 ${warn.suggestion}</div>` : ''}
         `;
-        errorsListEl.appendChild(item);
+        issuesEl.appendChild(item);
       });
     }
     
