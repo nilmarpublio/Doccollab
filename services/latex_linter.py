@@ -81,6 +81,52 @@ class LaTeXLinter:
     def _check_global(self, content: str):
         """Check global document issues"""
         
+        # Check for duplicate labels
+        labels = re.findall(r'\\label\{([^}]+)\}', content)
+        label_counts = {}
+        for label in labels:
+            label_counts[label] = label_counts.get(label, 0) + 1
+        
+        for label, count in label_counts.items():
+            if count > 1:
+                self.errors.append({
+                    'line': None,
+                    'message': f'Duplicate label "{label}" found {count} times',
+                    'type': 'duplicate_label'
+                })
+        
+        # Check for missing referenced files
+        cite_matches = re.findall(r'\\cite\{([^}]+)\}', content)
+        if cite_matches and '\\bibliography{' not in content and '\\begin{thebibliography}' not in content:
+            self.warnings.append({
+                'line': None,
+                'message': f'Found \\cite commands but no \\bibliography or thebibliography environment',
+                'type': 'missing_bibliography'
+            })
+        
+        # Check for bibliography without file
+        bib_matches = re.findall(r'\\bibliography\{([^}]+)\}', content)
+        if bib_matches:
+            for bib_file in bib_matches:
+                self.warnings.append({
+                    'line': None,
+                    'message': f'Bibliography file "{bib_file}.bib" referenced - ensure it exists',
+                    'type': 'bibliography_file'
+                })
+        
+        # Check for text after \end{environment}
+        lines = content.split('\n')
+        for i, line in enumerate(lines, 1):
+            if '\\end{' in line:
+                # Check if there's non-whitespace text after \end{...}
+                match = re.search(r'\\end\{[^}]+\}(.+)', line)
+                if match and match.group(1).strip() and not match.group(1).strip().startswith('%'):
+                    self.errors.append({
+                        'line': i,
+                        'message': f'Text found after \\end command: "{match.group(1).strip()}"',
+                        'type': 'text_after_end'
+                    })
+        
         # Check for balanced braces
         brace_count = content.count('{') - content.count('}')
         if brace_count != 0:
