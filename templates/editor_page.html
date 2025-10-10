@@ -705,6 +705,85 @@
     height: 28px;
   }
 }
+
+/* ========================================
+   LINTER - Destaque de Erros no Editor
+   ======================================== */
+.lint-error-marker {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 0, 0, 0.1);
+  border-left: 3px solid #dc3545;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lint-warning-marker {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 193, 7, 0.1);
+  border-left: 3px solid #ffc107;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lint-icon {
+  position: absolute;
+  left: -25px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.lint-icon-error {
+  color: #dc3545;
+}
+
+.lint-icon-warning {
+  color: #ffc107;
+}
+
+.lint-tooltip {
+  position: absolute;
+  background: #2c3e50;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 300px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  pointer-events: none;
+  white-space: pre-wrap;
+}
+
+.lint-tooltip::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: #2c3e50;
+}
+
+.lint-tooltip-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.lint-tooltip-suggestion {
+  color: #a8dadc;
+  font-style: italic;
+  margin-top: 4px;
+}
 </style>
 
 <script>
@@ -2022,9 +2101,170 @@ Escreva seu conteúdo aqui.
   }
 }
 
+// ============================================================================
+// LINTER UI - Integração Visual do Linter no Editor
+// ============================================================================
+class LaTeXLinterUI {
+  constructor(editor) {
+    this.editor = editor;
+    this.lintMarkers = [];
+    this.lintTimeout = null;
+    this.isLinting = false;
+    
+    // Adicionar listener para verificar enquanto digita
+    this.editor.addEventListener('input', () => this.scheduleLint());
+  }
+  
+  scheduleLint() {
+    // Debounce: esperar 2 segundos após parar de digitar
+    clearTimeout(this.lintTimeout);
+    this.lintTimeout = setTimeout(() => this.runLint(), 2000);
+  }
+  
+  async runLint() {
+    if (this.isLinting) return;
+    this.isLinting = true;
+    
+    try {
+      const content = this.editor.value;
+      if (!content.trim()) {
+        this.clearMarkers();
+        this.isLinting = false;
+        return;
+      }
+      
+      const response = await fetch('/api/lint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      
+      if (!response.ok) {
+        console.error('Lint failed:', response.status);
+        this.isLinting = false;
+        return;
+      }
+      
+      const data = await response.json();
+      this.displayLintResults(data);
+      
+    } catch (error) {
+      console.error('Lint error:', error);
+    } finally {
+      this.isLinting = false;
+    }
+  }
+  
+  displayLintResults(data) {
+    this.clearMarkers();
+    
+    const errors = data.errors || [];
+    const warnings = data.warnings || [];
+    
+    // Agrupar por linha
+    const issuesByLine = {};
+    
+    errors.forEach(err => {
+      const line = err.line || 'global';
+      if (!issuesByLine[line]) issuesByLine[line] = [];
+      issuesByLine[line].push({ ...err, type: 'error' });
+    });
+    
+    warnings.forEach(warn => {
+      const line = warn.line || 'global';
+      if (!issuesByLine[line]) issuesByLine[line] = [];
+      issuesByLine[line].push({ ...warn, type: 'warning' });
+    });
+    
+    // Criar marcadores para cada linha com erro
+    Object.keys(issuesByLine).forEach(lineNum => {
+      if (lineNum === 'global') return; // Ignorar erros globais por enquanto
+      
+      const issues = issuesByLine[lineNum];
+      const hasError = issues.some(i => i.type === 'error');
+      
+      this.createLineMarker(parseInt(lineNum), issues, hasError ? 'error' : 'warning');
+    });
+    
+    // Atualizar contador na status bar (se existir)
+    const errorCount = errors.length;
+    const warningCount = warnings.length;
+    console.log(`[Linter] ${errorCount} erros, ${warningCount} avisos`);
+  }
+  
+  createLineMarker(lineNum, issues, type) {
+    const editorWrapper = this.editor.parentElement;
+    const lineHeight = parseInt(getComputedStyle(this.editor).lineHeight) || 20;
+    const top = (lineNum - 1) * lineHeight;
+    
+    // Criar marcador de fundo
+    const marker = document.createElement('div');
+    marker.className = type === 'error' ? 'lint-error-marker' : 'lint-warning-marker';
+    marker.style.top = `${top}px`;
+    marker.style.height = `${lineHeight}px`;
+    
+    // Criar ícone na margem
+    const icon = document.createElement('div');
+    icon.className = `lint-icon lint-icon-${type}`;
+    icon.style.top = `${top}px`;
+    icon.innerHTML = type === 'error' ? '⚠️' : '⚡';
+    icon.title = issues.map(i => i.message).join('\n');
+    
+    // Adicionar tooltip ao passar o mouse
+    icon.addEventListener('mouseenter', (e) => this.showTooltip(e, issues, type));
+    icon.addEventListener('mouseleave', () => this.hideTooltip());
+    
+    editorWrapper.appendChild(marker);
+    editorWrapper.appendChild(icon);
+    
+    this.lintMarkers.push(marker, icon);
+  }
+  
+  showTooltip(event, issues, type) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'lint-tooltip';
+    tooltip.id = 'lintTooltip';
+    
+    let html = '';
+    issues.forEach((issue, idx) => {
+      if (idx > 0) html += '<hr style="margin: 8px 0; border-color: rgba(255,255,255,0.2);">';
+      html += `<div class="lint-tooltip-title">${type === 'error' ? '❌' : '⚠️'} ${issue.message}</div>`;
+      if (issue.suggestion) {
+        html += `<div class="lint-tooltip-suggestion">💡 ${issue.suggestion}</div>`;
+      }
+    });
+    
+    tooltip.innerHTML = html;
+    
+    const rect = event.target.getBoundingClientRect();
+    tooltip.style.left = `${rect.right + 10}px`;
+    tooltip.style.top = `${rect.top}px`;
+    
+    document.body.appendChild(tooltip);
+  }
+  
+  hideTooltip() {
+    const tooltip = document.getElementById('lintTooltip');
+    if (tooltip) tooltip.remove();
+  }
+  
+  clearMarkers() {
+    this.lintMarkers.forEach(marker => marker.remove());
+    this.lintMarkers = [];
+    this.hideTooltip();
+  }
+}
+
 // Inicializar editor quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
   window.latexEditor = new LaTeXEditor();
+  
+  // Inicializar Linter UI
+  const editorElement = document.getElementById('latexEditor');
+  if (editorElement) {
+    window.linterUI = new LaTeXLinterUI(editorElement);
+    console.log('[Linter] Integração visual ativada');
+  }
 });
 
 // Funções globais para os botões
