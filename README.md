@@ -1142,12 +1142,104 @@ MIT License - veja [LICENSE](LICENSE)
 
 ---
 
-**Última atualização**: 2025-10-07  
-**Versão**: 1.0.0  
-**Status**: ✅ **PRODUÇÃO**
+---
+
+### **DIA 8-10 (08-10/10/2025): DEPLOY + LINTER VISUAL** 🚀
+
+#### **Deploy em Produção (DigitalOcean)**
+```
+08/10 - Setup servidor Ubuntu
+      - Configuração Gunicorn + Supervisor
+      - Instalação LaTeX (texlive-full)
+      - Configuração firewall (UFW)
+      - Correção de permissões
+      - Instalação babel-portuguese
+      - Variáveis de ambiente (TEXMFVAR)
+```
+
+**Implementado**:
+- ✅ Deploy completo em servidor DigitalOcean
+- ✅ Gunicorn com workers `eventlet` (WebSocket)
+- ✅ Supervisor para gerenciamento de processos
+- ✅ Compilação LaTeX funcionando (documentos complexos)
+- ✅ Pacotes LaTeX instalados (`babel-portuguese`)
+- ✅ Variáveis de ambiente corretas
+- ✅ Permissões de arquivo configuradas
+
+#### **LaTeX Linter Visual (Integração no Editor)**
+```
+09-10/10 - Linter visual no editor
+         - Tooltips com erros/avisos
+         - Ícones na margem esquerda
+         - Destaque de linhas problemáticas
+         - Card do Linter atualizado
+         - Verificação automática (debounce 2s)
+         - Salvamento via API backend
+```
+
+**Implementado**:
+- ✅ **Classe `LaTeXLinterUI`** (JavaScript)
+  - Integração visual no editor
+  - Tooltips ao passar o mouse
+  - Ícones de erro/aviso (⚠️/⚡)
+  - Destaque vermelho/amarelo nas linhas
+  - Verificação automática enquanto digita
+- ✅ **Card do Linter atualizado**
+  - Status: "Completo: X problemas"
+  - Contadores: Erros/Avisos/Sugestões
+  - Lista detalhada de problemas
+  - Botão "Re-analisar Documento"
+- ✅ **Melhorias no `latex_linter.py`**
+  - Ignorar linhas vazias
+  - Detecção de typos comuns
+  - Verificação de math mode
+  - Verificação de quotes
+  - Detecção de pacotes faltantes
+- ✅ **Salvamento via API**
+  - Detecção localhost vs remoto
+  - `/api/save-latex` para servidores remotos
+  - File System Access API para localhost
+  - Notificações de sucesso/erro
+
+**Arquivos Modificados**:
+- `DocCollab/templates/editor_page.html` (+200 linhas)
+  - CSS para marcadores visuais
+  - Classe `LaTeXLinterUI`
+  - Função `updateLintCard()`
+  - Salvamento híbrido (local/remoto)
+- `DocCollab/services/latex_linter.py` (+50 linhas)
+  - Ignorar linhas vazias
+  - Novos checks de linha
+  - Método `auto_fix()`
+- `DocCollab/app.py`
+  - Rotas `/api/lint` e `/api/lint/auto-fix`
+  - Rota `/api/save-latex` já existente
 
 ---
 
-**Desenvolvido com ❤️ em 4 dias intensivos!**
+**Última atualização**: 2025-10-10  
+**Versão**: 1.1.0  
+**Status**: ✅ **PRODUÇÃO** (DigitalOcean)
+
+---
+
+## 🌐 **DEPLOY**
+
+### **Servidor de Produção**
+- **Provider**: DigitalOcean
+- **OS**: Ubuntu 22.04 LTS
+- **Specs**: 2 vCPU, 4GB RAM
+- **Stack**: 
+  - Gunicorn (eventlet workers)
+  - Supervisor (process manager)
+  - UFW (firewall)
+  - TeX Live 2023 (LaTeX)
+
+### **Instruções de Deploy**
+Veja: [DEPLOY_INSTRUCTIONS.md](DEPLOY_INSTRUCTIONS.md)
+
+---
+
+**Desenvolvido com ❤️ em 7 dias intensivos!**
 
 **🎉 Obrigado por usar o DocCollab! 
