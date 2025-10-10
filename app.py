@@ -463,19 +463,19 @@ def lint_latex_api():
     try:
         data = request.get_json()
         content = data.get('content', '')
-        filename = data.get('filename', 'main.tex')
         
         linter = LaTeXLinter()
-        issues = linter.lint_content(content, filename)
-        fixes = linter.generate_fixes(content)
-        summary = linter.get_summary()
+        result = linter.lint(content)
+        
+        total_issues = len(result['errors']) + len(result['warnings'])
         
         return jsonify({
             'success': True,
-            'issues': [issue.to_dict() for issue in issues],
-            'fixes': fixes,
-            'summary': summary,
-            'message': f'Lint completo: {summary["total"]} issues encontrados'
+            'errors': result['errors'],
+            'warnings': result['warnings'],
+            'suggestions': result.get('suggestions', []),
+            'total': total_issues,
+            'message': f'Lint completo: {len(result["errors"])} erros, {len(result["warnings"])} avisos'
         })
     except Exception as e:
         return jsonify({
@@ -494,48 +494,22 @@ def lint_auto_fix_api():
         fix_ids = data.get('fix_ids', [])  # IDs dos fixes a aplicar
         
         linter = LaTeXLinter()
-        issues = linter.lint_content(content)
-        fixes = linter.generate_fixes(content)
+        fixed_content = linter.auto_fix(content)
         
-        # Filtrar fixes solicitados
-        selected_fixes = [f for f in fixes if f.get('issue_id') in fix_ids] if fix_ids else fixes
+        # Verificar o que foi corrigido
+        original_issues = linter.lint(content)
+        fixed_issues = linter.lint(fixed_content)
         
-        # Aplicar fixes em ordem reversa (de baixo para cima) para não afetar posições
-        modified_content = content
-        applied_fixes = []
-        
-        for fix in reversed(sorted(selected_fixes, key=lambda f: f.get('position', 0))):
-            try:
-                if fix['type'] == 'refactor':
-                    from services.latex_refactors import PatchApplier
-                    modified_content, metadata = PatchApplier.apply_patch(modified_content, {
-                        'type': 'refactor',
-                        'refactor_type': fix.get('refactor_type'),
-                        'description': fix.get('description')
-                    })
-                    applied_fixes.append(fix['issue_id'])
-                
-                elif fix['type'] == 'insert':
-                    pos = fix.get('position', 0)
-                    content_to_insert = fix.get('content', '')
-                    modified_content = modified_content[:pos] + content_to_insert + modified_content[pos:]
-                    applied_fixes.append(fix['issue_id'])
-                
-                elif fix['type'] == 'replace_pattern':
-                    pattern = fix.get('pattern')
-                    replacement = fix.get('replacement')
-                    modified_content = re.sub(pattern, replacement, modified_content, flags=re.MULTILINE)
-                    applied_fixes.append(fix['issue_id'])
-                    
-            except Exception as e:
-                print(f'[API] Erro ao aplicar fix {fix["issue_id"]}: {str(e)}')
+        issues_fixed = (len(original_issues['errors']) + len(original_issues['warnings'])) - \
+                      (len(fixed_issues['errors']) + len(fixed_issues['warnings']))
         
         return jsonify({
             'success': True,
-            'modified_content': modified_content,
-            'applied_fixes': applied_fixes,
-            'total_applied': len(applied_fixes),
-            'message': f'{len(applied_fixes)} correções aplicadas com sucesso'
+            'content': fixed_content,
+            'issues_fixed': issues_fixed,
+            'remaining_errors': len(fixed_issues['errors']),
+            'remaining_warnings': len(fixed_issues['warnings']),
+            'message': f'{issues_fixed} problemas corrigidos automaticamente'
         })
         
     except Exception as e:

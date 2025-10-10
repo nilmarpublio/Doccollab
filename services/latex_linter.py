@@ -13,6 +13,7 @@ class LaTeXLinter:
     def __init__(self):
         self.warnings = []
         self.errors = []
+        self.suggestions = []
     
     def lint(self, content: str) -> Dict[str, List[Dict]]:
         """
@@ -20,54 +21,113 @@ class LaTeXLinter:
         
         Args:
             content: LaTeX content to lint
-            
+        
         Returns:
-            Dictionary with 'errors' and 'warnings' lists
+            Dictionary with 'errors', 'warnings', and 'suggestions' lists
         """
         self.warnings = []
         self.errors = []
+        self.suggestions = []
         
         lines = content.split('\n')
         
         for line_num, line in enumerate(lines, 1):
-            self._check_line(line, line_num)
+            self._check_line(line, line_num, lines)
         
         self._check_global(content)
         
         return {
             'errors': self.errors,
-            'warnings': self.warnings
+            'warnings': self.warnings,
+            'suggestions': self.suggestions
         }
     
-    def _check_line(self, line: str, line_num: int):
+    def _check_line(self, line: str, line_num: int, all_lines: List[str]):
         """Check a single line for issues"""
         
-        # Check for unescaped special characters
-        special_chars = ['&', '%', '$', '#', '_', '{', '}']
-        for char in special_chars:
-            if char in line and f'\\{char}' not in line:
-                # Check if it's in a command or environment
-                if not self._is_in_command(line, char):
-                    self.warnings.append({
-                        'line': line_num,
-                        'message': f'Potentially unescaped special character: {char}',
-                        'type': 'special_char'
-                    })
+        # Skip comments
+        if line.strip().startswith('%'):
+            return
+        
+        # Check for unmatched braces on single line
+        line_no_comments = re.sub(r'%.*$', '', line)
+        open_braces = line_no_comments.count('{')
+        close_braces = line_no_comments.count('}')
+        if open_braces != close_braces:
+            self.warnings.append({
+                'line': line_num,
+                'message': f'Unmatched braces on this line: {open_braces} opening, {close_braces} closing',
+                'type': 'braces_line',
+                'suggestion': 'Check if you forgot to close or open a brace'
+            })
+        
+        # Check for common command typos
+        typos = {
+            r'\\begind{': r'\\begin{',
+            r'\\endd{': r'\\end{',
+            r'\\docmentclass': r'\\documentclass',
+            r'\\uspackage': r'\\usepackage',
+            r'\\includ graphics': r'\\includegraphics',
+            r'\\lable{': r'\\label{',
+            r'\\rf{': r'\\ref{',
+        }
+        for typo, correct in typos.items():
+            if re.search(typo, line):
+                self.errors.append({
+                    'line': line_num,
+                    'message': f'Possible typo: found "{typo.replace("\\\\", "\\")}"',
+                    'type': 'typo',
+                    'suggestion': f'Did you mean "{correct.replace("\\\\", "\\")}"?',
+                    'fix': line.replace(typo.replace('\\\\', '\\'), correct.replace('\\\\', '\\'))
+                })
+        
+        # Check for missing $ in math mode
+        if re.search(r'[^$\\]_[^{]', line) or re.search(r'[^$\\]\^[^{]', line):
+            self.errors.append({
+                'line': line_num,
+                'message': 'Subscript (_) or superscript (^) outside math mode',
+                'type': 'math_mode',
+                'suggestion': 'Wrap in $ $ for inline math or use \\[ \\] for display math'
+            })
         
         # Check for common quote mistakes
-        if '"' in line:
+        if '"' in line_no_comments:
             self.warnings.append({
                 'line': line_num,
                 'message': 'Use `` and \'\' instead of " for quotes in LaTeX',
-                'type': 'quote_style'
+                'type': 'quote_style',
+                'suggestion': 'Replace " with `` (opening) or \'\' (closing)',
+                'fix': line.replace('"', '``', 1).replace('"', "''", 1)
             })
+        
+        # Check for \\ at end of line (common mistake)
+        if line.strip().endswith('\\\\') and not any(env in line for env in ['tabular', 'array', 'align']):
+            self.warnings.append({
+                'line': line_num,
+                'message': 'Double backslash (\\\\) at end of line',
+                'type': 'line_break',
+                'suggestion': 'Use blank line for paragraph break, or remove if unintended'
+            })
+        
+        # Check for missing packages
+        if '\\includegraphics' in line and line_num < 20:
+            # Check if graphicx is loaded (rough heuristic)
+            preamble = ''.join(all_lines[:line_num])
+            if 'graphicx' not in preamble:
+                self.errors.append({
+                    'line': line_num,
+                    'message': '\\includegraphics requires \\usepackage{graphicx}',
+                    'type': 'missing_package',
+                    'suggestion': 'Add \\usepackage{graphicx} to preamble'
+                })
         
         # Check for trailing whitespace
         if line.endswith(' ') or line.endswith('\t'):
             self.warnings.append({
                 'line': line_num,
                 'message': 'Trailing whitespace',
-                'type': 'whitespace'
+                'type': 'whitespace',
+                'fix': line.rstrip()
             })
         
         # Check for very long lines
@@ -75,7 +135,8 @@ class LaTeXLinter:
             self.warnings.append({
                 'line': line_num,
                 'message': f'Line too long ({len(line)} characters)',
-                'type': 'line_length'
+                'type': 'line_length',
+                'suggestion': 'Consider breaking into multiple lines for readability'
             })
     
     def _check_global(self, content: str):
@@ -270,6 +331,49 @@ class LaTeXLinter:
         
         return list(undefined)
     
+    def auto_fix(self, content: str) -> str:
+        """
+        Automatically fix common issues
+        
+        Args:
+            content: LaTeX content
+            
+        Returns:
+            Fixed content
+        """
+        fixed = content
+        
+        # Fix trailing whitespace
+        lines = fixed.split('\n')
+        lines = [line.rstrip() for line in lines]
+        fixed = '\n'.join(lines)
+        
+        # Fix common quote mistakes
+        # This is simplistic - real implementation would need better logic
+        fixed = re.sub(r'"([^"]+)"', r'``\1' + "''", fixed)
+        
+        # Remove duplicate \end{document}
+        end_doc_count = fixed.count('\\end{document}')
+        if end_doc_count > 1:
+            # Keep only the first occurrence
+            parts = fixed.split('\\end{document}')
+            fixed = parts[0] + '\\end{document}'
+        
+        # Remove content after \end{document}
+        if '\\end{document}' in fixed:
+            idx = fixed.rfind('\\end{document}')
+            fixed = fixed[:idx + len('\\end{document}')]
+        
+        # Remove duplicate \documentclass
+        documentclass_matches = list(re.finditer(r'\\documentclass[^\n]*\n', fixed))
+        if len(documentclass_matches) > 1:
+            # Keep only the first one
+            first_match = documentclass_matches[0]
+            for match in documentclass_matches[1:]:
+                fixed = fixed[:match.start()] + fixed[match.end():]
+        
+        return fixed
+    
     @staticmethod
     def suggest_packages(content: str) -> List[Tuple[str, str]]:
         """
@@ -277,7 +381,7 @@ class LaTeXLinter:
         
         Args:
             content: LaTeX content
-            
+        
         Returns:
             List of (package_name, reason) tuples
         """
