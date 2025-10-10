@@ -3755,7 +3755,8 @@ class LintManager {
   }
 }
 
-const lintManager = new LintManager();
+// DESABILITADO: Conflita com LaTeXLinterUI
+// const lintManager = new LintManager();
 
 function toggleLint() {
   const panel = document.getElementById('lintPanel');
@@ -3765,12 +3766,17 @@ function toggleLint() {
 }
 
 function runLint() {
-  const content = window.latexEditor.editor.value;
-  lintManager.runLint(content);
+  // Usar o novo LaTeXLinterUI
+  if (window.linterUI) {
+    window.linterUI.runLint();
+  } else {
+    console.error('LaTeXLinterUI não inicializado');
+  }
 }
 
 function applyAllFixes() {
-  lintManager.applyAllFixes();
+  // TODO: Implementar auto-fix no LaTeXLinterUI
+  console.warn('Auto-fix ainda não implementado no LaTeXLinterUI');
 }
 
 // Adicionar botão ao documento
