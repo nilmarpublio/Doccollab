@@ -1604,10 +1604,30 @@ Escreva seu conteúdo aqui.
       }
     }
     
-    // Se temos um fileHandle (File System Access API), salvar diretamente no arquivo
-    if (this.currentFileHandle && window.showSaveFilePicker) {
+    // No localhost, sempre abrir diálogo de salvamento
+    if (window.showSaveFilePicker) {
       try {
-        const writable = await this.currentFileHandle.createWritable();
+        // Configurar opções do diálogo
+        const options = {
+          suggestedName: fileName || 'documento.tex',
+          types: [{
+            description: 'LaTeX Document',
+            accept: {'text/plain': ['.tex']}
+          }],
+          startIn: 'documents' // Tentar iniciar em Documentos
+        };
+        
+        // Se temos um diretório de trabalho, usar ele
+        if (this.workingDirectory) {
+          options.startIn = this.workingDirectory;
+        }
+        
+        const fileHandle = await window.showSaveFilePicker(options);
+        
+        this.currentFileHandle = fileHandle;
+        this.fileName.textContent = fileHandle.name;
+        
+        const writable = await fileHandle.createWritable();
         await writable.write(content);
         await writable.close();
         
@@ -1939,12 +1959,9 @@ Escreva seu conteúdo aqui.
           
           this.showNotification('✓ Compilação bem-sucedida! ', 'success', downloadLink);
           
-          // Abrir automaticamente na página de visualização
+          // Abrir PDF em modal ao invés de nova aba
           setTimeout(() => {
-            const pdfWindow = window.open(viewerUrl, '_blank');
-            if (pdfWindow) {
-              pdfWindow.focus();
-            }
+            this.showPDFModal(viewerUrl, pdfFilename);
           }, 300);
         } else {
           this.showNotification('✓ Compilação bem-sucedida!', 'success');
@@ -2003,6 +2020,145 @@ Escreva seu conteúdo aqui.
   closeTab(fileName) {
     if (this.isModified && !confirm('Documento não salvo. Deseja fechar?')) return;
     this.showNotification('Aba fechada!', 'info');
+  }
+  
+  showPDFModal(pdfUrl, filename) {
+    // Criar modal se não existir
+    let modal = document.getElementById('pdfModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'pdfModal';
+      modal.innerHTML = `
+        <div class="pdf-modal-overlay" onclick="closePDFModal()"></div>
+        <div class="pdf-modal-content">
+          <div class="pdf-modal-header">
+            <h3><i class="fas fa-file-pdf"></i> <span id="pdfModalTitle">PDF Compilado</span></h3>
+            <button onclick="closePDFModal()" class="pdf-modal-close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="pdf-modal-body">
+            <iframe id="pdfIframe" style="width: 100%; height: 100%; border: none;"></iframe>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      
+      // Adicionar estilos
+      const style = document.createElement('style');
+      style.textContent = `
+        #pdfModal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10000;
+          display: none;
+          animation: fadeIn 0.2s;
+        }
+        
+        #pdfModal.active {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .pdf-modal-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.7);
+          backdrop-filter: blur(4px);
+        }
+        
+        .pdf-modal-content {
+          position: relative;
+          width: 90%;
+          max-width: 1200px;
+          height: 90%;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+          display: flex;
+          flex-direction: column;
+          animation: slideUp 0.3s ease;
+        }
+        
+        .pdf-modal-header {
+          padding: 1.5rem;
+          border-bottom: 1px solid #e0e0e0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-radius: 12px 12px 0 0;
+        }
+        
+        .pdf-modal-header h3 {
+          margin: 0;
+          font-size: 1.25rem;
+        }
+        
+        .pdf-modal-close {
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          font-size: 1.5rem;
+          cursor: pointer;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s;
+        }
+        
+        .pdf-modal-close:hover {
+          background: rgba(255,255,255,0.3);
+        }
+        
+        .pdf-modal-body {
+          flex: 1;
+          padding: 1rem;
+          overflow: hidden;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    // Atualizar conteúdo e mostrar
+    document.getElementById('pdfModalTitle').textContent = filename || 'PDF Compilado';
+    document.getElementById('pdfIframe').src = pdfUrl;
+    modal.classList.add('active');
+    
+    // Permitir fechar com ESC
+    document.addEventListener('keydown', function escHandler(e) {
+      if (e.key === 'Escape') {
+        closePDFModal();
+        document.removeEventListener('keydown', escHandler);
+      }
+    });
   }
   
   showNotification(message, type, extraElement = null) {
@@ -4154,6 +4310,19 @@ if (projectId > 0) {
   
   // Expor globalmente para uso em outras funções
   window.fileTree = fileTree;
+}
+
+// Função global para fechar modal de PDF
+function closePDFModal() {
+  const modal = document.getElementById('pdfModal');
+  if (modal) {
+    modal.classList.remove('active');
+    // Limpar iframe para economizar memória
+    setTimeout(() => {
+      const iframe = document.getElementById('pdfIframe');
+      if (iframe) iframe.src = '';
+    }, 300);
+  }
 }
 </script>
 
