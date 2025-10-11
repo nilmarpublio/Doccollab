@@ -170,7 +170,7 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             flash('Login realizado com sucesso!', 'success')
-        return redirect(url_for('dashboard'))
+            return redirect(url_for('dashboard'))
         else:
             flash('Email ou senha incorretos!', 'error')
     
@@ -195,7 +195,7 @@ def register():
         db.session.commit()
 
         flash('Conta criada com sucesso! Faça login.', 'success')
-            return redirect(url_for('login'))
+        return redirect(url_for('login'))
 
     return render_template('auth/register.html')
 
