@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Groups') }} - DocCollab{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="font-size: 2rem; color: #2c3e50;">
+      <i class="fas fa-users"></i> {{ _('My Groups') }}
+    </h1>
+    <button onclick="showCreateGroupModal()" class="btn btn-primary">
+      <i class="fas fa-plus"></i> {{ _('Create Group') }}
+    </button>
+  </div>
+
+  <!-- Lista de Grupos -->
+  <div id="groupsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+    <!-- Grupos serão carregados aqui -->
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" style="text-align: center; padding: 3rem;">
+    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #3498db;"></i>
+    <p style="margin-top: 1rem; color: #7f8c8d;">{{ _('Loading groups...') }}</p>
+  </div>
+
+  <!-- Empty State -->
+  <div id="emptyState" style="display: none; text-align: center; padding: 3rem;">
+    <i class="fas fa-users" style="font-size: 4rem; color: #bdc3c7;"></i>
+    <h3 style="margin-top: 1rem; color: #7f8c8d;">{{ _('No groups yet') }}</h3>
+    <p style="color: #95a5a6;">{{ _('Create your first group to start collaborating') }}</p>
+    <button onclick="showCreateGroupModal()" class="btn btn-primary" style="margin-top: 1rem;">
+      <i class="fas fa-plus"></i> {{ _('Create Group') }}
+    </button>
+  </div>
+</div>
+
+<!-- Modal: Criar Grupo -->
+<div id="createGroupModal" class="modal" style="display: none;">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2>{{ _('Create New Group') }}</h2>
+      <button onclick="hideCreateGroupModal()" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="createGroupForm" onsubmit="createGroup(event)">
+        <div class="form-group">
+          <label for="groupName">{{ _('Group Name') }} *</label>
+          <input type="text" id="groupName" required maxlength="100" 
+                 placeholder="{{ _('Enter group name') }}" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="groupDescription">{{ _('Description') }}</label>
+          <textarea id="groupDescription" rows="3" 
+                    placeholder="{{ _('Enter group description (optional)') }}" 
+                    class="form-control"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="hideCreateGroupModal()" class="btn btn-secondary">
+            {{ _('Cancel') }}
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check"></i> {{ _('Create') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .group-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+
+  .group-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  .group-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .group-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  .group-info h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #2c3e50;
+  }
+
+  .group-info p {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+    color: #7f8c8d;
+  }
+
+  .group-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ecf0f1;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #7f8c8d;
+    font-size: 0.875rem;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #ecf0f1;
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #7f8c8d;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .close-btn:hover {
+    color: #2c3e50;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-primary {
+    background: #3498db;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #2980b9;
+  }
+
+  .btn-secondary {
+    background: #95a5a6;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: #7f8c8d;
+  }
+</style>
+
+<script>
+  // Carregar grupos ao iniciar
+  document.addEventListener('DOMContentLoaded', () => {
+    loadGroups();
+  });
+
+  async function loadGroups() {
+    try {
+      const response = await fetch('/api/groups');
+      const data = await response.json();
+
+      document.getElementById('loading').style.display = 'none';
+
+      if (data.success && data.groups.length > 0) {
+        renderGroups(data.groups);
+      } else {
+        document.getElementById('emptyState').style.display = 'block';
+      }
+    } catch (error) {
+      console.error('Erro ao carregar grupos:', error);
+      document.getElementById('loading').style.display = 'none';
+      alert('Erro ao carregar grupos');
+    }
+  }
+
+  function renderGroups(groups) {
+    const container = document.getElementById('groupsList');
+    container.innerHTML = '';
+
+    groups.forEach(group => {
+      const card = document.createElement('div');
+      card.className = 'group-card';
+      card.onclick = () => window.location.href = `/groups/${group.id}`;
+
+      card.innerHTML = `
+        <div class="group-card-header">
+          <div class="group-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="group-info">
+            <h3>${escapeHtml(group.name)}</h3>
+            <p>${escapeHtml(group.description || 'Sem descrição')}</p>
+          </div>
+        </div>
+        <div class="group-stats">
+          <div class="stat">
+            <i class="fas fa-user"></i>
+            <span>${group.member_count} ${group.member_count === 1 ? 'membro' : 'membros'}</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-file-alt"></i>
+            <span>${group.document_count} ${group.document_count === 1 ? 'documento' : 'documentos'}</span>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function showCreateGroupModal() {
+    document.getElementById('createGroupModal').style.display = 'flex';
+  }
+
+  function hideCreateGroupModal() {
+    document.getElementById('createGroupModal').style.display = 'none';
+    document.getElementById('createGroupForm').reset();
+  }
+
+  async function createGroup(event) {
+    event.preventDefault();
+
+    const name = document.getElementById('groupName').value.trim();
+    const description = document.getElementById('groupDescription').value.trim();
+
+    if (!name) {
+      alert('Nome do grupo é obrigatório');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/groups', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, description})
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        hideCreateGroupModal();
+        // Redirecionar para o grupo criado
+        window.location.href = `/groups/${data.group.id}`;
+      } else {
+        alert(data.error || 'Erro ao criar grupo');
+      }
+    } catch (error) {
+      console.error('Erro ao criar grupo:', error);
+      alert('Erro ao criar grupo');
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>
+{% endblock %}
+

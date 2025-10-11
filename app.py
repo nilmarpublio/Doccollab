@@ -219,6 +219,33 @@ def pricing():
     """Página de preços"""
     return render_template('pricing.html')
 
+@app.route('/groups')
+@login_required
+def groups():
+    """Página de grupos"""
+    return render_template('groups.html')
+
+@app.route('/groups/<int:group_id>')
+@login_required
+def group_detail(group_id):
+    """Página de detalhes do grupo"""
+    from models.group import Group
+    from models.group_member import GroupMember
+    
+    # Verificar se usuário é membro
+    member = GroupMember.query.filter_by(
+        group_id=group_id,
+        user_id=current_user.id
+    ).first()
+    
+    if not member:
+        flash('Você não é membro deste grupo', 'error')
+        return redirect(url_for('groups'))
+    
+    group = Group.query.get_or_404(group_id)
+    
+    return render_template('group_detail.html', group=group, user_role=member.role)
+
 
 
 # ===== ROTAS DE PROJETOS =====
