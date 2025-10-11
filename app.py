@@ -2091,6 +2091,202 @@ def handle_assistant_message(data):
         return error_response
 
 # ============================================================================
+# SOCKET.IO - GRUPOS
+# ============================================================================
+
+@socketio.on('join_group')
+def handle_join_group(data):
+    """Entrar em sala do grupo"""
+    try:
+        from models.group_member import GroupMember
+        from models.group_message import GroupMessage
+        
+        group_id = data.get('group_id')
+        
+        if not current_user.is_authenticated:
+            return {'success': False, 'error': 'Usuário não autenticado'}
+        
+        # Verificar permissão
+        member = GroupMember.query.filter_by(
+            group_id=group_id,
+            user_id=current_user.id
+        ).first()
+        
+        if not member:
+            return {'success': False, 'error': 'Você não é membro deste grupo'}
+        
+        # Entrar na sala
+        room = f'group_{group_id}'
+        join_room(room)
+        
+        print(f'[SocketIO] Usuário {current_user.name} entrou no grupo {group_id}')
+        
+        # Notificar outros membros
+        emit('user_joined_group', {
+            'user_name': current_user.name,
+            'user_id': current_user.id
+        }, room=room, skip_sid=request.sid)
+        
+        # Carregar histórico (últimas 50 mensagens)
+        messages = GroupMessage.query.filter_by(group_id=group_id)\
+            .filter_by(is_deleted=False)\
+            .order_by(GroupMessage.timestamp.desc())\
+            .limit(50)\
+            .all()
+        
+        return {
+            'success': True,
+            'messages': [msg.to_dict() for msg in reversed(messages)],
+            'user_role': member.role
+        }
+        
+    except Exception as e:
+        print(f'[SocketIO] Erro ao entrar no grupo: {str(e)}')
+        return {'success': False, 'error': str(e)}
+
+@socketio.on('leave_group')
+def handle_leave_group(data):
+    """Sair da sala do grupo"""
+    try:
+        group_id = data.get('group_id')
+        room = f'group_{group_id}'
+        leave_room(room)
+        
+        print(f'[SocketIO] Usuário {current_user.name} saiu do grupo {group_id}')
+        
+        # Notificar outros membros
+        emit('user_left_group', {
+            'user_name': current_user.name,
+            'user_id': current_user.id
+        }, room=room)
+        
+        return {'success': True}
+        
+    except Exception as e:
+        print(f'[SocketIO] Erro ao sair do grupo: {str(e)}')
+        return {'success': False, 'error': str(e)}
+
+@socketio.on('send_group_message')
+def handle_group_message(data):
+    """Enviar mensagem no grupo"""
+    try:
+        from models.group_member import GroupMember
+        from models.group_message import GroupMessage
+        
+        group_id = data.get('group_id')
+        content = data.get('content')
+        
+        if not current_user.is_authenticated:
+            return {'success': False, 'error': 'Usuário não autenticado'}
+        
+        if not content or not content.strip():
+            return {'success': False, 'error': 'Mensagem vazia'}
+        
+        # Verificar permissão
+        member = GroupMember.query.filter_by(
+            group_id=group_id,
+            user_id=current_user.id
+        ).first()
+        
+        if not member:
+            return {'success': False, 'error': 'Você não é membro deste grupo'}
+        
+        # Salvar mensagem
+        message = GroupMessage(
+            group_id=group_id,
+            user_id=current_user.id,
+            content=content.strip(),
+            message_type='text'
+        )
+        db.session.add(message)
+        db.session.commit()
+        
+        print(f'[SocketIO] Mensagem enviada no grupo {group_id} por {current_user.name}')
+        
+        # Broadcast para sala
+        room = f'group_{group_id}'
+        message_data = message.to_dict()
+        
+        emit('new_group_message', message_data, room=room)
+        
+        return {'success': True, 'message_id': message.id}
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f'[SocketIO] Erro ao enviar mensagem: {str(e)}')
+        return {'success': False, 'error': str(e)}
+
+@socketio.on('group_typing')
+def handle_group_typing(data):
+    """Indicar que está digitando"""
+    try:
+        group_id = data.get('group_id')
+        is_typing = data.get('is_typing', False)
+        
+        if not current_user.is_authenticated:
+            return
+        
+        room = f'group_{group_id}'
+        emit('user_typing_group', {
+            'user_name': current_user.name,
+            'user_id': current_user.id,
+            'is_typing': is_typing
+        }, room=room, skip_sid=request.sid)
+        
+    except Exception as e:
+        print(f'[SocketIO] Erro ao indicar digitação: {str(e)}')
+
+@socketio.on('delete_group_message')
+def handle_delete_group_message(data):
+    """Deletar mensagem do grupo (admin ou autor)"""
+    try:
+        from models.group_member import GroupMember
+        from models.group_message import GroupMessage
+        
+        message_id = data.get('message_id')
+        group_id = data.get('group_id')
+        
+        if not current_user.is_authenticated:
+            return {'success': False, 'error': 'Usuário não autenticado'}
+        
+        # Buscar mensagem
+        message = GroupMessage.query.get(message_id)
+        if not message or message.group_id != group_id:
+            return {'success': False, 'error': 'Mensagem não encontrada'}
+        
+        # Verificar permissão (admin ou autor)
+        member = GroupMember.query.filter_by(
+            group_id=group_id,
+            user_id=current_user.id
+        ).first()
+        
+        if not member:
+            return {'success': False, 'error': 'Você não é membro deste grupo'}
+        
+        if message.user_id != current_user.id and member.role != 'admin':
+            return {'success': False, 'error': 'Você não tem permissão para deletar esta mensagem'}
+        
+        # Soft delete
+        message.is_deleted = True
+        db.session.commit()
+        
+        print(f'[SocketIO] Mensagem {message_id} deletada no grupo {group_id}')
+        
+        # Notificar sala
+        room = f'group_{group_id}'
+        emit('message_deleted', {
+            'message_id': message_id,
+            'group_id': group_id
+        }, room=room)
+        
+        return {'success': True}
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f'[SocketIO] Erro ao deletar mensagem: {str(e)}')
+        return {'success': False, 'error': str(e)}
+
+# ============================================================================
 # ROTAS DE GRUPOS
 # ============================================================================
 
