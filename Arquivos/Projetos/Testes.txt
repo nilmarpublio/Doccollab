@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{Complete Test DocCollab}
+\author{DocCollab System}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This is a complete test of the DocCollab system in production.
+
+\section{Mathematics}
+Euler's formula is:
+\[ e^{i\pi} + 1 = 0 \]
+
+\section{List}
+\begin{itemize}
+    \item Item 1
+    \item Item 2
+    \item Item 3
+\end{itemize}
+
+\section{Conclusion}
+The system is working perfectly!
+
+\end{document}

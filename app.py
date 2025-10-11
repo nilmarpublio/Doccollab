@@ -84,7 +84,7 @@ class Project(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     # Relacionamentos
     files = db.relationship('ProjectFile', backref='project', lazy=True, cascade='all, delete-orphan')
     folders = db.relationship('ProjectFolder', backref='project', lazy=True, cascade='all, delete-orphan')
@@ -170,7 +170,7 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             flash('Login realizado com sucesso!', 'success')
-            return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
         else:
             flash('Email ou senha incorretos!', 'error')
     
@@ -195,8 +195,8 @@ def register():
         db.session.commit()
 
         flash('Conta criada com sucesso! Faça login.', 'success')
-        return redirect(url_for('login'))
-    
+            return redirect(url_for('login'))
+
     return render_template('auth/register.html')
 
 @app.route('/logout')
@@ -234,7 +234,7 @@ def editor_page(project_id=None):
         # Verificar permissão
         if project.user_id != current_user.id:
             flash('Você não tem permissão para acessar este projeto.', 'error')
-            return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard'))
     
     return render_template('editor_page.html', project=project)
 
@@ -276,8 +276,8 @@ def delete_project(project_id):
     else:
         flash('Projeto não encontrado!', 'error')
     
-    return redirect(url_for('dashboard'))
-
+        return redirect(url_for('dashboard'))
+    
 @app.route('/rename_project/<int:project_id>', methods=['POST'])
 @login_required
 def rename_project(project_id):
@@ -922,7 +922,7 @@ def create_folder(project_id):
             path=folder_path
         )
         db.session.add(folder)
-        db.session.commit()
+    db.session.commit()
         
         return jsonify({
             'success': True,
@@ -2091,6 +2091,35 @@ def handle_assistant_message(data):
         return error_response
 
 # ============================================================================
+# ROTAS DE GRUPOS
+# ============================================================================
+
+# Importar funções das rotas de grupos
+from routes.groups import (
+    list_groups, create_group, get_group, update_group, delete_group,
+    list_members, add_member, remove_member, update_member_role,
+    list_group_documents, share_document, unshare_document
+)
+
+# Registrar rotas de grupos
+app.add_url_rule('/api/groups', 'list_groups', list_groups, methods=['GET'])
+app.add_url_rule('/api/groups', 'create_group', create_group, methods=['POST'])
+app.add_url_rule('/api/groups/<int:group_id>', 'get_group', get_group, methods=['GET'])
+app.add_url_rule('/api/groups/<int:group_id>', 'update_group', update_group, methods=['PUT'])
+app.add_url_rule('/api/groups/<int:group_id>', 'delete_group', delete_group, methods=['DELETE'])
+
+# Rotas de membros
+app.add_url_rule('/api/groups/<int:group_id>/members', 'list_members', list_members, methods=['GET'])
+app.add_url_rule('/api/groups/<int:group_id>/members', 'add_member', add_member, methods=['POST'])
+app.add_url_rule('/api/groups/<int:group_id>/members/<int:user_id>', 'remove_member', remove_member, methods=['DELETE'])
+app.add_url_rule('/api/groups/<int:group_id>/members/<int:user_id>/role', 'update_member_role', update_member_role, methods=['PUT'])
+
+# Rotas de documentos
+app.add_url_rule('/api/groups/<int:group_id>/documents', 'list_group_documents', list_group_documents, methods=['GET'])
+app.add_url_rule('/api/groups/<int:group_id>/documents', 'share_document', share_document, methods=['POST'])
+app.add_url_rule('/api/groups/<int:group_id>/documents/<int:doc_id>', 'unshare_document', unshare_document, methods=['DELETE'])
+
+# ============================================================================
 # INICIALIZAÇÃO
 # ============================================================================
 
@@ -2100,12 +2129,12 @@ with app.app_context():
     
     # Criar usuário admin se não existir
     try:
-        admin_user = User.query.filter_by(email='admin@doccollab.com').first()
-        if not admin_user:
+    admin_user = User.query.filter_by(email='admin@doccollab.com').first()
+    if not admin_user:
             admin = User(name='Administrador', email='admin@doccollab.com')
             admin.set_password('admin123')
             db.session.add(admin)
-            db.session.commit()
+        db.session.commit()
             print("Usuário admin criado: admin@doccollab.com / admin123")
         else:
             print("Usuário admin já existe")

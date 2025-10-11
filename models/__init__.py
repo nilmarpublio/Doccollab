@@ -9,3 +9,8 @@ from .version import Version
 from .chat_message import ChatMessage
 # Import Subscription last since it references User
 from .subscription import Subscription, PlanType
+# Import Group models
+from .group import Group
+from .group_member import GroupMember
+from .group_document import GroupDocument
+from .group_message import GroupMessage
