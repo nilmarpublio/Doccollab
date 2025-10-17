@@ -85,14 +85,36 @@ class LaTeXLinter:
                     'fix': line.replace(typo.replace('\\\\', '\\'), correct.replace('\\\\', '\\'))
                 })
         
-        # Check for missing $ in math mode
-        if re.search(r'[^$\\]_[^{]', line) or re.search(r'[^$\\]\^[^{]', line):
-            self.errors.append({
-                'line': line_num,
-                'message': 'Subscript (_) or superscript (^) outside math mode',
-                'type': 'math_mode',
-                'suggestion': 'Wrap in $ $ for inline math or use \\[ \\] for display math'
-            })
+        # Check for missing $ in math mode (DESABILITADO - muitos falsos positivos)
+        # O LaTeX em si vai reportar este erro na compilação de forma mais precisa
+        # if not any(cmd in line for cmd in ['\\href', '\\url', '\\verb', '\\texttt', '\\text{']):
+        #     # Verificar se estamos dentro de um bloco matemático
+        #     context = ''.join(all_lines[max(0, line_num-30):line_num])
+        #     
+        #     # Contar \[ e \] no contexto
+        #     display_math_open = context.count('\\[') - context.count('\\]')
+        #     
+        #     # Contar ambientes matemáticos
+        #     equation_open = context.count('\\begin{equation') - context.count('\\end{equation')
+        #     align_open = context.count('\\begin{align') - context.count('\\end{align')
+        #     
+        #     in_math_mode = (
+        #         display_math_open > 0 or
+        #         equation_open > 0 or
+        #         align_open > 0 or
+        #         '$' in line or
+        #         '\\[' in line or
+        #         '\\]' in line
+        #     )
+        #     
+        #     if not in_math_mode:
+        #         if re.search(r'(?<!\\)_(?![{])', line) or re.search(r'(?<!\\)\^(?![{])', line):
+        #             self.errors.append({
+        #                 'line': line_num,
+        #                 'message': 'Subscript (_) or superscript (^) outside math mode',
+        #                 'type': 'math_mode',
+        #                 'suggestion': 'Wrap in $ $ for inline math or use \\[ \\] for display math'
+        #             })
         
         # Check for common quote mistakes
         if '"' in line_no_comments:
@@ -105,7 +127,11 @@ class LaTeXLinter:
             })
         
         # Check for \\ at end of line (common mistake)
-        if line.strip().endswith('\\\\') and not any(env in line for env in ['tabular', 'array', 'align']):
+        # Verificar se estamos dentro de um ambiente que usa \\
+        context = ''.join(all_lines[max(0, line_num-10):line_num])  # 10 linhas de contexto
+        in_table_env = any(env in context for env in ['\\begin{tabular}', '\\begin{array}', '\\begin{align}', '\\begin{enumerate}', '\\begin{itemize}'])
+        
+        if line.strip().endswith('\\\\') and not in_table_env:
             self.warnings.append({
                 'line': line_num,
                 'message': 'Double backslash (\\\\) at end of line',
@@ -134,14 +160,15 @@ class LaTeXLinter:
                 'fix': line.rstrip()
             })
         
-        # Check for very long lines
-        if len(line) > 120:
-            self.warnings.append({
-                'line': line_num,
-                'message': f'Line too long ({len(line)} characters)',
-                'type': 'line_length',
-                'suggestion': 'Consider breaking into multiple lines for readability'
-            })
+        # Check for very long lines (DESABILITADO - o editor tem word wrap)
+        # O Overleaf não reclama de linhas longas, apenas faz word wrap visual
+        # if len(line) > 500:  # Limite muito alto (500 chars) para casos extremos
+        #     self.warnings.append({
+        #         'line': line_num,
+        #         'message': f'Line extremely long ({len(line)} characters)',
+        #         'type': 'line_length',
+        #         'suggestion': 'Consider breaking into multiple lines for readability'
+        #     })
     
     def _check_global(self, content: str):
         """Check global document issues"""
@@ -213,27 +240,33 @@ class LaTeXLinter:
                 'type': 'missing_bibliography'
             })
         
-        # Check for bibliography without file
-        bib_matches = re.findall(r'\\bibliography\{([^}]+)\}', content)
-        if bib_matches:
-            for bib_file in bib_matches:
-                self.warnings.append({
-                    'line': None,
-                    'message': f'Bibliography file "{bib_file}.bib" referenced - ensure it exists',
-                    'type': 'bibliography_file'
-                })
+        # Check for bibliography without file (DESABILITADO - apenas informativo)
+        # bib_matches = re.findall(r'\\bibliography\{([^}]+)\}', content)
+        # if bib_matches:
+        #     for bib_file in bib_matches:
+        #         self.warnings.append({
+        #             'line': None,
+        #             'message': f'Bibliography file "{bib_file}.bib" referenced - ensure it exists',
+        #             'type': 'bibliography_file'
+        #         })
         
         # Check for text after \end{environment}
         lines = content.split('\n')
         for i, line in enumerate(lines, 1):
             if '\\end{' in line:
                 # Check if there's non-whitespace text after \end{...}
-                match = re.search(r'\\end\{[^}]+\}(.+)', line)
-                if match and match.group(1).strip() and not match.group(1).strip().startswith('%'):
+                match = re.search(r'^(.*)?(\\end\{[^}]+\})(.+)', line)
+                if match and match.group(3).strip() and not match.group(3).strip().startswith('%'):
+                    # Criar correção automática removendo o texto após \end
+                    prefix = match.group(1) if match.group(1) else ''
+                    fixed_line = prefix + match.group(2)  # Manter texto antes + \end{...}
+                    
                     self.errors.append({
                         'line': i,
-                        'message': f'Text found after \\end command: "{match.group(1).strip()}"',
-                        'type': 'text_after_end'
+                        'message': f'Text found after \\end command: "{match.group(3).strip()}"',
+                        'type': 'text_after_end',
+                        'suggestion': 'Remove text after \\end command or move to next line',
+                        'fix': fixed_line
                     })
         
         # Check for balanced braces

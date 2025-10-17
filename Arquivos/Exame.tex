@@ -1,0 +1,220 @@
+% !TeX program = xelatex
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Modelo para um exame com
+%   1. comando para a cotação de uma pergunta;
+%   2. ambiente para o texto de uma pergunta;
+%   3. cabeçalho que identifica
+%   - a disciplina
+%   - o departamento
+%   - a data
+%   e com o logótipo da universidade;
+%   4. margens curtas;
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   A classe "article" faz parte dos "tipos de documentos" base do LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\documentclass[12pt]{article}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Internacional
+%
+%   Definir a linguagem do documento 
+%
+\usepackage{polyglossia}
+%
+% Infelizmente, as definições para português estão 
+% num ficheiro com um erro ortográfico (mesmo no NAO!!!) no nome. Que tormento!
+% 
+\setmainlanguage{portuges}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Expressões Matemáticas
+%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{commath}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Mancha de texto na página
+%
+\usepackage{geometry}
+%
+%   Alterar os valores de forma ao texto caber todo numa única página
+%
+\geometry{top=2cm, bottom=1cm, left=1cm, right=1cm}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Comando para colocar a cotação de cada pergunta
+%
+\newcommand{\cotacao}[1]{ % um argumento: o número de valores
+    \textup{        % texto "direito"
+        \textbf{    % texto "negrito"
+            %
+            %   a seguir...
+            %       - #1 identifica o primeiro argumento do comando
+            %       - ~ força um espaço que não translineia
+            %
+            [Cotação~#1~valor(es)]
+            %
+            %
+            %
+        }}}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Ambiente para conter os exercícios
+%
+\newtheorem{exerc}{Exercício}
+\newenvironment{exercicio}
+    {\begin{exerc}\normalfont}
+    {\end{exerc}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Comando para fazer o cabeçalho
+%
+\newcommand{\CAB}[4]{ % quatro argumentos
+    %
+    %   Fazer um cabeçalho
+    %
+    %   tem quatro argumentos:
+    %       - departamento: primeiro argumento
+    %       - disciplina: segundo argumento
+    %       - evento: terceiro argumento
+    %       - data: quarto argumento
+    %
+    %   e também inclui o logótipo da universidade.
+    %
+    %   Organizar o cabeçalho: 
+    %       - logótipo à esquerda e texto à direita
+    %       - usar uma tabela para posicionar o logótipo e o texto
+    %       - incluir o logótipo a partir de uma imagem
+    %       - separar o texto em linhas
+    %
+    \begin{tabular}{cc} % duas colunas, centradas
+        %
+        %   colocar o logótipo da universidade na coluna da esquerda
+        %
+        %       **
+        %       pressupõe que existe o ficheiro "imagens/logo_principal.png"
+        %       **
+        %
+        \includegraphics[width=0.25\textwidth]{imagens/logo_principal.png}
+        %
+        %   separar as colunas com "&"
+        %
+        &
+        %
+        %   colocar o texto na coluna da direita
+        %
+        %   fazer um "bloco" de texto com 70% da largura do texto na página
+        %
+        \begin{minipage}{0.7\textwidth}
+            %
+            %   centrar as linhas no bloco de texto
+            %
+            \begin{center}
+                %
+                %   Departamento
+                %
+                {\Large\bf #1}\\[1.0em]
+                %
+                %   Disciplina
+                %
+                {\large #2}\\[1.0em]
+                %
+                %   Evento e data
+                %
+                {\bf #3} --- {#4}
+            \end{center}
+            %
+            %   
+            %
+        \end{minipage}
+        %
+        %
+        %
+    \end{tabular}
+    %
+    %   deixar algum espaço abaixo da imagem + texto
+    %
+    \\[1.0em]
+    %
+    %   desenhar uma linha separadora
+    %
+    \hrule
+    %
+    %   forçar um espaço abaixo da linha, com "~", para "contar" como um parágrafo
+    %
+    ~
+}
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   DOCUMENTO
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%
+\begin{document}
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    %   "Preâmbulo"
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    %   Páginas sem numeração e sem cabeçalhos automáticos
+    %
+    \pagestyle{empty}
+    %
+    %   Identificação do documento
+    %
+    \CAB{SUBSTITUIR PELO NOME DO DEPARTAMENTO}%
+        {SUBSTITUIR PELO NOME DA DISCIPLINA}%
+        {SUBSTITUIR PELO NOME DO EVENTO}%
+        {SUBSTITUIR PELA DATA DO EVENTO}%
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    %   Exercícios
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    \begin{exercicio}\cotacao{SUBSTITUIR PELA COTAÇÃO DESTE EXERCÍCIO}
+        SUBSTITUIR PELO TEXTO DESTE ENUNCIADO
+    \end{exercicio}
+    %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    \begin{exercicio}~ % o "~" força um parágrafo. O que acontece se for retirado?
+        SUBSTITUIR PELO TEXTO DESTE ENUNCIADO
+        \begin{enumerate}
+        \item \cotacao{SUBSTITUIR PELA COTAÇÃO DESTA ALÍNEA} SUBSTITUIR PELO TEXTO DESTE ENUNCIADO
+        \item \cotacao{SUBSTITUIR PELA COTAÇÃO DESTA ALÍNEA} SUBSTITUIR PELO TEXTO DESTE ENUNCIADO
+        \end{enumerate}
+    \end{exercicio}
+     %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+\end{document}

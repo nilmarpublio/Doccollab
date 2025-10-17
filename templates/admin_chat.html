@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}Administração - Chat Colaborativo{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-cog me-2"></i>Painel de Administração</h2>
+        <a href="{{ url_for('chat') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar ao Chat
+        </a>
+    </div>
+    
+    <!-- Estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5><i class="fas fa-users me-2"></i>Usuários</h5>
+                    <h2>{{ stats.total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5><i class="fas fa-users me-2"></i>Grupos</h5>
+                    <h2>{{ stats.total_groups }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5><i class="fas fa-comments me-2"></i>Mensagens</h5>
+                    <h2>{{ stats.total_messages }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#users">
+                <i class="fas fa-users me-2"></i>Usuários
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#groups">
+                <i class="fas fa-users me-2"></i>Grupos
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#activities">
+                <i class="fas fa-history me-2"></i>Atividades
+            </a>
+        </li>
+    </ul>
+    
+    <div class="tab-content mt-3">
+        <!-- Usuários -->
+        <div class="tab-pane fade show active" id="users">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Todos os Usuários</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Admin</th>
+                                <th>Criado em</th>
+                                <th>Último Login</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if user.is_admin %}
+                                    <span class="badge bg-danger">Sim</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Não</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ format_timestamp(user.created_at) }}</td>
+                                <td>{{ format_timestamp(user.last_login) if user.last_login else '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grupos -->
+        <div class="tab-pane fade" id="groups">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Todos os Grupos</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Criador</th>
+                                <th>Membros</th>
+                                <th>Mensagens</th>
+                                <th>Criado em</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for group in groups %}
+                            <tr>
+                                <td>{{ group.id }}</td>
+                                <td>{{ group.name }}</td>
+                                <td>{{ truncate_text(group.description, 50) or '-' }}</td>
+                                <td>{{ group.owner_name }}</td>
+                                <td><span class="badge bg-primary">{{ group.member_count }}</span></td>
+                                <td><span class="badge bg-info">{{ group.message_count }}</span></td>
+                                <td>{{ format_timestamp(group.created_at) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Atividades -->
+        <div class="tab-pane fade" id="activities">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Atividades Recentes (últimas 100)</h5>
+                </div>
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Usuário</th>
+                                <th>Ação</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for activity in activities %}
+                            <tr>
+                                <td>{{ format_timestamp(activity.timestamp) }}</td>
+                                <td>{{ activity.user_name }}</td>
+                                <td>
+                                    {% if activity.action == 'login' %}
+                                    <span class="badge bg-success">Login</span>
+                                    {% elif activity.action == 'logout' %}
+                                    <span class="badge bg-secondary">Logout</span>
+                                    {% elif activity.action == 'message_sent' %}
+                                    <span class="badge bg-primary">Mensagem</span>
+                                    {% elif activity.action == 'file_upload' %}
+                                    <span class="badge bg-info">Upload</span>
+                                    {% elif activity.action == 'message_deleted' %}
+                                    <span class="badge bg-danger">Deletar</span>
+                                    {% else %}
+                                    <span class="badge bg-dark">{{ activity.action }}</span>
+                                    {% endif %}
+                                </td>
+                                <td><small>{{ activity.details }}</small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

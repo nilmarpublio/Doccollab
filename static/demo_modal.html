@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo - Modal PDF</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .demo-container {
+      text-align: center;
+      color: white;
+    }
+    
+    .demo-title {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    
+    .demo-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 3rem;
+      opacity: 0.9;
+    }
+    
+    .demo-btn {
+      background: white;
+      color: #667eea;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .demo-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+      max-width: 1000px;
+    }
+    
+    .feature-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-title {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .feature-desc {
+      opacity: 0.8;
+    }
+    
+    /* Modal Styles */
+    #pdfModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      display: none;
+      animation: fadeIn 0.2s;
+    }
+    
+    #pdfModal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .pdf-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+    }
+    
+    .pdf-modal-content {
+      position: relative;
+      width: 90%;
+      max-width: 1200px;
+      height: 90%;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .pdf-modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .pdf-modal-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .pdf-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .pdf-action-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .pdf-action-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .pdf-download-btn:hover {
+      background: rgba(40, 167, 69, 0.8);
+      border-color: rgba(40, 167, 69, 1);
+    }
+    
+    .pdf-print-btn:hover {
+      background: rgba(0, 123, 255, 0.8);
+      border-color: rgba(0, 123, 255, 1);
+    }
+    
+    .pdf-back-btn:hover {
+      background: rgba(108, 117, 125, 0.8);
+      border-color: rgba(108, 117, 125, 1);
+    }
+    
+    .pdf-modal-close {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      margin-left: 0.5rem;
+    }
+    
+    .pdf-modal-close:hover {
+      background: rgba(220, 53, 69, 0.8);
+      border-color: rgba(220, 53, 69, 1);
+      transform: rotate(90deg);
+    }
+    
+    .pdf-modal-body {
+      flex: 1;
+      padding: 1rem;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+    }
+    
+    .demo-pdf {
+      width: 100%;
+      height: 100%;
+      background: white;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #999;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .pdf-modal-content {
+        width: 95%;
+        height: 95%;
+      }
+      
+      .pdf-modal-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      
+      .pdf-modal-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      
+      .pdf-action-btn span {
+        display: none;
+      }
+      
+      .pdf-action-btn {
+        padding: 0.5rem;
+        min-width: 40px;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1 class="demo-title">📄 Modal PDF</h1>
+    <p class="demo-subtitle">Visualize, baixe e imprima seus documentos PDF compilados</p>
+    
+    <button class="demo-btn" onclick="openModal()">
+      <i class="fas fa-play"></i> Ver Demonstração
+    </button>
+    
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">💾</div>
+        <div class="feature-title">Download Fácil</div>
+        <div class="feature-desc">Salve o PDF com um clique no botão verde</div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">🖨️</div>
+        <div class="feature-title">Impressão Rápida</div>
+        <div class="feature-desc">Imprima diretamente do modal com o botão azul</div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">◀️</div>
+        <div class="feature-title">Voltar ao Editor</div>
+        <div class="feature-desc">Retorne ao editor sem perder seu trabalho</div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">✨</div>
+        <div class="feature-title">Design Moderno</div>
+        <div class="feature-desc">Interface elegante e responsiva</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal PDF -->
+  <div id="pdfModal">
+    <div class="pdf-modal-overlay" onclick="closeModal()"></div>
+    <div class="pdf-modal-content">
+      <div class="pdf-modal-header">
+        <h3>
+          <i class="fas fa-file-pdf"></i>
+          <span id="pdfModalTitle">documento.pdf</span>
+        </h3>
+        <div class="pdf-modal-actions">
+          <button onclick="downloadPDF()" class="pdf-action-btn pdf-download-btn" title="Download PDF">
+            <i class="fas fa-download"></i>
+            <span>Salvar</span>
+          </button>
+          <button onclick="printPDF()" class="pdf-action-btn pdf-print-btn" title="Imprimir PDF">
+            <i class="fas fa-print"></i>
+            <span>Imprimir</span>
+          </button>
+          <button onclick="closeModal()" class="pdf-action-btn pdf-back-btn" title="Voltar ao Editor">
+            <i class="fas fa-arrow-left"></i>
+            <span>Voltar ao Editor</span>
+          </button>
+          <button onclick="closeModal()" class="pdf-modal-close" title="Fechar">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div class="pdf-modal-body">
+        <div class="demo-pdf">
+          <div style="text-align: center;">
+            <i class="fas fa-file-pdf" style="font-size: 4rem; color: #dc3545;"></i>
+            <p style="margin-top: 1rem; font-size: 1.5rem; color: #666;">Visualização do PDF</p>
+            <p style="font-size: 1rem; color: #999; margin-top: 0.5rem;">No editor real, o PDF compilado aparecerá aqui</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function openModal() {
+      const modal = document.getElementById('pdfModal');
+      modal.classList.add('active');
+      
+      // Fechar com ESC
+      document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+          closeModal();
+          document.removeEventListener('keydown', escHandler);
+        }
+      });
+    }
+    
+    function closeModal() {
+      const modal = document.getElementById('pdfModal');
+      modal.classList.remove('active');
+    }
+    
+    function downloadPDF() {
+      alert('✅ Função de download do PDF ativada!\n\nNo editor real, o PDF será baixado automaticamente.');
+    }
+    
+    function printPDF() {
+      alert('🖨️ Função de impressão ativada!\n\nNo editor real, o diálogo de impressão será aberto.');
+    }
+  </script>
+</body>
+</html>
+

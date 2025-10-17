@@ -1,0 +1,531 @@
+{% extends "base.html" %}
+{% block title %}Chat{% if current_group %} - {{ current_group.name }}{% endif %}{% endblock %}
+
+{% block content %}
+<div class="chat-layout">
+    <!-- Sidebar -->
+    <div class="chat-sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2"></i>Chat
+                    </h5>
+                    <small class="text-muted">{{ session.user_name }}</small>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link text-white" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% if session.is_admin %}
+                        <li><a class="dropdown-item" href="{{ url_for('admin') }}">
+                            <i class="fas fa-cog me-2"></i>Administração
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt me-2"></i>Sair
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-3">
+            <button class="btn btn-light w-100 mb-3" onclick="showCreateGroupModal()" {% if user_group_count >= 5 %}disabled title="Limite de 5 grupos atingido"{% endif %}>
+                <i class="fas fa-plus me-2"></i>Novo Grupo
+                <small class="text-muted">({{ user_group_count }}/5)</small>
+            </button>
+            
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="searchGroups" placeholder="Buscar grupos...">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="groups-list">
+            {% for group in my_groups %}
+            <a href="{{ url_for('chat', group_id=group.id) }}" 
+               class="group-item {% if current_group and current_group.id == group.id %}active{% endif %}">
+                <div class="d-flex align-items-start">
+                    <div class="group-icon me-3">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="mb-0">{{ group.name }}</h6>
+                            {% if group.role == 'admin' %}
+                            <span class="badge bg-primary">Admin</span>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">{{ group.message_count }} mensagens</small>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="text-center p-4 text-muted">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>Nenhum grupo ainda.<br>Crie seu primeiro grupo!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Área Principal do Chat -->
+    <div class="chat-main">
+        {% if current_group %}
+        <!-- Header do Chat -->
+        <div class="chat-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-0">{{ current_group.name }}</h5>
+                    <small class="text-muted">
+                        {{ members|length }} membros
+                        {% if current_group.description %}
+                        · {{ current_group.description }}
+                        {% endif %}
+                    </small>
+                </div>
+                <div>
+                    {% if is_admin %}
+                    <button class="btn btn-sm btn-outline-primary" onclick="showMembersModal()">
+                        <i class="fas fa-users me-1"></i>Gerenciar Membros
+                    </button>
+                    {% endif %}
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleMembersPanel()">
+                        <i class="fas fa-users me-1"></i>Membros
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensagens -->
+        <div class="messages-container" id="messagesContainer">
+            <div id="messages">
+                {% for msg in messages %}
+                <div class="message {% if msg.user_id == session.user_id %}message-own{% else %}message-other{% endif %}">
+                    <div class="message-header">
+                        <strong>{{ msg.user_name }}</strong>
+                        <small class="text-muted">{{ format_timestamp(msg.timestamp) }}</small>
+                    </div>
+                    <div class="message-body">
+                        {% if msg.content %}
+                            {{ msg.content }}
+                        {% endif %}
+                        
+                        {% if msg.file_path %}
+                            <div class="message-file">
+                                {% if is_image(msg.file_name) %}
+                                    <img src="{{ url_for('uploaded_file', filename=msg.file_path) }}" 
+                                         alt="{{ msg.file_name }}" 
+                                         class="img-thumbnail"
+                                         style="max-width: 300px; cursor: pointer;"
+                                         onclick="window.open(this.src)">
+                                {% else %}
+                                    <a href="{{ url_for('uploaded_file', filename=msg.file_path) }}" 
+                                       class="btn btn-sm btn-outline-primary" 
+                                       download="{{ msg.file_name }}">
+                                        <i class="fas {{ get_file_icon(msg.file_name) }} me-2"></i>
+                                        {{ truncate_text(msg.file_name, 30) }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if is_admin or msg.user_id == session.user_id %}
+                    <button class="message-delete" onclick="deleteMessage({{ msg.id }})" title="Deletar mensagem">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-center p-5 text-muted">
+                    <i class="fas fa-comments fa-3x mb-3"></i>
+                    <p>Nenhuma mensagem ainda.<br>Seja o primeiro a enviar!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Input de Mensagem -->
+        <div class="chat-input">
+            <form id="messageForm" onsubmit="sendMessage(event)">
+                <div class="input-group">
+                    <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="file" id="fileInput" style="display: none;" onchange="uploadFile(this.files[0])">
+                    <input type="text" 
+                           class="form-control" 
+                           id="messageInput" 
+                           placeholder="Digite sua mensagem..." 
+                           required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+            <small class="text-muted mt-1">
+                <i class="fas fa-info-circle me-1"></i>
+                Arraste arquivos aqui ou clique no clipe
+            </small>
+        </div>
+        
+        {% else %}
+        <!-- Estado Vazio -->
+        <div class="empty-state">
+            <i class="fas fa-comments fa-5x mb-4 text-muted"></i>
+            <h4>Selecione um grupo para começar</h4>
+            <p class="text-muted">ou crie um novo grupo para conversar</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Painel de Membros (Colapsável) -->
+    <div class="members-panel" id="membersPanel" style="display: none;">
+        <div class="members-header">
+            <h6><i class="fas fa-users me-2"></i>Membros ({{ members|length }})</h6>
+            <button class="btn btn-sm btn-link" onclick="toggleMembersPanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="members-list">
+            {% for member in members %}
+            <div class="member-item">
+                <div class="d-flex align-items-center">
+                    <div class="member-avatar me-2">
+                        {{ member.name[0].upper() }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ member.name }}</strong>
+                            {% if member.role == 'admin' %}
+                            <span class="badge bg-primary">Admin</span>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted">{{ member.email }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Criar Grupo -->
+<div class="modal fade" id="createGroupModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Criar Novo Grupo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form onsubmit="createGroup(event)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nome do Grupo</label>
+                        <input type="text" class="form-control" id="groupName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descrição (opcional)</label>
+                        <textarea class="form-control" id="groupDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Gerenciar Membros -->
+<div class="modal fade" id="membersModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Gerenciar Membros</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Adicionar Membro (por email)</label>
+                    <form onsubmit="addMember(event)" class="input-group">
+                        <input type="email" class="form-control" id="memberEmail" placeholder="email@exemplo.com" required>
+                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                    </form>
+                </div>
+                
+                <h6>Membros Atuais:</h6>
+                <div id="currentMembers">
+                    {% for member in members %}
+                    <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                        <div>
+                            <strong>{{ member.name }}</strong>
+                            <br><small class="text-muted">{{ member.email }}</small>
+                        </div>
+                        <div>
+                            {% if member.role == 'admin' %}
+                            <span class="badge bg-primary">Admin</span>
+                            {% else %}
+                            <button class="btn btn-sm btn-danger" onclick="removeMember({{ member.id }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const currentGroupId = {{ current_group.id if current_group else 'null' }};
+let lastMessageTimestamp = '{{ messages[-1].timestamp if messages else "1970-01-01 00:00:00" }}';
+let pollingInterval;
+
+// Auto-scroll para última mensagem
+function scrollToBottom() {
+    const container = document.getElementById('messagesContainer');
+    if (container) {
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
+scrollToBottom();
+
+// Polling para novas mensagens
+if (currentGroupId) {
+    pollingInterval = setInterval(pollMessages, 3000);
+}
+
+async function pollMessages() {
+    if (!currentGroupId) return;
+    
+    try {
+        const response = await fetch(`/api/messages/${currentGroupId}?after=${lastMessageTimestamp}`);
+        const data = await response.json();
+        
+        if (data.success && data.messages.length > 0) {
+            data.messages.forEach(msg => {
+                appendMessage(msg);
+                lastMessageTimestamp = msg.timestamp;
+            });
+            scrollToBottom();
+        }
+    } catch (error) {
+        console.error('Erro ao buscar mensagens:', error);
+    }
+}
+
+function appendMessage(msg) {
+    const messagesDiv = document.getElementById('messages');
+    const isOwn = msg.user_id == {{ session.user_id }};
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${isOwn ? 'message-own' : 'message-other'}`;
+    msgDiv.innerHTML = `
+        <div class="message-header">
+            <strong>${msg.user_name}</strong>
+            <small class="text-muted">${new Date(msg.timestamp).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</small>
+        </div>
+        <div class="message-body">${msg.content || ''}</div>
+    `;
+    
+    messagesDiv.appendChild(msgDiv);
+}
+
+async function sendMessage(e) {
+    e.preventDefault();
+    
+    const input = document.getElementById('messageInput');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    try {
+        const response = await fetch('/api/messages/send', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                group_id: currentGroupId,
+                content: content
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            input.value = '';
+            pollMessages(); // Atualizar imediatamente
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (error) {
+        showToast('Erro ao enviar mensagem', 'error');
+    }
+}
+
+async function uploadFile(file) {
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('group_id', currentGroupId);
+    
+    try {
+        const response = await fetch('/api/messages/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Arquivo enviado com sucesso', 'success');
+            pollMessages();
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (error) {
+        showToast('Erro ao enviar arquivo', 'error');
+    }
+}
+
+async function createGroup(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('groupName').value;
+    const description = document.getElementById('groupDescription').value;
+    
+    try {
+        const response = await fetch('/api/groups/create', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, description})
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Grupo criado com sucesso!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (error) {
+        showToast('Erro ao criar grupo', 'error');
+    }
+}
+
+async function addMember(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('memberEmail').value;
+    
+    try {
+        const response = await fetch(`/api/groups/${currentGroupId}/members/add`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email})
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (error) {
+        showToast('Erro ao adicionar membro', 'error');
+    }
+}
+
+async function removeMember(memberId) {
+    if (!confirm('Tem certeza que deseja remover este membro?')) return;
+    
+    try {
+        const response = await fetch(`/api/groups/${currentGroupId}/members/${memberId}/remove`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (error) {
+        showToast('Erro ao remover membro', 'error');
+    }
+}
+
+async function deleteMessage(messageId) {
+    if (!confirm('Deletar esta mensagem?')) return;
+    
+    try {
+        const response = await fetch(`/api/messages/${messageId}/delete`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Mensagem deletada', 'success');
+            setTimeout(() => location.reload(), 500);
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (error) {
+        showToast('Erro ao deletar mensagem', 'error');
+    }
+}
+
+function showCreateGroupModal() {
+    new bootstrap.Modal(document.getElementById('createGroupModal')).show();
+}
+
+function showMembersModal() {
+    new bootstrap.Modal(document.getElementById('membersModal')).show();
+}
+
+function toggleMembersPanel() {
+    const panel = document.getElementById('membersPanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// Drag and Drop
+const chatInput = document.querySelector('.chat-input');
+if (chatInput) {
+    chatInput.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        chatInput.classList.add('drag-over');
+    });
+    
+    chatInput.addEventListener('dragleave', () => {
+        chatInput.classList.remove('drag-over');
+    });
+    
+    chatInput.addEventListener('drop', (e) => {
+        e.preventDefault();
+        chatInput.classList.remove('drag-over');
+        
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            uploadFile(file);
+        }
+    });
+}
+</script>
+{% endblock %}
+

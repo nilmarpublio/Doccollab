@@ -20,9 +20,6 @@
 }
 
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 2.5rem;
     padding-bottom: 2rem;
     border-bottom: 2px solid #f0f0f0;
@@ -306,11 +303,17 @@
     }
     
     .dashboard-header {
-        flex-direction: column;
-        gap: 20px;
-        align-items: stretch;
         margin-bottom: 2rem;
         padding-bottom: 1.5rem;
+    }
+    
+    .dashboard-header > div {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .dashboard-header .btn {
+        width: 100%;
     }
     
     .projects-grid {
@@ -351,14 +354,7 @@ body {
     margin-bottom: 2rem !important;
 }
 
-.dashboard-header {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin-bottom: 2.5rem !important;
-    padding-bottom: 2rem !important;
-    border-bottom: 2px solid #f0f0f0 !important;
-}
+/* Removido: estilo duplicado do .dashboard-header */
 
 .btn-secondary {
     background: #495057 !important;
@@ -372,12 +368,18 @@ body {
 
 <div class="dashboard-container">
     <div class="dashboard-main-card">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">{{ _('My Projects') }}</h1>
-            <button class="btn btn-primary" onclick="showModal('createProjectModal')">
-                <i class="fas fa-plus"></i>
-                {{ _('New Project') }}
-            </button>
+        <div class="dashboard-header" style="display: block;">
+            <h1 class="dashboard-title" style="margin-bottom: 20px;">{{ _('My Projects') }}</h1>
+            <div style="display: flex; gap: 10px; justify-content: flex-start;">
+                <a href="{{ url_for('groups_page') }}" class="btn btn-success">
+                    <i class="fas fa-users"></i>
+                    Grupos de Trabalho
+                </a>
+                <button class="btn btn-primary" onclick="showModal('createProjectModal')">
+                    <i class="fas fa-plus"></i>
+                    {{ _('New Project') }}
+                </button>
+            </div>
         </div>
 
         {% if projects %}

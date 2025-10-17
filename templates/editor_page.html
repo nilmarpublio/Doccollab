@@ -1417,17 +1417,36 @@ Escreva seu conteúdo aqui.
       this.updateStatus();
     });
     
+    // Atualizar em CADA input (mais frequente)
+    this.editor.addEventListener('input', () => {
+      this.updateLineNumbers();
+    });
+    
     this.editor.addEventListener('keydown', (e) => {
       this.handleKeyDown(e);
     });
     
     this.editor.addEventListener('scroll', () => {
       this.syncLineNumbers();
+      // Atualizar marcadores do linter se existir
+      if (window.linterUI) {
+        window.linterUI.updateAllMarkerPositions();
+      }
     });
     
     this.editor.addEventListener('selectionchange', () => {
       this.updateCursorPosition();
     });
+    
+    // Verificação periódica para garantir sincronização (fallback)
+    setInterval(() => {
+      const lines = this.editor.value.split('\n').length;
+      const numbers = this.lineNumbers.querySelectorAll('.line-number').length;
+      if (lines !== numbers) {
+        console.warn(`[Editor] Dessincronizado! Forçando atualização: ${numbers} → ${lines}`);
+        this.updateLineNumbers();
+      }
+    }, 2000); // Verificar a cada 2 segundos
   }
   
   setupKeyboardShortcuts() {
@@ -1515,13 +1534,18 @@ Escreva seu conteúdo aqui.
   
   updateLineNumbers() {
     const lines = this.editor.value.split('\n');
-    const lineNumbersHtml = lines.map((_, index) => 
-      `<div class="line-number">${index + 1}</div>`
-    ).join('');
-    this.lineNumbers.innerHTML = lineNumbersHtml;
+    const currentCount = this.lineNumbers.querySelectorAll('.line-number').length;
     
-    // Debug: mostrar quantas linhas foram geradas
-    console.log(`[Editor] Linhas atualizadas: ${lines.length}`);
+    // Só atualizar se o número mudou (performance)
+    if (currentCount !== lines.length) {
+      const lineNumbersHtml = lines.map((_, index) => 
+        `<div class="line-number">${index + 1}</div>`
+      ).join('');
+      this.lineNumbers.innerHTML = lineNumbersHtml;
+    }
+    
+    // Sincronizar scroll
+    this.syncLineNumbers();
   }
   
   syncLineNumbers() {
@@ -1937,9 +1961,13 @@ Escreva seu conteúdo aqui.
       return response.json();
     })
     .then(data => {
-      console.log('Dados recebidos:', data);
+      console.log('[Compilação] === RESPOSTA ===');
+      console.log('[Compilação] success:', data.success);
+      console.log('[Compilação] error:', data.error);
+      console.log('[Compilação] pdf_url:', data.pdf_url);
+      
       if (data.success) {
-        console.log('PDF URL:', data.pdf_url);
+        console.log('[Compilação] ✅ SUCESSO! PDF URL:', data.pdf_url);
         
         if (data.pdf_url) {
           // Extrair o nome do arquivo do PDF
@@ -1967,14 +1995,57 @@ Escreva seu conteúdo aqui.
           this.showNotification('✓ Compilação bem-sucedida!', 'success');
         }
       } else {
+        console.error('[Compilação] ❌ ERRO!');
+        console.error('[Compilação] Mensagem:', data.error);
+        
         this.showNotification('Erro na compilação: ' + (data.error || 'Erro desconhecido'), 'error');
+        
         if (data.log) {
-          console.error('Log COMPLETO de compilação:');
+          console.error('[Compilação] === LOG COMPLETO ===');
           console.error(data.log);
-          // Mostrar as últimas 50 linhas do log
+          
+          // Encontrar linhas com "!" (erros) no log
           const logLines = data.log.split('\n');
+          const errorLines = logLines.filter(line => line.trim().startsWith('!'));
+          
+          if (errorLines.length > 0) {
+            console.error('[Compilação] === ERROS NO LOG ===');
+            errorLines.forEach((line, i) => {
+              console.error(`  ${i+1}. ${line}`);
+              // Mostrar também as próximas 2 linhas (contexto do erro)
+              const nextLine1 = logLines[logLines.indexOf(line) + 1];
+              const nextLine2 = logLines[logLines.indexOf(line) + 2];
+              if (nextLine1) console.error(`      ${nextLine1}`);
+              if (nextLine2) console.error(`      ${nextLine2}`);
+            });
+          } else {
+            console.warn('[Compilação] Nenhuma linha com "!" encontrada. Procurando outros padrões...');
+            
+            // Procurar outros padrões de erro
+            const errorPatterns = [
+              /error/i,
+              /undefined/i,
+              /missing/i,
+              /fatal/i,
+              /emergency stop/i
+            ];
+            
+            const possibleErrors = logLines.filter(line => 
+              errorPatterns.some(pattern => pattern.test(line))
+            );
+            
+            if (possibleErrors.length > 0) {
+              console.error('[Compilação] === POSSÍVEIS ERROS ===');
+              possibleErrors.slice(0, 10).forEach((line, i) => {
+                console.error(`  ${i+1}. ${line}`);
+              });
+            }
+          }
+          
+          // Mostrar as últimas 50 linhas do log
           const lastLines = logLines.slice(-50).join('\n');
-          console.error('Últimas 50 linhas do log:', lastLines);
+          console.error('[Compilação] === ÚLTIMAS 50 LINHAS ===');
+          console.error(lastLines);
         }
       }
     })
@@ -2033,9 +2104,23 @@ Escreva seu conteúdo aqui.
         <div class="pdf-modal-content">
           <div class="pdf-modal-header">
             <h3><i class="fas fa-file-pdf"></i> <span id="pdfModalTitle">PDF Compilado</span></h3>
-            <button onclick="closePDFModal()" class="pdf-modal-close">
-              <i class="fas fa-times"></i>
-            </button>
+            <div class="pdf-modal-actions">
+              <button onclick="downloadPDFFromModal()" class="pdf-action-btn pdf-download-btn" title="Download PDF">
+                <i class="fas fa-download"></i>
+                <span>Salvar</span>
+              </button>
+              <button onclick="printPDFFromModal()" class="pdf-action-btn pdf-print-btn" title="Imprimir PDF">
+                <i class="fas fa-print"></i>
+                <span>Imprimir</span>
+              </button>
+              <button onclick="closePDFModal()" class="pdf-action-btn pdf-back-btn" title="Voltar ao Editor">
+                <i class="fas fa-arrow-left"></i>
+                <span>Voltar ao Editor</span>
+              </button>
+              <button onclick="closePDFModal()" class="pdf-modal-close" title="Fechar">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
           <div class="pdf-modal-body">
             <iframe id="pdfIframe" style="width: 100%; height: 100%; border: none;"></iframe>
@@ -2101,13 +2186,58 @@ Escreva seu conteúdo aqui.
         .pdf-modal-header h3 {
           margin: 0;
           font-size: 1.25rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .pdf-modal-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .pdf-action-btn {
+          background: rgba(255,255,255,0.2);
+          border: 1px solid rgba(255,255,255,0.3);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: all 0.3s ease;
+          font-weight: 500;
+        }
+        
+        .pdf-action-btn:hover {
+          background: rgba(255,255,255,0.3);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .pdf-download-btn:hover {
+          background: rgba(40, 167, 69, 0.8);
+          border-color: rgba(40, 167, 69, 1);
+        }
+        
+        .pdf-print-btn:hover {
+          background: rgba(0, 123, 255, 0.8);
+          border-color: rgba(0, 123, 255, 1);
+        }
+        
+        .pdf-back-btn:hover {
+          background: rgba(108, 117, 125, 0.8);
+          border-color: rgba(108, 117, 125, 1);
         }
         
         .pdf-modal-close {
           background: rgba(255,255,255,0.2);
-          border: none;
+          border: 1px solid rgba(255,255,255,0.3);
           color: white;
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           cursor: pointer;
           width: 36px;
           height: 36px;
@@ -2115,11 +2245,14 @@ Escreva seu conteúdo aqui.
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: background 0.2s;
+          transition: all 0.3s ease;
+          margin-left: 0.5rem;
         }
         
         .pdf-modal-close:hover {
-          background: rgba(255,255,255,0.3);
+          background: rgba(220, 53, 69, 0.8);
+          border-color: rgba(220, 53, 69, 1);
+          transform: rotate(90deg);
         }
         
         .pdf-modal-body {
@@ -2143,13 +2276,49 @@ Escreva seu conteúdo aqui.
             transform: translateY(0);
           }
         }
+        
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+          .pdf-modal-content {
+            width: 95%;
+            height: 95%;
+          }
+          
+          .pdf-modal-header {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+          }
+          
+          .pdf-modal-actions {
+            width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+          }
+          
+          .pdf-action-btn span {
+            display: none;
+          }
+          
+          .pdf-action-btn {
+            padding: 0.5rem;
+            min-width: 40px;
+            justify-content: center;
+          }
+        }
       `;
       document.head.appendChild(style);
     }
     
     // Atualizar conteúdo e mostrar
     document.getElementById('pdfModalTitle').textContent = filename || 'PDF Compilado';
-    document.getElementById('pdfIframe').src = pdfUrl;
+    const iframe = document.getElementById('pdfIframe');
+    iframe.src = pdfUrl;
+    
+    // Armazenar PDF URL e filename para funções de download e impressão
+    window.currentPdfUrl = pdfUrl;
+    window.currentPdfFilename = filename || 'documento.pdf';
+    
     modal.classList.add('active');
     
     // Permitir fechar com ESC
@@ -2301,9 +2470,13 @@ class LaTeXLinterUI {
     this.lintMarkers = [];
     this.lintTimeout = null;
     this.isLinting = false;
+    this.currentErrors = [];
+    this.currentWarnings = [];
     
     // Adicionar listener para verificar enquanto digita
     this.editor.addEventListener('input', () => this.scheduleLint());
+    
+    // Nota: O listener de scroll está no LaTeXEditor para evitar duplicação
   }
   
   scheduleLint() {
@@ -2352,6 +2525,32 @@ class LaTeXLinterUI {
     const errors = data.errors || [];
     const warnings = data.warnings || [];
     
+    const totalLines = this.editor.value.split('\n').length;
+    const lineNumbersDiv = document.getElementById('lineNumbers');
+    const lineNumberElements = lineNumbersDiv ? lineNumbersDiv.querySelectorAll('.line-number').length : 0;
+    
+    // IMPORTANTE: Verificar se números de linha estão sincronizados
+    if (lineNumberElements !== totalLines) {
+      console.warn(`[Linter] AVISO: Números de linha desatualizados! Editor: ${totalLines} linhas, números: ${lineNumberElements} elementos`);
+      // Forçar atualização dos números de linha
+      if (window.latexEditor) {
+        window.latexEditor.updateLineNumbers();
+        console.log('[Linter] Números de linha atualizados forçadamente');
+        
+        // Aguardar o DOM atualizar antes de criar marcadores
+        setTimeout(() => this.createMarkersFromData(errors, warnings), 50);
+        return;
+      }
+    }
+    
+    this.createMarkersFromData(errors, warnings);
+  }
+  
+  createMarkersFromData(errors, warnings) {
+    // Salvar erros e avisos para uso posterior (correções)
+    this.currentErrors = errors;
+    this.currentWarnings = warnings;
+    
     // Agrupar por linha
     const issuesByLine = {};
     
@@ -2374,13 +2573,32 @@ class LaTeXLinterUI {
       const issues = issuesByLine[lineNum];
       const hasError = issues.some(i => i.type === 'error');
       
-      this.createLineMarker(parseInt(lineNum), issues, hasError ? 'error' : 'warning');
+      const lineNumInt = parseInt(lineNum);
+      this.createLineMarker(lineNumInt, issues, hasError ? 'error' : 'warning');
     });
     
     // Atualizar contador na status bar (se existir)
     const errorCount = errors.length;
     const warningCount = warnings.length;
-    console.log(`[Linter] ${errorCount} erros, ${warningCount} avisos`);
+    
+    if (errorCount > 0 || warningCount > 0) {
+      console.log(`[Linter] ${errorCount} erros, ${warningCount} avisos`);
+      
+      // DEBUG: Listar todos os erros
+      if (errorCount > 0) {
+        console.log('[Linter] === ERROS DETECTADOS ===');
+        errors.forEach((err, i) => {
+          console.log(`  ${i+1}. Linha ${err.line || 'global'}: ${err.message}`);
+        });
+      }
+      
+      if (warningCount > 0) {
+        console.log('[Linter] === AVISOS DETECTADOS ===');
+        warnings.forEach((warn, i) => {
+          console.log(`  ${i+1}. Linha ${warn.line || 'global'}: ${warn.message}`);
+        });
+      }
+    }
     
     // Atualizar o card do Linter
     this.updateLintCard(errors, warnings);
@@ -2406,6 +2624,37 @@ class LaTeXLinterUI {
       suggestionsCountEl.textContent = suggestionsCount;
     }
     
+    // ===== ATUALIZAR BADGE E ABRIR AUTOMATICAMENTE =====
+    const badge = document.getElementById('lintBadge');
+    const toggle = document.getElementById('lintToggle');
+    const panel = document.getElementById('lintPanel');
+    const totalIssues = errors.length + warnings.length;
+    
+    if (totalIssues > 0) {
+      // Mostrar badge
+      if (badge) {
+        badge.textContent = totalIssues > 99 ? '99+' : totalIssues;
+        badge.style.display = 'flex';
+      }
+      
+      // Animar botão
+      if (toggle) {
+        toggle.classList.add('has-errors');
+        setTimeout(() => toggle.classList.remove('has-errors'), 500);
+      }
+      
+      // Abrir painel automaticamente se estiver fechado
+      if (panel && !panel.classList.contains('open')) {
+        panel.classList.add('open');
+        if (toggle) toggle.classList.add('active');
+      }
+    } else {
+      // Esconder badge
+      if (badge) {
+        badge.style.display = 'none';
+      }
+    }
+    
     // Atualizar lista de problemas
     const issuesEl = document.getElementById('lintIssues');
     if (issuesEl) {
@@ -2417,31 +2666,57 @@ class LaTeXLinterUI {
       }
       
       // Adicionar erros
-      errors.forEach(err => {
+      errors.forEach((err, index) => {
         const item = document.createElement('div');
         item.className = 'lint-issue-item';
         item.style.cssText = 'padding: 12px; margin-bottom: 8px; background: #ffebee; border-left: 4px solid #f44336; border-radius: 4px;';
+        
+        const actionsHtml = err.line ? `
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            ${err.fix ? `<button onclick="window.linterUI.applyFix(${err.line}, 'error', ${index})" style="padding: 4px 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+              ✨ Corrigir
+            </button>` : ''}
+            <button onclick="window.linterUI.goToLine(${err.line})" style="padding: 4px 12px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+              → Ir para linha
+            </button>
+          </div>
+        ` : '';
+        
         item.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <span style="font-weight: bold; color: #f44336;">❌ ${err.message}</span>
             ${err.line ? `<span style="color: #666; font-size: 0.9rem;">Linha ${err.line}</span>` : '<span style="color: #666; font-size: 0.9rem;">Global</span>'}
           </div>
           ${err.suggestion ? `<div style="color: #1976d2; font-size: 0.9rem; margin-top: 4px;">💡 ${err.suggestion}</div>` : ''}
+          ${actionsHtml}
         `;
         issuesEl.appendChild(item);
       });
       
       // Adicionar avisos
-      warnings.forEach(warn => {
+      warnings.forEach((warn, index) => {
         const item = document.createElement('div');
         item.className = 'lint-issue-item';
         item.style.cssText = 'padding: 12px; margin-bottom: 8px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;';
+        
+        const actionsHtml = warn.line ? `
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            ${warn.fix ? `<button onclick="window.linterUI.applyFix(${warn.line}, 'warning', ${index})" style="padding: 4px 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+              ✨ Corrigir
+            </button>` : ''}
+            <button onclick="window.linterUI.goToLine(${warn.line})" style="padding: 4px 12px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+              → Ir para linha
+            </button>
+          </div>
+        ` : '';
+        
         item.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <span style="font-weight: bold; color: #ff9800;">⚠️ ${warn.message}</span>
             ${warn.line ? `<span style="color: #666; font-size: 0.9rem;">Linha ${warn.line}</span>` : '<span style="color: #666; font-size: 0.9rem;">Global</span>'}
           </div>
           ${warn.suggestion ? `<div style="color: #1976d2; font-size: 0.9rem; margin-top: 4px;">💡 ${warn.suggestion}</div>` : ''}
+          ${actionsHtml}
         `;
         issuesEl.appendChild(item);
       });
@@ -2452,23 +2727,38 @@ class LaTeXLinterUI {
     if (outdatedWarning) {
       outdatedWarning.style.display = 'none';
     }
+    
+    // Habilitar/desabilitar botão de "Aplicar Todas Correções"
+    const fixAllBtn = document.getElementById('lintFixAllBtn');
+    if (fixAllBtn) {
+      const hasFixableIssues = [...errors, ...warnings].some(issue => issue.fix);
+      fixAllBtn.disabled = !hasFixableIssues;
+      fixAllBtn.style.opacity = hasFixableIssues ? '1' : '0.5';
+      fixAllBtn.style.cursor = hasFixableIssues ? 'pointer' : 'not-allowed';
+    }
   }
   
   createLineMarker(lineNum, issues, type) {
     const editorWrapper = this.editor.parentElement;
-    const lineHeight = parseInt(getComputedStyle(this.editor).lineHeight) || 20;
-    const top = (lineNum - 1) * lineHeight;
+    
+    // Calcular altura da linha
+    const computedStyle = getComputedStyle(this.editor);
+    let lineHeight = parseFloat(computedStyle.lineHeight);
+    if (!lineHeight || isNaN(lineHeight)) {
+      const fontSize = parseFloat(computedStyle.fontSize) || 14;
+      lineHeight = fontSize * 1.5;
+    }
     
     // Criar marcador de fundo
     const marker = document.createElement('div');
     marker.className = type === 'error' ? 'lint-error-marker' : 'lint-warning-marker';
-    marker.style.top = `${top}px`;
+    marker.dataset.lineNum = lineNum;
     marker.style.height = `${lineHeight}px`;
     
     // Criar ícone na margem
     const icon = document.createElement('div');
     icon.className = `lint-icon lint-icon-${type}`;
-    icon.style.top = `${top}px`;
+    icon.dataset.lineNum = lineNum;
     icon.innerHTML = type === 'error' ? '⚠️' : '⚡';
     icon.title = issues.map(i => i.message).join('\n');
     
@@ -2479,7 +2769,59 @@ class LaTeXLinterUI {
     editorWrapper.appendChild(marker);
     editorWrapper.appendChild(icon);
     
-    this.lintMarkers.push(marker, icon);
+    this.lintMarkers.push({ marker, icon, lineNum });
+    
+    // Posicionar inicialmente
+    this.updateMarkerPosition(marker, icon, lineNum);
+  }
+  
+  updateMarkerPosition(marker, icon, lineNum) {
+    // Método NOVO: usar os números de linha como referência
+    const lines = this.editor.value.split('\n');
+    
+    // Validar número de linha
+    if (lineNum < 1 || lineNum > lines.length) {
+      console.warn(`[Linter] Linha ${lineNum} fora do range (1-${lines.length})`);
+      marker.style.display = 'none';
+      icon.style.display = 'none';
+      return;
+    }
+    
+    marker.style.display = 'block';
+    icon.style.display = 'block';
+    
+    // Buscar o elemento de número de linha correspondente
+    const lineNumbersDiv = document.getElementById('lineNumbers');
+    if (!lineNumbersDiv) {
+      console.error('[Linter] lineNumbers div não encontrado!');
+      return;
+    }
+    
+    const lineNumberElements = lineNumbersDiv.querySelectorAll('.line-number');
+    const targetLineElement = lineNumberElements[lineNum - 1]; // 0-based no array
+    
+    if (!targetLineElement) {
+      console.warn(`[Linter] Elemento de número de linha ${lineNum} não encontrado`);
+      return;
+    }
+    
+    // Usar a posição REAL do elemento de número de linha
+    const lineNumberRect = targetLineElement.getBoundingClientRect();
+    const editorRect = this.editor.getBoundingClientRect();
+    
+    // Calcular posição relativa ao editor
+    const top = lineNumberRect.top - editorRect.top;
+    
+    marker.style.top = `${top}px`;
+    icon.style.top = `${top}px`;
+  }
+  
+  updateAllMarkerPositions() {
+    this.lintMarkers.forEach(item => {
+      if (item.marker && item.icon && item.lineNum) {
+        this.updateMarkerPosition(item.marker, item.icon, item.lineNum);
+      }
+    });
   }
   
   showTooltip(event, issues, type) {
@@ -2510,8 +2852,100 @@ class LaTeXLinterUI {
     if (tooltip) tooltip.remove();
   }
   
+  goToLine(lineNumber) {
+    if (!lineNumber || lineNumber < 1) return;
+    
+    const lines = this.editor.value.split('\n');
+    if (lineNumber > lines.length) return;
+    
+    // Calcular a posição do caractere
+    let position = 0;
+    for (let i = 0; i < lineNumber - 1; i++) {
+      position += lines[i].length + 1; // +1 para o \n
+    }
+    
+    // Mover cursor e scroll para a linha
+    this.editor.focus();
+    this.editor.setSelectionRange(position, position + lines[lineNumber - 1].length);
+    
+    // Scroll para garantir que a linha está visível
+    const lineHeight = parseFloat(getComputedStyle(this.editor).lineHeight) || 20;
+    this.editor.scrollTop = (lineNumber - 5) * lineHeight; // -5 para deixar contexto
+    
+    console.log(`[Linter] Navegado para linha ${lineNumber}`);
+  }
+  
+  async applyFix(lineNumber, type, index) {
+    const issue = type === 'error' ? this.currentErrors[index] : this.currentWarnings[index];
+    
+    if (!issue || !issue.fix) {
+      console.warn(`[Linter] Nenhuma correção disponível para ${type} na linha ${lineNumber}`);
+      return;
+    }
+    
+    const lines = this.editor.value.split('\n');
+    if (lineNumber < 1 || lineNumber > lines.length) {
+      console.error(`[Linter] Linha ${lineNumber} inválida`);
+      return;
+    }
+    
+    // Aplicar correção na linha
+    lines[lineNumber - 1] = issue.fix;
+    this.editor.value = lines.join('\n');
+    
+    // Atualizar interface
+    if (window.latexEditor) {
+      window.latexEditor.updateLineNumbers();
+      window.latexEditor.updateStatus();
+    }
+    
+    // Reexecutar lint após 500ms
+    setTimeout(() => this.runLint(), 500);
+    
+    console.log(`[Linter] Correção aplicada na linha ${lineNumber}`);
+  }
+  
+  async applyAllFixes() {
+    const allIssues = [
+      ...this.currentErrors.map((e, i) => ({ ...e, type: 'error', index: i })),
+      ...this.currentWarnings.map((w, i) => ({ ...w, type: 'warning', index: i }))
+    ];
+    
+    const fixableIssues = allIssues.filter(issue => issue.fix && issue.line);
+    
+    if (fixableIssues.length === 0) {
+      return;
+    }
+    
+    // Aplicar correções de trás para frente para não afetar números de linha
+    fixableIssues.sort((a, b) => b.line - a.line);
+    
+    const lines = this.editor.value.split('\n');
+    fixableIssues.forEach(issue => {
+      if (issue.line >= 1 && issue.line <= lines.length) {
+        lines[issue.line - 1] = issue.fix;
+      }
+    });
+    
+    this.editor.value = lines.join('\n');
+    
+    // Atualizar interface
+    if (window.latexEditor) {
+      window.latexEditor.updateLineNumbers();
+      window.latexEditor.updateStatus();
+    }
+    
+    // Reexecutar lint
+    setTimeout(() => this.runLint(), 500);
+    
+    console.log(`[Linter] ${fixableIssues.length} correções aplicadas`);
+  }
+  
   clearMarkers() {
-    this.lintMarkers.forEach(marker => marker.remove());
+    this.lintMarkers.forEach(item => {
+      if (item.marker) item.marker.remove();
+      if (item.icon) item.icon.remove();
+    });
     this.lintMarkers = [];
     this.hideTooltip();
   }
@@ -2656,50 +3090,1199 @@ document.head.appendChild(backButtonStyle);
 </script>
 
 <!-- ============================================================================ -->
-<!-- ASSISTENTE VIRTUAL - UI MINIMAL -->
+<!-- CHAT COLABORATIVO MODAL -->
 <!-- ============================================================================ -->
 
-<!-- Botão para abrir/fechar chat -->
-<button id="assistantToggle" class="assistant-toggle" title="Assistente Virtual LaTeX">
-  <i class="fas fa-robot"></i>
+<!-- Botão flutuante para abrir chat -->
+<button id="chatToggleBtn" class="chat-toggle-btn" title="Chat Colaborativo" onclick="toggleChatModal()">
+  <i class="fas fa-comments"></i>
+  <span class="chat-notification-badge" id="chatNotificationBadge" style="display: none;">0</span>
 </button>
 
-<!-- Painel do assistente -->
-<div id="assistantPanel" class="assistant-panel">
-  <div class="assistant-header">
-    <h3><i class="fas fa-robot"></i> Assistente LaTeX</h3>
-    <button class="assistant-close" onclick="toggleAssistant()">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  
-  <div class="assistant-messages" id="assistantMessages">
-    <div class="assistant-message system">
-      <div class="message-content">
-        <p>👋 Olá! Sou seu assistente LaTeX.</p>
-        <p>Posso ajudar com snippets, correções, formatação e compilação.</p>
+<!-- Modal de Chat -->
+<div id="chatModal" class="chat-modal">
+  <div class="chat-modal-content">
+    <!-- Sidebar: Lista de Grupos -->
+    <div class="chat-sidebar">
+      <div class="chat-sidebar-header">
+        <h3><i class="fas fa-comments me-2"></i>Chat</h3>
+        <button class="btn-close-sidebar" onclick="toggleChatModal()">&times;</button>
+      </div>
+      
+      <div class="chat-sidebar-body">
+        <button class="btn btn-success w-100 mb-3" onclick="showCreateGroupModal()">
+          <i class="fas fa-plus me-2"></i>Criar Grupo
+        </button>
+        
+        <input type="text" class="form-control mb-3" id="searchGroupsInput" placeholder="Buscar grupos..." onkeyup="filterGroups()">
+        
+        <div class="groups-list" id="groupsList">
+          <div class="text-center text-muted py-4">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+            <p>Carregando grupos...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Área de Chat -->
+    <div class="chat-main-area">
+      <div id="chatEmpty" class="chat-empty-state">
+        <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+        <h4>Selecione um grupo</h4>
+        <p class="text-muted">Escolha um grupo ou crie um novo para começar</p>
+      </div>
+      
+      <div id="chatActive" class="chat-active" style="display: none;">
+        <!-- Header do Chat Ativo -->
+        <div class="chat-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-0" id="activeGroupName">Grupo</h5>
+              <small class="text-muted" id="activeGroupMembers">0 membros</small>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-secondary" onclick="showMembersManageModal()" title="Gerenciar Membros">
+                <i class="fas fa-users"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-secondary" onclick="showSearchMessagesModal()" title="Buscar Mensagens">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mensagens -->
+        <div class="chat-messages" id="chatMessages">
+          <div class="text-center py-4">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+            <p>Carregando mensagens...</p>
+          </div>
+        </div>
+        
+        <!-- Input de Mensagem -->
+        <div class="chat-input-area">
+          <form id="chatMessageForm" onsubmit="sendChatMessage(event)">
+            <div class="input-group">
+              <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('chatFileInput').click()" title="Anexar arquivo">
+                <i class="fas fa-paperclip"></i>
+              </button>
+              <input type="file" id="chatFileInput" style="display: none;" onchange="handleFileSelect(this.files[0])">
+              <input type="text" class="form-control" id="chatMessageInput" placeholder="Digite sua mensagem..." autocomplete="off">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </form>
+          <div id="chatFilePreview" class="file-preview" style="display: none;"></div>
+          <small class="text-muted">
+            <i class="fas fa-info-circle"></i> Arraste arquivos aqui ou use o botão de anexo
+          </small>
+        </div>
       </div>
     </div>
   </div>
-  
-  <div class="assistant-input-wrapper">
-    <input 
-      type="text" 
-      id="assistantInput" 
-      class="assistant-input" 
-      placeholder="Digite sua mensagem ou comando..."
-      onkeypress="if(event.key === 'Enter') sendAssistantMessage()"
-    />
-    <button class="assistant-send" onclick="sendAssistantMessage()">
-      <i class="fas fa-paper-plane"></i>
-    </button>
+</div>
+
+<!-- Modal: Criar Grupo -->
+<div class="modal fade" id="createGroupChatModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Criar Novo Grupo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form onsubmit="createChatGroup(event)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nome do Grupo *</label>
+            <input type="text" class="form-control" id="newGroupName" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" id="newGroupDescription" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Criar Grupo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Gerenciar Membros -->
+<div class="modal fade" id="manageMembersModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Gerenciar Membros</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Adicionar Membro (por email)</label>
+          <form onsubmit="addGroupMember(event)" class="input-group">
+            <input type="email" class="form-control" id="addMemberEmail" placeholder="email@exemplo.com" required>
+            <button type="submit" class="btn btn-primary">Adicionar</button>
+          </form>
+        </div>
+        <hr>
+        <h6>Membros Atuais:</h6>
+        <div id="currentMembersList">
+          <p class="text-muted">Carregando...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Buscar Mensagens -->
+<div class="modal fade" id="searchMessagesModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Buscar Mensagens</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control mb-3" id="searchMessagesInput" placeholder="Digite para buscar..." onkeyup="searchMessages()">
+        <div id="searchMessagesResults">
+          <p class="text-muted text-center">Digite para buscar mensagens</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- ============================================================================ -->
-<!-- SOCKET.IO CLIENT -->
+<!-- ESTILOS CSS DO CHAT COLABORATIVO -->
 <!-- ============================================================================ -->
+<style>
+/* Botão flutuante para abrir chat */
+.chat-toggle-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  font-size: 24px;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1040;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.chat-toggle-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0, 123, 255, 0.6);
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+}
+
+.chat-notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Modal de Chat */
+.chat-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+.chat-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.chat-modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 1200px;
+  height: 85vh;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Sidebar */
+.chat-sidebar {
+  width: 300px;
+  background: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-sidebar-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-sidebar-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.btn-close-sidebar {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.btn-close-sidebar:hover {
+  opacity: 1;
+}
+
+.chat-sidebar-body {
+  padding: 15px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.groups-list {
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+}
+
+.group-item {
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
+  border: 1px solid #dee2e6;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.group-item:hover {
+  background: #e9ecef;
+  border-color: #007bff;
+  transform: translateX(3px);
+}
+
+.group-item.active {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border-color: #007bff;
+}
+
+.group-item .group-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.group-item .group-description {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.group-item .notification-dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  background: #007bff;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.group-item.active .notification-dot {
+  background: white;
+}
+
+/* Área Principal do Chat */
+.chat-main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.chat-empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.chat-active {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  padding: 20px;
+  background: white;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #f8f9fa;
+}
+
+.message-item {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  animation: messageSlide 0.3s ease;
+}
+
+@keyframes messageSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-item.own {
+  align-items: flex-end;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.message-item.own .message-bubble {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 0.85rem;
+}
+
+.message-sender {
+  font-weight: 600;
+}
+
+.message-time {
+  opacity: 0.7;
+  font-size: 0.75rem;
+}
+
+.message-content {
+  word-wrap: break-word;
+}
+
+.message-file {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.message-item.own .message-file {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.file-thumbnail {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.file-icon {
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.file-size {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* Input de Mensagem */
+.chat-input-area {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #dee2e6;
+}
+
+.file-preview {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-preview img {
+  max-width: 60px;
+  max-height: 60px;
+  border-radius: 4px;
+}
+
+.file-preview .btn-remove {
+  margin-left: auto;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+/* Drag and Drop */
+.chat-input-area.drag-over {
+  background: #e7f3ff;
+  border-color: #007bff;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .chat-modal-content {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+  }
+  
+  .chat-sidebar {
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    z-index: 10;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .chat-sidebar.mobile-visible {
+    transform: translateX(0);
+  }
+  
+  .message-bubble {
+    max-width: 85%;
+  }
+}
+
+/* Scrollbar personalizada */
+.chat-messages::-webkit-scrollbar,
+.groups-list::-webkit-scrollbar,
+.chat-sidebar-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track,
+.groups-list::-webkit-scrollbar-track,
+.chat-sidebar-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.chat-messages::-webkit-scrollbar-thumb,
+.groups-list::-webkit-scrollbar-thumb,
+.chat-sidebar-body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover,
+.groups-list::-webkit-scrollbar-thumb:hover,
+.chat-sidebar-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+</style>
+
+<!-- ============================================================================ -->
+<!-- JAVASCRIPT DO CHAT COLABORATIVO -->
+<!-- ============================================================================ -->
+<script>
+// ========== GERENCIADOR DO CHAT MODAL ==========
+class ChatManager {
+  constructor() {
+    this.activeGroupId = null;
+    this.currentUserId = null;
+    this.groups = [];
+    this.messages = [];
+    this.pollingInterval = null;
+    this.selectedFile = null;
+    this.unreadCounts = {};
+    this.lastMessageIds = {};
+  }
+
+  init() {
+    console.log('[Chat] Inicializando...');
+    this.setupDragAndDrop();
+    this.loadCurrentUser();
+  }
+
+  async loadCurrentUser() {
+    // Assumir que o usuário está logado (informação vem do Flask/session)
+    this.currentUserId = {{ current_user.id }};
+    console.log('[Chat] User ID:', this.currentUserId);
+  }
+
+  async loadGroups() {
+    try {
+      const response = await fetch('/api/groups');
+      const data = await response.json();
+      
+      if (data.success) {
+        this.groups = data.groups;
+        this.renderGroupsList();
+      }
+    } catch (error) {
+      console.error('[Chat] Erro ao carregar grupos:', error);
+    }
+  }
+
+  renderGroupsList() {
+    const container = document.getElementById('groupsList');
+    
+    if (this.groups.length === 0) {
+      container.innerHTML = `
+        <div class="text-center text-muted py-4">
+          <i class="fas fa-inbox fa-2x mb-2"></i>
+          <p>Nenhum grupo ainda</p>
+          <small>Crie seu primeiro grupo!</small>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = this.groups.map(group => {
+      const unread = this.unreadCounts[group.id] || 0;
+      const notificationDot = unread > 0 ? '<span class="notification-dot"></span>' : '';
+      
+      return `
+        <div class="group-item ${this.activeGroupId === group.id ? 'active' : ''}" 
+             onclick="chatManager.selectGroup(${group.id})"
+             data-group-id="${group.id}">
+          ${notificationDot}
+          <div class="group-name">${this.escapeHtml(group.name)}</div>
+          <div class="group-description">${this.escapeHtml(group.description || 'Sem descrição')}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async selectGroup(groupId) {
+    console.log('[Chat] Selecionando grupo:', groupId);
+    this.activeGroupId = groupId;
+    
+    // Atualizar UI
+    this.renderGroupsList();
+    document.getElementById('chatEmpty').style.display = 'none';
+    document.getElementById('chatActive').style.display = 'flex';
+    
+    // Carregar informações do grupo
+    const group = this.groups.find(g => g.id === groupId);
+    if (group) {
+      document.getElementById('activeGroupName').textContent = group.name;
+      await this.loadGroupMembers(groupId);
+    }
+    
+    // Carregar mensagens
+    await this.loadMessages();
+    
+    // Iniciar polling
+    this.startPolling();
+    
+    // Marcar como lido
+    this.unreadCounts[groupId] = 0;
+    this.updateNotificationBadge();
+  }
+
+  async loadGroupMembers(groupId) {
+    try {
+      const response = await fetch(`/api/groups/${groupId}/members`);
+      const data = await response.json();
+      
+      if (data.success) {
+        document.getElementById('activeGroupMembers').textContent = 
+          `${data.members.length} membro${data.members.length !== 1 ? 's' : ''}`;
+      }
+    } catch (error) {
+      console.error('[Chat] Erro ao carregar membros:', error);
+    }
+  }
+
+  async loadMessages() {
+    if (!this.activeGroupId) return;
+    
+    try {
+      const response = await fetch(`/api/groups/${this.activeGroupId}/messages`);
+      const data = await response.json();
+      
+      if (data.success) {
+        this.messages = data.messages;
+        this.renderMessages();
+        
+        // Marcar último ID
+        if (this.messages.length > 0) {
+          this.lastMessageIds[this.activeGroupId] = this.messages[this.messages.length - 1].id;
+        }
+      }
+    } catch (error) {
+      console.error('[Chat] Erro ao carregar mensagens:', error);
+    }
+  }
+
+  renderMessages() {
+    const container = document.getElementById('chatMessages');
+    
+    if (this.messages.length === 0) {
+      container.innerHTML = `
+        <div class="text-center text-muted py-4">
+          <i class="fas fa-comment-slash fa-2x mb-2"></i>
+          <p>Nenhuma mensagem ainda</p>
+          <small>Seja o primeiro a enviar!</small>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = this.messages.map(msg => {
+      const isOwn = msg.user_id === this.currentUserId;
+      const time = this.formatTime(msg.created_at);
+      
+      let fileHtml = '';
+      if (msg.file_path) {
+        const fileName = msg.file_path.split('/').pop();
+        const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(fileName);
+        
+        if (isImage) {
+          fileHtml = `
+            <div class="message-file">
+              <img src="${msg.file_path}" class="file-thumbnail" alt="${fileName}">
+              <div class="file-info">
+                <div class="file-name">${fileName}</div>
+                <a href="${msg.file_path}" target="_blank" class="btn btn-sm btn-link p-0">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              </div>
+            </div>
+          `;
+        } else {
+          fileHtml = `
+            <div class="message-file">
+              <i class="fas fa-file file-icon"></i>
+              <div class="file-info">
+                <div class="file-name">${fileName}</div>
+                <a href="${msg.file_path}" target="_blank" class="btn btn-sm btn-link p-0">
+                  <i class="fas fa-download"></i> Download
+                </a>
+              </div>
+            </div>
+          `;
+        }
+      }
+      
+      return `
+        <div class="message-item ${isOwn ? 'own' : ''}">
+          <div class="message-bubble">
+            <div class="message-header">
+              <span class="message-sender">${this.escapeHtml(msg.username)}</span>
+              <span class="message-time">${time}</span>
+            </div>
+            ${msg.content ? `<div class="message-content">${this.escapeHtml(msg.content)}</div>` : ''}
+            ${fileHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    // Scroll para o final
+    setTimeout(() => container.scrollTop = container.scrollHeight, 100);
+  }
+
+  async sendMessage(content, file = null) {
+    if (!this.activeGroupId) return;
+    if (!content && !file) return;
+    
+    const formData = new FormData();
+    if (content) formData.append('content', content);
+    if (file) formData.append('file', file);
+    
+    try {
+      const response = await fetch(`/api/groups/${this.activeGroupId}/messages/send`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Recarregar mensagens
+        await this.loadMessages();
+      } else {
+        alert('Erro ao enviar mensagem: ' + (data.error || 'Erro desconhecido'));
+      }
+    } catch (error) {
+      console.error('[Chat] Erro ao enviar mensagem:', error);
+      alert('Erro ao enviar mensagem');
+    }
+  }
+
+  startPolling() {
+    if (this.pollingInterval) clearInterval(this.pollingInterval);
+    
+    this.pollingInterval = setInterval(async () => {
+      if (this.activeGroupId) {
+        await this.checkNewMessages();
+      }
+    }, 3000); // Polling a cada 3 segundos
+  }
+
+  async checkNewMessages() {
+    if (!this.activeGroupId) return;
+    
+    const lastId = this.lastMessageIds[this.activeGroupId] || 0;
+    
+    try {
+      const response = await fetch(`/api/groups/${this.activeGroupId}/messages?since=${lastId}`);
+      const data = await response.json();
+      
+      if (data.success && data.messages.length > 0) {
+        // Adicionar novas mensagens
+        this.messages = [...this.messages, ...data.messages];
+        this.renderMessages();
+        this.lastMessageIds[this.activeGroupId] = data.messages[data.messages.length - 1].id;
+      }
+    } catch (error) {
+      console.error('[Chat] Erro no polling:', error);
+    }
+  }
+
+  setupDragAndDrop() {
+    const inputArea = document.querySelector('.chat-input-area');
+    if (!inputArea) return;
+    
+    inputArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      inputArea.classList.add('drag-over');
+    });
+    
+    inputArea.addEventListener('dragleave', () => {
+      inputArea.classList.remove('drag-over');
+    });
+    
+    inputArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      inputArea.classList.remove('drag-over');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        this.handleFileSelect(files[0]);
+      }
+    });
+  }
+
+  handleFileSelect(file) {
+    if (!file) return;
+    
+    // Limite de 10MB
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Arquivo muito grande! Máximo: 10MB');
+      return;
+    }
+    
+    this.selectedFile = file;
+    this.showFilePreview(file);
+  }
+
+  showFilePreview(file) {
+    const preview = document.getElementById('chatFilePreview');
+    const isImage = file.type.startsWith('image/');
+    
+    let html = '<div>';
+    if (isImage) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.innerHTML = `
+          <img src="${e.target.result}" alt="${file.name}">
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-size">${this.formatFileSize(file.size)}</div>
+          </div>
+          <button class="btn-remove" onclick="chatManager.clearFileSelection()">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.innerHTML = `
+        <i class="fas fa-file file-icon"></i>
+        <div class="file-info">
+          <div class="file-name">${file.name}</div>
+          <div class="file-size">${this.formatFileSize(file.size)}</div>
+        </div>
+        <button class="btn-remove" onclick="chatManager.clearFileSelection()">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+    }
+    
+    preview.style.display = 'flex';
+  }
+
+  clearFileSelection() {
+    this.selectedFile = null;
+    document.getElementById('chatFilePreview').style.display = 'none';
+    document.getElementById('chatFileInput').value = '';
+  }
+
+  updateNotificationBadge() {
+    const total = Object.values(this.unreadCounts).reduce((a, b) => a + b, 0);
+    const badge = document.getElementById('chatNotificationBadge');
+    
+    if (total > 0) {
+      badge.textContent = total > 99 ? '99+' : total;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = now - date;
+    
+    if (diff < 60000) return 'agora';
+    if (diff < 3600000) return Math.floor(diff / 60000) + ' min';
+    if (diff < 86400000) return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  }
+
+  formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+}
+
+// Instância global
+const chatManager = new ChatManager();
+
+// ========== FUNÇÕES GLOBAIS DO CHAT ==========
+function toggleChatModal() {
+  const modal = document.getElementById('chatModal');
+  const isActive = modal.classList.contains('active');
+  
+  if (isActive) {
+    modal.classList.remove('active');
+    if (chatManager.pollingInterval) {
+      clearInterval(chatManager.pollingInterval);
+      chatManager.pollingInterval = null;
+    }
+  } else {
+    modal.classList.add('active');
+    chatManager.loadGroups();
+  }
+}
+
+function showCreateGroupModal() {
+  const modal = new bootstrap.Modal(document.getElementById('createGroupChatModal'));
+  modal.show();
+}
+
+async function createChatGroup(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById('newGroupName').value.trim();
+  const description = document.getElementById('newGroupDescription').value.trim();
+  
+  if (!name) {
+    alert('Nome do grupo é obrigatório');
+    return;
+  }
+  
+  try {
+    const response = await fetch('/api/groups/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, description })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      bootstrap.Modal.getInstance(document.getElementById('createGroupChatModal')).hide();
+      document.getElementById('newGroupName').value = '';
+      document.getElementById('newGroupDescription').value = '';
+      
+      // Recarregar grupos
+      await chatManager.loadGroups();
+      
+      // Auto-selecionar o novo grupo
+      if (data.group_id) {
+        setTimeout(() => chatManager.selectGroup(data.group_id), 300);
+      }
+    } else {
+      alert('Erro: ' + (data.error || 'Erro desconhecido'));
+    }
+  } catch (error) {
+    console.error('[Chat] Erro ao criar grupo:', error);
+    alert('Erro ao criar grupo');
+  }
+}
+
+function sendChatMessage(e) {
+  e.preventDefault();
+  
+  const input = document.getElementById('chatMessageInput');
+  const content = input.value.trim();
+  const file = chatManager.selectedFile;
+  
+  if (!content && !file) return;
+  
+  chatManager.sendMessage(content, file);
+  
+  input.value = '';
+  chatManager.clearFileSelection();
+}
+
+function handleFileSelect(file) {
+  chatManager.handleFileSelect(file);
+}
+
+function filterGroups() {
+  const search = document.getElementById('searchGroupsInput').value.toLowerCase();
+  const items = document.querySelectorAll('.group-item');
+  
+  items.forEach(item => {
+    const name = item.querySelector('.group-name').textContent.toLowerCase();
+    const desc = item.querySelector('.group-description').textContent.toLowerCase();
+    
+    if (name.includes(search) || desc.includes(search)) {
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+async function showMembersManageModal() {
+  const modal = new bootstrap.Modal(document.getElementById('manageMembersModal'));
+  modal.show();
+  
+  // Carregar membros atuais
+  if (chatManager.activeGroupId) {
+    try {
+      const response = await fetch(`/api/groups/${chatManager.activeGroupId}/members`);
+      const data = await response.json();
+      
+      if (data.success) {
+        const container = document.getElementById('currentMembersList');
+        container.innerHTML = data.members.map(member => `
+          <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+            <div>
+              <strong>${member.username}</strong>
+              <small class="text-muted ms-2">(${member.role})</small>
+            </div>
+            ${member.role !== 'leader' ? `
+              <button class="btn btn-sm btn-danger" onclick="removeMember(${member.id})">
+                <i class="fas fa-trash"></i>
+              </button>
+            ` : ''}
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('[Chat] Erro ao carregar membros:', error);
+    }
+  }
+}
+
+async function addGroupMember(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('addMemberEmail').value.trim();
+  
+  if (!email || !chatManager.activeGroupId) return;
+  
+  try {
+    const response = await fetch(`/api/groups/${chatManager.activeGroupId}/members/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      document.getElementById('addMemberEmail').value = '';
+      showMembersManageModal(); // Recarregar lista
+      await chatManager.loadGroupMembers(chatManager.activeGroupId);
+    } else {
+      alert('Erro: ' + (data.error || 'Erro desconhecido'));
+    }
+  } catch (error) {
+    console.error('[Chat] Erro ao adicionar membro:', error);
+    alert('Erro ao adicionar membro');
+  }
+}
+
+async function removeMember(userId) {
+  if (!confirm('Remover este membro do grupo?')) return;
+  
+  try {
+    const response = await fetch(`/api/groups/${chatManager.activeGroupId}/members/${userId}/remove`, {
+      method: 'POST'
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      showMembersManageModal(); // Recarregar lista
+      await chatManager.loadGroupMembers(chatManager.activeGroupId);
+    } else {
+      alert('Erro: ' + (data.error || 'Erro desconhecido'));
+    }
+  } catch (error) {
+    console.error('[Chat] Erro ao remover membro:', error);
+    alert('Erro ao remover membro');
+  }
+}
+
+function showSearchMessagesModal() {
+  const modal = new bootstrap.Modal(document.getElementById('searchMessagesModal'));
+  modal.show();
+}
+
+async function searchMessages() {
+  const query = document.getElementById('searchMessagesInput').value.trim();
+  const resultsContainer = document.getElementById('searchMessagesResults');
+  
+  if (!query || !chatManager.activeGroupId) {
+    resultsContainer.innerHTML = '<p class="text-muted text-center">Digite para buscar mensagens</p>';
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/api/groups/${chatManager.activeGroupId}/messages/search?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      if (data.results.length === 0) {
+        resultsContainer.innerHTML = '<p class="text-muted text-center">Nenhum resultado encontrado</p>';
+      } else {
+        resultsContainer.innerHTML = data.results.map(msg => `
+          <div class="border-bottom pb-2 mb-2">
+            <div class="d-flex justify-content-between">
+              <strong>${msg.username}</strong>
+              <small class="text-muted">${chatManager.formatTime(msg.created_at)}</small>
+            </div>
+            <p class="mb-0">${chatManager.escapeHtml(msg.content)}</p>
+          </div>
+        `).join('');
+      }
+    }
+  } catch (error) {
+    console.error('[Chat] Erro na busca:', error);
+  }
+}
+
+// Inicializar quando carregar
+document.addEventListener('DOMContentLoaded', () => {
+  chatManager.init();
+});
+</script>
+
+<!-- ASSISTENTE LATEX REMOVIDO - Substituído por Chat Colaborativo em Grupos -->
+<!--
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
 // Gerenciador do Assistente Virtual com Socket.IO
@@ -3087,13 +4670,13 @@ async function saveToBib(bibtexEntry) {
 }
 
 // Adicionar botão ao documento
-document.getElementById('assistantToggle').addEventListener('click', toggleAssistant);
+// REMOVIDO: document.getElementById('assistantToggle').addEventListener('click', toggleAssistant);
 </script>
+-->
+<!-- FIM DO CÓDIGO JAVASCRIPT DO ASSISTENTE (REMOVIDO) -->
 
-<!-- ============================================================================ -->
-<!-- ESTILOS DO ASSISTENTE -->
-<!-- ============================================================================ -->
-
+<!-- ESTILOS DO ASSISTENTE (COMENTADOS) -->
+<!--
 <style>
 /* Botão flutuante */
 .assistant-toggle {
@@ -3332,7 +4915,11 @@ document.getElementById('assistantToggle').addEventListener('click', toggleAssis
 .assistant-send:hover {
   transform: scale(1.1);
 }
+</style>
+-->
+<!-- FIM DO CÓDIGO DO ASSISTENTE LATEX (REMOVIDO) -->
 
+<style>
 /* ============================================================================ */
 /* PAINEL DE LINT */
 /* ============================================================================ */
@@ -3340,7 +4927,7 @@ document.getElementById('assistantToggle').addEventListener('click', toggleAssis
 .lint-toggle {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  right: 110px; /* Ao lado do botão de chat */
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -3352,11 +4939,41 @@ document.getElementById('assistantToggle').addEventListener('click', toggleAssis
   font-size: 24px;
   z-index: 999;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lint-toggle:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+}
+
+.lint-toggle.has-errors {
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.lint-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  animation: pulse 2s infinite;
 }
 
 .lint-panel {
@@ -3785,8 +5402,9 @@ document.getElementById('assistantToggle').addEventListener('click', toggleAssis
 <!-- ============================================================================ -->
 
 <!-- Botão para abrir/fechar lint -->
-<button id="lintToggle" class="lint-toggle" title="LaTeX Linter">
+<button id="lintToggle" class="lint-toggle" title="LaTeX Linter - Clique para abrir" onclick="toggleLint()">
   <i class="fas fa-check-circle"></i>
+  <span id="lintBadge" class="lint-badge" style="display: none;">0</span>
 </button>
 
 <!-- Painel do linter -->
@@ -4051,12 +5669,14 @@ function runLint() {
 }
 
 function applyAllFixes() {
-  // TODO: Implementar auto-fix no LaTeXLinterUI
-  console.warn('Auto-fix ainda não implementado no LaTeXLinterUI');
+  if (window.linterUI && window.linterUI.applyAllFixes) {
+    window.linterUI.applyAllFixes();
+  } else {
+    console.error('[Linter] UI não inicializado');
+  }
 }
 
-// Adicionar botão ao documento
-document.getElementById('lintToggle').addEventListener('click', toggleLint);
+// Botão do lintToggle já tem onclick no HTML
 
 // ============================================================================
 // FUNÇÕES DO MENU WINDOWS
@@ -4322,6 +5942,47 @@ function closePDFModal() {
       const iframe = document.getElementById('pdfIframe');
       if (iframe) iframe.src = '';
     }, 300);
+  }
+}
+
+function downloadPDFFromModal() {
+  if (!window.currentPdfUrl) {
+    alert('Nenhum PDF disponível para download');
+    return;
+  }
+  
+  // Criar link temporário para download
+  const link = document.createElement('a');
+  link.href = window.currentPdfUrl;
+  link.download = window.currentPdfFilename || 'documento.pdf';
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Mostrar notificação de sucesso
+  if (window.latexEditor) {
+    window.latexEditor.showNotification('PDF baixado com sucesso!', 'success');
+  }
+}
+
+function printPDFFromModal() {
+  if (!window.currentPdfUrl) {
+    alert('Nenhum PDF disponível para impressão');
+    return;
+  }
+  
+  // Tentar imprimir o PDF do iframe
+  const iframe = document.getElementById('pdfIframe');
+  if (iframe && iframe.contentWindow) {
+    try {
+      iframe.contentWindow.print();
+    } catch (e) {
+      // Se falhar, abrir em nova janela para imprimir
+      window.open(window.currentPdfUrl, '_blank');
+    }
+  } else {
+    window.open(window.currentPdfUrl, '_blank');
   }
 }
 </script>

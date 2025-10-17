@@ -233,3 +233,7 @@ def detect_language(payload: dict, default: str = 'pt') -> str:
 
 
 
+
+
+
+
