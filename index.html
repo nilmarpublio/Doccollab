@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocCollab - Crie documentos técnicos com rigor sem lidar com LaTeX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #1a1a1a;
+            --color-border: #2a2a2a;
+            --color-text: #ffffff;
+            --color-text-secondary: #a0a0a0;
+            --color-primary: #00d4ff;
+            --color-accent: #00ff88;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: var(--color-text);
+        }
+
+        .cta-button {
+            padding: 0.625rem 1.5rem;
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Topbar login variant */
+        .topbar-login {
+            background: cyan;
+            color: #002b5c; /* azul escuro */
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .topbar-login:hover {
+            filter: brightness(0.95);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            margin-left: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: transparent;
+            color: #00d4ff;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--color-text), var(--color-text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            color: var(--color-text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .hero-note {
+            max-width: 900px;
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            margin: 0 0 0.5rem;
+            line-height: 1.4;
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            padding: 1rem 2rem;
+            background-color: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-text);
+            background-color: var(--color-surface);
+        }
+
+        /* Value Proposition Section */
+        .value-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+            line-height: 1.6;
+        }
+
+        .value-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .value-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .value-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .value-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .value-description {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            padding: 6rem 2rem;
+            background-color: var(--color-surface);
+        }
+
+        .problem-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .problem-text h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-text p {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+        }
+
+        .problem-visual {
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #ff4444;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-visual::before {
+            content: '×';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 3rem;
+            color: #ff4444;
+            opacity: 0.3;
+        }
+
+        /* Method Section */
+        .method-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .method-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 2rem;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .step-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Document Types Section */
+        .types-section {
+            padding: 6rem 2rem;
+            background-color: var(--color-surface);
+        }
+
+        .types-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .type-card {
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .type-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .type-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .type-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer p {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--color-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .problem-content {
+                grid-template-columns: 1fr;
+            }
+
+            .method-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .types-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">D</div>
+            <span>DocCollab</span>
+        </div>
+        <nav class="nav">
+            <a href="#value">Proposta</a>
+            <a href="#method">Método</a>
+            <a href="#types">Tipos</a>
+            <a href="#" class="cta-button topbar-login">Login</a>
+        </nav>
+        <button class="mobile-menu-btn">☰</button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="version-badge">DocCollab–v0</div>
+        <h1 class="fade-in">Crie documentos técnicos<br>com rigor sem lidar com LaTeX</h1>
+        <p class="hero-tagline fade-in stagger-1">
+            A única fonte de verdade é um AST JSON validado. Esqueça a complexidade do LaTeX e foque no conteúdo.
+        </p>
+        <div class="hero-cta fade-in stagger-2">
+            <p class="hero-note">Esta versão é gratuita para coletar opinião e sugestões de pessoas que testarem a aplicação. Como recompensa as pessoas que derem feedback colaborativo, terão o uso gratuito pelo período de um ano.</p>
+            <button class="btn-primary">Cadastre-se para usar Gratuitamente</button>
+        </div>
+    </section>
+
+    <!-- Value Proposition Section -->
+    <section class="value-section" id="value">
+        <h2 class="section-title">Proposta de Valor</h2>
+        <p class="section-subtitle">
+            Um editor moderno baseado em blocos semânticos que transforma a forma como você cria documentos técnicos
+        </p>
+        <div class="value-card">
+            <div class="value-header">
+                <div class="value-icon">🎯</div>
+                <h3 class="value-title">Editor Baseado em Blocos Semânticos</h3>
+            </div>
+            <p class="value-description">
+                Trabalhe com blocos intuitivos que produzem um AST JSON rigorosamente validado — a única fonte de verdade. 
+                Sem sintaxe complexa, sem erros inesperados. O PDF é gerado automaticamente a partir dessa estrutura confiável.
+            </p>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="problem-content">
+            <div class="problem-text">
+                <h2>O Problema</h2>
+                <p>
+                    Ferramentas como Overleaf expõem LaTeX diretamente ao autor, causando atrito constante e erros em documentos técnicos complexos. 
+                    Desenvolvedores e pesquisadores perdem tempo lutando com sintaxe ao invés de focar no conteúdo.
+                </p>
+            </div>
+            <div class="problem-visual">
+                <code>
+! LaTeX Error: Environment theorem undefined.<br>
+! Missing $ inserted.<br>
+! Undefined control sequence.<br>
+! Package babel Error: Unknown option 'portuges'.<br>
+! Missing \begin{document}.<br>
+...
+                </code>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method Section -->
+    <section class="method-section" id="method">
+        <h2 class="section-title">Método DocCollab</h2>
+        <p class="section-subtitle">
+            Um fluxo determinístico e auditável que garante qualidade em cada etapa
+        </p>
+        <div class="method-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Blocos Semânticos</h3>
+                <p class="step-description">
+                    Componha seu documento usando blocos intuitivos no editor visual
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3 class="step-title">AST JSON Validado</h3>
+                <p class="step-description">
+                    Estrutura rigorosamente validada que serve como fonte única de verdade
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Conversor AST → LaTeX</h3>
+                <p class="step-description">
+                    Transformação automática e confiável do AST para LaTeX otimizado
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Compilação em PDF</h3>
+                <p class="step-description">
+                    Motor LaTeX isolado processa e gera o PDF final de alta qualidade
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Document Types Section -->
+    <section class="types-section" id="types">
+        <div class="types-content">
+            <h2 class="section-title">Tipos de Documento</h2>
+            <p class="section-subtitle">
+                Templates otimizados para diversos formatos de documentação técnica
+            </p>
+            <div class="types-grid">
+                <div class="type-card">
+                    <div class="type-icon">📄</div>
+                    <h3 class="type-name">Artigo Científico</h3>
+                </div>
+                <div class="type-card">
+                    <div class="type-icon">📊</div>
+                    <h3 class="type-name">Relatório Técnico</h3>
+                </div>
+                <div class="type-card">
+                    <div class="type-icon">🎓</div>
+                    <h3 class="type-name">Dissertação / TCC</h3>
+                </div>
+                <div class="type-card">
+                    <div class="type-icon">📘</div>
+                    <h3 class="type-name">Manual de Engenharia</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 DocCollab. Transformando documentação técnica.</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.querySelectorAll('.value-card, .step-card, .type-card, .problem-content').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const nav = document.querySelector('.nav');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+            if (nav.style.display === 'flex') {
+                nav.style.position = 'absolute';
+                nav.style.top = '100%';
+                nav.style.left = '0';
+                nav.style.right = '0';
+                nav.style.backgroundColor = 'var(--color-bg)';
+                nav.style.flexDirection = 'column';
+                nav.style.padding = '2rem';
+                nav.style.borderTop = '1px solid var(--color-border)';
+            }
+        });
+
+        // Add hover effect to cards
+        document.querySelectorAll('.type-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+
+    <!-- Signup Modal Styles -->
+    <style id="signup-modal-styles">
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            color: var(--color-text);
+        }
+
+        .modal-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .modal-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-row label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .modal-row input {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .modal-actions .btn {
+            padding: 0.625rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-submit {
+            background: var(--color-text);
+            color: var(--color-bg);
+        }
+    </style>
+
+    <!-- Signup Modal Markup -->
+    <div id="signup-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-card" role="document">
+            <h3>Cadastre-se Gratuitamente</h3>
+            <form id="signup-form">
+                <div class="modal-row">
+                    <label for="signup-name">Nome</label>
+                    <input id="signup-name" name="name" type="text" placeholder="Seu nome" required />
+                </div>
+                <div class="modal-row">
+                    <label for="signup-email">E-mail</label>
+                    <input id="signup-email" name="email" type="email" placeholder="seu@exemplo.com" required />
+                </div>
+                <div class="modal-row">
+                    <label for="signup-password">Senha</label>
+                    <input id="signup-password" name="password" type="password" placeholder="Crie uma senha" required />
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" id="signup-cancel">Cancelar</button>
+                    <button type="submit" class="btn btn-submit">Criar Conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <!-- Login Modal Markup -->
+        <div id="login-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+            <div class="modal-card" role="document">
+                <h3>Login</h3>
+                <form id="login-form">
+                    <div class="modal-row">
+                        <label for="login-email">E-mail</label>
+                        <input id="login-email" name="email" type="email" placeholder="seu@exemplo.com" required />
+                    </div>
+                    <div class="modal-row">
+                        <label for="login-password">Senha</label>
+                        <input id="login-password" name="password" type="password" placeholder="Sua senha" required />
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-cancel login-cancel">Cancelar</button>
+                        <button type="submit" class="btn btn-submit">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+        (function() {
+            // Signup modal handlers
+            const signupBtn = document.querySelector('.btn-primary');
+            const signupModal = document.getElementById('signup-modal');
+            const signupCancel = document.getElementById('signup-cancel');
+            const signupForm = document.getElementById('signup-form');
+
+            function openModal(modal) {
+                modal.classList.add('show');
+                modal.setAttribute('aria-hidden', 'false');
+                const first = modal.querySelector('input');
+                if (first) first.focus();
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal(modal) {
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            if (signupBtn && signupModal) {
+                signupBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(signupModal); });
+                signupCancel.addEventListener('click', (e) => { e.preventDefault(); closeModal(signupModal); });
+                signupModal.addEventListener('click', (e) => { if (e.target === signupModal) closeModal(signupModal); });
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && signupModal.classList.contains('show')) closeModal(signupModal); });
+
+                signupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const data = { name: signupForm.name.value.trim(), email: signupForm.email.value.trim(), password: signupForm.password.value };
+                    if (!data.name || !data.email || !data.password) { alert('Preencha todos os campos.'); return; }
+                    const submitBtn = signupForm.querySelector('button[type="submit"]');
+                    const prevText = submitBtn.textContent;
+                    submitBtn.disabled = true; submitBtn.textContent = 'Enviando...';
+                    try {
+                        const resp = await fetch('/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                        const j = await resp.json().catch(() => ({}));
+                        if (resp.ok && j && j.success) {
+                            // Auto-login after signup
+                            const loginResp = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: data.email, password: data.password }) });
+                            const lj = await loginResp.json().catch(() => ({}));
+                            if (loginResp.ok && lj && lj.success) {
+                                if (lj.token) localStorage.setItem('authToken', lj.token);
+                                if (lj.userId) localStorage.setItem('userId', lj.userId);
+                                if (lj.name) localStorage.setItem('userName', lj.name);
+                                closeModal(signupModal);
+                                window.location.href = '/editor.html';
+                                return;
+                            }
+                            closeModal(signupModal);
+                            alert('Conta criada. Faça login.');
+                            return;
+                        }
+                        if (j && j.error) {
+                            alert('Erro: ' + j.error);
+                        } else {
+                            alert('Falha ao criar conta.');
+                        }
+                    } catch (err) {
+                        console.error('signup error', err);
+                        alert('Erro de conexão. Tente novamente.');
+                    } finally {
+                        submitBtn.disabled = false; submitBtn.textContent = prevText || 'Criar Conta';
+                    }
+                });
+            }
+
+            // Login modal: markup added below; wire up handlers here
+            const topbarLogin = document.querySelector('.topbar-login');
+            const loginModal = document.getElementById('login-modal');
+            const loginCancel = loginModal ? loginModal.querySelector('.login-cancel') : null;
+            const loginForm = loginModal ? loginModal.querySelector('#login-form') : null;
+
+            if (topbarLogin) {
+                const token = localStorage.getItem('authToken');
+                if (token) {
+                    // If already authenticated, show user name and logout
+                    const userName = localStorage.getItem('userName') || 'Usuário';
+                    topbarLogin.innerHTML = 'Olá, ' + (userName.length > 12 ? userName.slice(0,12) + '...' : userName) + ' <button class="logout-btn" id="logout-btn">Sair</button>';
+                    topbarLogin.addEventListener('click', (e) => { e.preventDefault(); window.location.href = '/editor.html'; });
+                    const logoutBtn = document.getElementById('logout-btn');
+                    if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); localStorage.removeItem('authToken'); localStorage.removeItem('userId'); localStorage.removeItem('userName'); location.reload(); });
+                } else if (loginModal) {
+                    // Not authenticated: open login modal
+                    topbarLogin.addEventListener('click', (e) => { e.preventDefault(); openModal(loginModal); });
+                    if (loginCancel) loginCancel.addEventListener('click', (e) => { e.preventDefault(); closeModal(loginModal); });
+                    loginModal.addEventListener('click', (e) => { if (e.target === loginModal) closeModal(loginModal); });
+                    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && loginModal.classList.contains('show')) closeModal(loginModal); });
+
+                    if (loginForm) {
+                        loginForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const email = loginForm.email.value.trim();
+                            const password = loginForm.password.value;
+                            if (!email || !password) { alert('Preencha e-mail e senha.'); return; }
+                            const submitBtn = loginForm.querySelector('button[type="submit"]');
+                            const prevText = submitBtn.textContent;
+                            submitBtn.disabled = true; submitBtn.textContent = 'Entrando...';
+                            try {
+                                const resp = await fetch('/api/login', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ email, password })
+                                });
+                                const j = await resp.json().catch(() => ({}));
+                                if (resp.ok && j && j.success) {
+                                    if (j.token) localStorage.setItem('authToken', j.token);
+                                    if (j.userId) localStorage.setItem('userId', j.userId);
+                                    if (j.name) localStorage.setItem('userName', j.name);
+                                    // Open editor on successful login
+                                    window.location.href = '/editor.html';
+                                    return;
+                                }
+                                // Failure path
+                                alert('Login inválido !!!');
+                            } catch (err) {
+                                console.error('login error', err);
+                                alert('Erro de conexão. Tente novamente.');
+                            } finally {
+                                submitBtn.disabled = false; submitBtn.textContent = prevText || 'Entrar';
+                            }
+                        });
+                    }
+                }
+            }
+        })();
+    </script>
+
+</body>
+</html>

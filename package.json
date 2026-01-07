@@ -1,0 +1,20 @@
+{
+  "name": "doccollab",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server/server.js",
+    "test:highlighter": "node server/highlighter-test.js",
+    "test:ast": "node server/ast-sanity-test.js",
+    "test:storage": "node server/storage-test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^22.0.0",
+    "fake-indexeddb": "^4.0.0"
+  }
+  ,"dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
+}
+

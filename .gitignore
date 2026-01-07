@@ -1,0 +1,1 @@
+﻿node_modules/\ntmp/\ntmp_*\nlogs/\n*.zip\n*.tar\n*.tar.gz\n/server/logs/\n/server/tmp/\n.vscode/\n.DS_Store\nThumbs.db\n
