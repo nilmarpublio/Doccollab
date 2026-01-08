@@ -1,0 +1,4 @@
+/* base.css */
+:root { --bg: #fff; --fg: #111; --accent: #0a6; }
+body { font-family: system-ui,Segoe UI,Roboto,Helvetica,Arial; background: var(--bg); color: var(--fg); margin: 0; padding: 1rem; }
+a { color: var(--accent); }

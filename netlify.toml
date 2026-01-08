@@ -1,0 +1,19 @@
+[build]
+  # Sem build step (site está em arquivos estáticos). Se você tiver um build,
+  # ajuste `command` e `publish` conforme necessário.
+  command = ""
+  publish = "."
+
+[[redirects]]
+  # Redireciona todas as chamadas /api/* para o backend (substitua o placeholder)
+  from = "/api/*"
+  to = "https://<YOUR_BACKEND_URL>/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  # Se o backend expõe endpoints sem Netlify Functions prefix, use:
+  from = "/api/*"
+  to = "https://<YOUR_BACKEND_URL>/:splat"
+  status = 200
+  force = true

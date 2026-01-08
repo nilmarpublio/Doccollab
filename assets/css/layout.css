@@ -1,0 +1,4 @@
+/* layout.css */
+.main { display: flex; gap: 1rem; }
+.sidebar { width: 280px; }
+.editor-area { flex: 1; }

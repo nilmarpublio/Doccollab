@@ -1,0 +1,5 @@
+{
+  "nav": { "compile": "Compile", "status": "Status" },
+  "editor": { "placeholder": "Type here...", "addSection": "Add section" },
+  "errors": { "compileFailed": "Compilation failed" }
+}

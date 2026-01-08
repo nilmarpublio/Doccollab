@@ -1,0 +1,97 @@
+{
+  "app.title": "DocCollab‑v0",
+  "app.subtitle": "Editor de documentos técnicos",
+
+  "nav.create": "Criar Documento",
+  "nav.open": "Abrir Documento",
+
+  "menu.file": "Arquivo",
+  "menu.edit": "Editar",
+  "menu.view": "Visualizar",
+  "menu.help": "Ajuda",
+
+  "action.newDocument": "Novo documento",
+  "action.openDocument": "Abrir documento",
+  "action.save": "Salvar",
+  "action.saveAs": "Salvar como",
+  "action.export.pdf": "Exportar PDF",
+  "action.export.tex": "Exportar .tex",
+  "action.export.bib": "Exportar .bib",
+
+  "status.ready": "Pronto",
+  "status.saving": "Salvando...",
+  "status.saved": "Salvo",
+  "status.error": "Erro",
+
+  "editor.loading": "Carregando editor...",
+  "editor.loading_error": "Erro ao carregar o editor. Veja o Console do navegador.",
+  "editor.insertBlock": "Inserir bloco",
+  "editor.deleteBlock": "Excluir bloco",
+  "editor.moveUp": "Mover para cima",
+  "editor.moveDown": "Mover para baixo",
+  "editor.editBlock": "Editar bloco",
+  "editor.block.notFound": "Bloco não encontrado",
+  "editor.block.notAllowed": "Operação não permitida neste contexto",
+
+  "validation.title.required": "O documento precisa de um título.",
+  "validation.abstract.beforeSection": "O resumo (abstract) deve aparecer antes das seções.",
+  "validation.subsection.parent": "Uma subseção precisa estar dentro de uma seção.",
+  "validation.document.empty": "O documento está vazio.",
+  "validation.bibliography.missing": "Referências citadas não foram encontradas na bibliografia.",
+
+  "compile.starting": "Iniciando compilação...",
+  "compile.success": "Compilação concluída com sucesso.",
+  "compile.failed": "Falha na compilação.",
+  "compile.error.unknown": "Erro ao compilar o documento.",
+  "compile.error.undefinedCommand": "Comando LaTeX desconhecido. Verifique equações e pacotes.",
+  "compile.error.missingFile": "Arquivo referenciado não encontrado (ex.: imagem).",
+  "compile.error.package": "Erro em pacote LaTeX. Verifique o template.",
+  "compile.timeout": "Tempo de compilação esgotado.",
+
+  "storage.autosave.enabled": "Auto-salvamento ativado",
+  "storage.autosave.disabled": "Auto-salvamento desativado",
+  "storage.list.empty": "Nenhum documento salvo localmente.",
+
+  "preview.open": "Abrir pré-visualização",
+  "preview.refresh": "Atualizar pré-visualização",
+  "preview.generating": "Gerando pré-visualização...",
+  "preview.export_pdf": "Exportar PDF",
+  "preview.export_tex": "Exportar .tex",
+  "preview.export_bib": "Exportar .bib",
+  "preview.export_ast": "Exportar AST (JSON)",
+  "preview.status.ready": "Pronto.",
+  "preview.status.generating": "Gerando...",
+  "preview.status.updated": "Preview atualizado.",
+  "preview.status.error": "Erro:",
+  "preview.status.exporting": "Exportando...",
+  "preview.clear_highlights": "Limpar realces",
+
+  "templates.select": "Selecionar template",
+
+  "help.documentation": "Documentação",
+  "help.reportIssue": "Reportar um problema",
+
+  "dialog.confirm": "Confirmar",
+  "dialog.cancel": "Cancelar",
+
+  "errors.engine.missing": "Nenhuma engine de compilação configurada.",
+  "errors.engine.timeout": "Tempo de compilação esgotado.",
+  "errors.engine.internal": "Erro interno da engine de compilação.",
+
+  "ok": "OK",
+
+  "site.title": "DocCollab‑v0",
+  "site.lead": "Crie documentos técnicos com rigor sem lidar com LaTeX.",
+  "value.heading": "Proposta de valor",
+  "value.text": "Editor baseado em blocos semânticos que produz um AST JSON validado — a única fonte de verdade — e gera PDF automaticamente.",
+  "problem.heading": "Problema",
+  "problem.text": "Ferramentas que expõem LaTeX ao autor aumentam atrito e erros em documentos técnicos.",
+  "method.heading": "Método DocCollab",
+  "method.text": "Fluxo determinístico e auditável:",
+  "method.step1": "Blocos semânticos no editor",
+  "method.step2": "AST JSON rigorosamente validado",
+  "method.step3": "Conversor AST → LaTeX (automático)",
+  "method.step4": "Compilação isolada para PDF",
+
+  "autosave.saved": "Versão salva localmente"
+}

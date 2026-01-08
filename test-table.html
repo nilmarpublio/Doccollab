@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Teste Tabela</title>
+</head>
+<body>
+  <h1>Teste de Inserção de Tabela</h1>
+  <button id="testBtn">Clique Aqui para Testar Tabela</button>
+  <div id="output"></div>
+  
+  <script type="module">
+    const timestamp = Date.now();
+    console.log('=== CARREGANDO COM TIMESTAMP:', timestamp);
+    import { mountEditor, getAST } from './assets/js/editor/editor-controller.js?v=' + timestamp;
+    
+    document.getElementById('testBtn').addEventListener('click', () => {
+      console.log('BOTÃO CLICADO - vai disparar evento');
+      window.dispatchEvent(new CustomEvent('toolbar:insert', { detail: { type: 'table' } }));
+      document.getElementById('output').innerHTML = '<p>Evento disparado! Veja o console.</p>';
+    });
+    
+    // Mount editor
+    const sampleAST = {
+      metadata: { title: 'Teste', author: 'Teste' },
+      blocks: [
+        { type: 'title', id: 'title1', text: 'Teste Tabela' },
+        { type: 'section', id: 'sec1', title: 'Seção 1', blocks: [
+          { type: 'paragraph', id: 'p1', text: 'Parágrafo de teste' }
+        ]}
+      ]
+    };
+    
+    const editorRoot = document.createElement('div');
+    editorRoot.id = 'editor-root';
+    document.body.appendChild(editorRoot);
+    
+    mountEditor(editorRoot, sampleAST, () => {
+      console.log('Editor montado com sucesso');
+    });
+  </script>
+</body>
+</html>

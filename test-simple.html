@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Teste Simples</title>
+</head>
+<body>
+  <h1>Teste Muito Simples</h1>
+  <button onclick="testar()">CLIQUE AQUI</button>
+  <div id="resultado"></div>
+  
+  <script>
+    console.log('=== SCRIPT CARREGADO ===');
+    
+    function testar() {
+      console.log('=== FUNÇÃO testar() CHAMADA ===');
+      alert('FUNÇÃO CHAMADA!');
+      document.getElementById('resultado').innerHTML = '<p style="color:green;font-size:20px;">FUNCIONOU!</p>';
+    }
+    
+    console.log('=== SCRIPT PRONTO ===');
+  </script>
+</body>
+</html>

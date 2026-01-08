@@ -1,0 +1,5 @@
+{
+  "nav": { "compile": "Compilar", "status": "Status" },
+  "editor": { "placeholder": "Digite aqui...", "addSection": "Adicionar seção" },
+  "errors": { "compileFailed": "Falha na compilação" }
+}

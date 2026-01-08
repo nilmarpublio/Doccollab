@@ -1,0 +1,98 @@
+{
+  "app.title": "DocCollab-v0",
+  "app.subtitle": "Editor de documentos técnicos",
+
+  "nav.create": "Crear documento",
+  "nav.open": "Abrir documento",
+
+  "menu.file": "Archivo",
+  "menu.edit": "Editar",
+  "menu.view": "Ver",
+  "menu.help": "Ayuda",
+
+  "action.newDocument": "Nuevo documento",
+  "action.openDocument": "Abrir documento",
+  "action.save": "Guardar",
+  "action.saveAs": "Guardar como",
+  "action.export.pdf": "Exportar PDF",
+  "action.export.tex": "Exportar .tex",
+  "action.export.bib": "Exportar .bib",
+
+  "status.ready": "Listo",
+  "status.saving": "Guardando...",
+  "status.saved": "Guardado",
+  "status.error": "Error",
+
+  "editor.loading": "Cargando editor...",
+  "editor.loading_error": "Error al cargar el editor. Verifique la consola del navegador.",
+  "editor.insertBlock": "Insertar bloque",
+  "editor.deleteBlock": "Eliminar bloque",
+  "editor.moveUp": "Mover arriba",
+  "editor.moveDown": "Mover abajo",
+  "editor.editBlock": "Editar bloque",
+  "editor.block.notFound": "Bloque no encontrado",
+  "editor.block.notAllowed": "Operación no permitida en este contexto",
+
+  "validation.title.required": "El documento requiere un título.",
+  "validation.abstract.beforeSection": "El resumen (abstract) debe aparecer antes de las secciones.",
+  "validation.subsection.parent": "Una subsección debe estar dentro de una sección.",
+  "validation.document.empty": "El documento está vacío.",
+  "validation.bibliography.missing": "Las referencias citadas no se encontraron en la bibliografía.",
+
+  "compile.starting": "Iniciando compilación...",
+  "compile.success": "Compilación finalizada con éxito.",
+  "compile.failed": "Error en la compilación.",
+  "compile.error.unknown": "Error al compilar el documento.",
+  "compile.error.undefinedCommand": "Comando LaTeX desconocido. Verifique ecuaciones y paquetes.",
+  "compile.error.missingFile": "Archivo referenciado no encontrado (p. ej. imagen).",
+  "compile.error.package": "Error en paquete LaTeX. Verifique la plantilla.",
+  "compile.timeout": "Tiempo de compilación agotado.",
+
+  "storage.autosave.enabled": "Auto-guardado activado",
+  "storage.autosave.disabled": "Auto-guardado desactivado",
+  "storage.list.empty": "No hay documentos guardados localmente.",
+
+  "preview.open": "Abrir vista previa",
+  "preview.refresh": "Actualizar vista previa",
+  "preview.generating": "Generando vista previa...",
+  "preview.export_pdf": "Exportar PDF",
+  "preview.export_tex": "Exportar .tex",
+  "preview.export_bib": "Exportar .bib",
+  "preview.export_ast": "Exportar AST (JSON)",
+  "preview.status.ready": "Listo.",
+  "preview.status.generating": "Generando...",
+  "preview.status.updated": "Vista previa actualizada.",
+  "preview.status.error": "Error:",
+  "preview.status.exporting": "Exportando...",
+
+  "preview.clear_highlights": "Limpiar realces",
+
+  "templates.select": "Seleccionar plantilla",
+
+  "help.documentation": "Documentación",
+  "help.reportIssue": "Reportar un problema",
+
+  "dialog.confirm": "Confirmar",
+  "dialog.cancel": "Cancelar",
+
+  "errors.engine.missing": "Ninguna engine de compilación configurada.",
+  "errors.engine.timeout": "Tiempo de compilación agotado.",
+  "errors.engine.internal": "Error interno de la engine de compilación.",
+
+  "ok": "OK",
+
+  "site.title": "DocCollab-v0",
+  "site.lead": "Crea documentos técnicos rigurosos sin lidiar con LaTeX.",
+  "value.heading": "Propuesta de valor",
+  "value.text": "Editor basado en bloques semánticos que genera un AST JSON validado — la única fuente de verdad — y produce PDF automáticamente.",
+  "problem.heading": "Problema",
+  "problem.text": "Las herramientas que exponen LaTeX al autor aumentan la fricción y los errores en documentos técnicos.",
+  "method.heading": "Método DocCollab",
+  "method.text": "Flujo determinista y auditable:",
+  "method.step1": "Bloques semánticos en el editor",
+  "method.step2": "AST JSON estrictamente validado",
+  "method.step3": "Convertidor AST → LaTeX (automático)",
+  "method.step4": "Compilación aislada a PDF",
+
+  "autosave.saved": "Versión guardada localmente"
+}

@@ -1,0 +1,88 @@
+/* editor.css */
+.app-shell { display: flex; gap: 1rem; align-items: flex-start; }
+.sidebar { flex: 0 0 72px; display:flex; align-items:flex-start; }
+.editor-column { flex: 1 1 50%; display:flex; flex-direction:column; gap:8px; max-width: 50%; }
+.editor-card { background: #fff; border: 1px solid #e6e6e6; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); box-sizing: border-box; }
+.editor { /* editor content sits inside card */ padding: 0; min-height: 60vh; background: transparent; box-sizing: border-box; width: 100%; overflow: visible; }
+.editor .block { display: block; margin: 0.5rem 0; min-height: 1em; }
+.editor h1:empty:before { content: 'Título do documento'; color: #aaa; font-style: italic; }
+.editor .author:empty:before { content: 'Autor'; color: #aaa; font-style: italic; }
+.editor .abstract:empty:before { content: 'Resumo (Abstract)'; color: #aaa; font-style: italic; }
+.editor p:empty:before { content: 'Escreva aqui...'; color: #aaa; font-style: italic; }
+.editor h2:empty:before { content: 'Título da seção'; color: #aaa; font-style: italic; }
+.editor h3:empty:before { content: 'Título da subseção'; color: #aaa; font-style: italic; }
+.editor .figure-src:empty:before { content: 'exemplo.png ou caminho/imagem.jpg'; color: #aaa; font-style: italic; }
+.editor .figure-caption:empty:before { content: 'Descrição da figura'; color: #aaa; font-style: italic; }
+.editor .table-caption:empty:before { content: 'Legenda da tabela'; color: #aaa; font-style: italic; }
+.preview { flex: 1 1 50%; border: 1px solid #ddd; padding: 0.5rem; min-height: 60vh; box-sizing: border-box; max-width: 50%; }
+.toolbar { display: flex; gap: 8px; padding: 8px; background: #f7f7f7; border-bottom: 1px solid #ddd; width: 100%; box-sizing: border-box; align-items: center; position: sticky; top: 0; z-index: 1000; }
+.toolbar-btn { padding: 6px 10px; border: 1px solid #bbb; background: white; cursor: pointer; position:relative; min-width:36px; height:32px; display:flex; align-items:center; justify-content:center; }
+.toolbar-btn:active { background: #eee; }
+
+/* tooltip / placeholder on hover */
+.toolbar-btn[data-tooltip]:hover::after{
+	content: attr(data-tooltip);
+	position: absolute;
+	left: 50%;
+	top: 110%;
+	transform: translateX(-50%);
+	background: rgba(0,0,0,0.85);
+	color: #fff;
+	padding: 6px 8px;
+	border-radius: 4px;
+	white-space: nowrap;
+	font-size: 12px;
+	z-index: 10000;
+}
+
+.toolbar-btn[data-tooltip]:hover::before{
+	content: '';
+	position: absolute;
+	left: 50%;
+	top: 100%;
+	transform: translateX(-50%);
+	width: 0; height: 0; border-left:6px solid transparent; border-right:6px solid transparent; border-top:6px solid rgba(0,0,0,0.85);
+}
+.preview .preview-iframe { width: 100%; height: 100%; border: none; }
+.block { padding: 0.5rem 0; border-bottom: 1px dashed #eee; }
+
+/* formatting toolbar (placed inside editor) - vertical at left */
+
+.sidebar .toolbar {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 8px;
+	background: #f7f7f7;
+	border-right: 1px solid #e6e6e6;
+	width: 64px;
+	box-sizing: border-box;
+	align-items: center;
+	position: sticky;
+	top: 72px;
+	height: calc(100vh - 80px);
+}
+.sidebar .toolbar-btn { width:40px; height:40px; padding:6px; border-radius:6px; display:flex; align-items:center; justify-content:center; }
+
+.doc-toolbar {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 6px;
+	background: #f4f4f4;
+	border-radius: 6px;
+	border: 1px solid #e0e0e0;
+	box-sizing: border-box;
+	align-items: center;
+	margin-right: 12px;
+	width: 44px;
+	position: sticky;
+	top: 72px; /* below nav */
+}
+.doc-toolbar .toolbar-btn { width:34px; height:34px; padding:6px; border-radius:4px; }
+
+.lang-container { display:flex; align-items:center; gap:8px; padding:0 8px; }
+
+/* thin button/card above the editor card */
+.btn-card { height: 40px; width: 100%; background: #f5f5f5; border-radius: 4px; border: 1px solid #e6e6e6; display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px; box-sizing: border-box; font-size:12px; color:#333; }
+.btn-card .lang-select { padding:4px 6px; border-radius:4px; border:1px solid #ccc; font-size:12px; }

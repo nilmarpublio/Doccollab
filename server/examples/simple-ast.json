@@ -1,0 +1,68 @@
+{
+  "metadata": {
+    "id": "demo-doc",
+    "language": "pt-BR",
+    "documentType": "article",
+    "template": "generic",
+    "createdAt": "2025-12-31T00:00:00.000Z",
+    "updatedAt": "2025-12-31T00:00:00.000Z"
+  },
+  "blocks": [
+    {
+      "type": "title",
+      "id": "title_1",
+      "text": "Documento de Demonstração"
+    },
+    {
+      "type": "author",
+      "id": "author_1",
+      "text": "DocCollab v0"
+    },
+    {
+      "type": "abstract",
+      "id": "abstract_1",
+      "text": "Este é um documento de exemplo para demonstrar o editor AST do DocCollab. Clique em qualquer elemento para editá-lo diretamente."
+    },
+    {
+      "type": "section",
+      "id": "sec_1",
+      "title": "Introdução",
+      "content": [
+        {
+          "type": "paragraph",
+          "id": "p_1",
+          "text": "Bem-vindo ao <strong>DocCollab</strong>! Este é um editor de documentos baseado em AST (Abstract Syntax Tree). Todo o conteúdo é armazenado como estrutura semântica, não como HTML ou texto livre."
+        },
+        {
+          "type": "paragraph",
+          "id": "p_2",
+          "text": "Você pode usar <em>formatação inline</em> como <strong>negrito</strong>, <em>itálico</em> e <code>código</code>. Use os botões da barra lateral esquerda ou atalhos de teclado (Ctrl+B, Ctrl+I)."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "sec_2",
+      "title": "Como usar",
+      "content": [
+        {
+          "type": "paragraph",
+          "id": "p_3",
+          "text": "Clique em qualquer texto para editá-lo. Use os botões ➕ na barra lateral para inserir novos blocos: seções, subseções, parágrafos, equações, figuras, etc."
+        },
+        {
+          "type": "subsection",
+          "id": "subsec_1",
+          "title": "Compilação LaTeX",
+          "content": [
+            {
+              "type": "paragraph",
+              "id": "p_4",
+              "text": "Clique no botão <strong>Compilar</strong> no topo da página para gerar um PDF a partir do seu documento. O preview aparecerá no painel direito."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

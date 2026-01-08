@@ -1,0 +1,98 @@
+{
+  "app.title": "DocCollab-v0",
+  "app.subtitle": "Technical document editor",
+
+  "nav.create": "Create Document",
+  "nav.open": "Open Document",
+
+  "menu.file": "File",
+  "menu.edit": "Edit",
+  "menu.view": "View",
+  "menu.help": "Help",
+
+  "action.newDocument": "New document",
+  "action.openDocument": "Open document",
+  "action.save": "Save",
+  "action.saveAs": "Save as",
+  "action.export.pdf": "Export PDF",
+  "action.export.tex": "Export .tex",
+  "action.export.bib": "Export .bib",
+
+  "status.ready": "Ready",
+  "status.saving": "Saving...",
+  "status.saved": "Saved",
+  "status.error": "Error",
+
+  "editor.loading": "Loading editor...",
+  "editor.loading_error": "Error loading editor. Check the browser console.",
+  "editor.insertBlock": "Insert block",
+  "editor.deleteBlock": "Delete block",
+  "editor.moveUp": "Move up",
+  "editor.moveDown": "Move down",
+  "editor.editBlock": "Edit block",
+  "editor.block.notFound": "Block not found",
+  "editor.block.notAllowed": "Operation not allowed in this context",
+
+  "validation.title.required": "The document requires a title.",
+  "validation.abstract.beforeSection": "The abstract, if present, should appear before sections.",
+  "validation.subsection.parent": "A subsection must be inside a section.",
+  "validation.document.empty": "The document is empty.",
+  "validation.bibliography.missing": "Cited references were not found in the bibliography.",
+
+  "compile.starting": "Starting compilation...",
+  "compile.success": "Compilation finished successfully.",
+  "compile.failed": "Compilation failed.",
+  "compile.error.unknown": "Error compiling the document.",
+  "compile.error.undefinedCommand": "Unknown LaTeX command. Check equations and packages.",
+  "compile.error.missingFile": "Referenced file not found (e.g. image).",
+  "compile.error.package": "LaTeX package error. Check the template.",
+  "compile.timeout": "Compilation timed out.",
+
+  "storage.autosave.enabled": "Autosave enabled",
+  "storage.autosave.disabled": "Autosave disabled",
+  "storage.list.empty": "No documents saved locally.",
+
+  "preview.open": "Open preview",
+  "preview.refresh": "Refresh preview",
+  "preview.generating": "Generating preview...",
+  "preview.export_pdf": "Export PDF",
+  "preview.export_tex": "Export .tex",
+  "preview.export_bib": "Export .bib",
+  "preview.export_ast": "Export AST (JSON)",
+  "preview.status.ready": "Ready.",
+  "preview.status.generating": "Generating...",
+  "preview.status.updated": "Preview updated.",
+  "preview.status.error": "Error:",
+  "preview.status.exporting": "Exporting...",
+
+  "preview.clear_highlights": "Clear highlights",
+
+  "templates.select": "Select template",
+
+  "help.documentation": "Documentation",
+  "help.reportIssue": "Report an issue",
+
+  "dialog.confirm": "Confirm",
+  "dialog.cancel": "Cancel",
+
+  "errors.engine.missing": "No compilation engine configured.",
+  "errors.engine.timeout": "Compilation timed out.",
+  "errors.engine.internal": "Internal compilation engine error.",
+
+  "ok": "OK",
+
+  "site.title": "DocCollab-v0",
+  "site.lead": "Create rigorous technical documents without dealing with LaTeX.",
+  "value.heading": "Value proposition",
+  "value.text": "A semantic block editor that produces a validated JSON AST — the single source of truth — and generates PDF automatically.",
+  "problem.heading": "Problem",
+  "problem.text": "Tools that expose LaTeX to the author increase friction and errors in technical documents.",
+  "method.heading": "DocCollab method",
+  "method.text": "Deterministic, auditable flow:",
+  "method.step1": "Semantic blocks in the editor",
+  "method.step2": "Strictly validated JSON AST",
+  "method.step3": "AST → LaTeX converter (automatic)",
+  "method.step4": "Isolated compilation to PDF",
+
+  "autosave.saved": "Version saved locally"
+}

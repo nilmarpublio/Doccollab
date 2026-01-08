@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\begin{document}
+% DOCCOLLAB-BLOCK-ID: t1
+\title{Documento de Exemplo}\maketitle
+\vspace{1em}
+% DOCCOLLAB-BLOCK-ID: a1
+\begin{abstract}
+Resumo abreviado do documento de exemplo.
+\end{abstract}
+% DOCCOLLAB-BLOCK-ID: s1
+
+\section{Introdução}
+% DOCCOLLAB-BLOCK-ID: p1
+Este é um parágrafo de introdução.
+
+% DOCCOLLAB-BLOCK-ID: e1
+
+\begin{equation}\label{blk:e1}
+E = mc^2
+\end{equation}
+% DOCCOLLAB-BLOCK-ID: s2
+
+\section{Resultados}
+% DOCCOLLAB-BLOCK-ID: p2
+Resultados experimentais são apresentados aqui.
+
+% DOCCOLLAB-BLOCK-ID: f1
+
+\begin{figure}[h]
+\centering
+\IfFileExists{images/fig1.png}{\includegraphics[width=0.8\linewidth]{images/fig1.png}}{\fbox{Missing image: images/fig1.png}}\caption{Figura de exemplo.}\label{blk:f1}\end{figure}
+% DOCCOLLAB-BLOCK-ID: b1
+% DOCCOLLAB-BIB
+\begin{thebibliography}{99}
+\bibitem{ref1} Autor. Título. 2025.
+\end{thebibliography}
+
+\end{document}

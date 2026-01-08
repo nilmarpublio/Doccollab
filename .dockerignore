@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.git
+.github
+logs
+tmp
+tmp/**
+docs
+*.md
+*.tex
+*.aux
+*.pdf
+\.env
